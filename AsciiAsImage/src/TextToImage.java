@@ -1,50 +1,33 @@
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 public class TextToImage
 {
-	private static final String DEFAULT_INPUT = "src/TextToImage.java";
-	private static final String DEFAULT_OUTPUT = "./Hello World.png";
-	private static String inputFilePath;
-	private static String outputFilePath;
+	private File inputFile;
+	private File outputFile;
 
-	public static void main(String[] args)
+	public TextToImage(File inputFile, File outputFile)
 	{
-		//Allow command line args
-		if (args.length >= 1)
-			inputFilePath = args[0];
-		else
-			inputFilePath = DEFAULT_INPUT;
-
-		if (args.length >= 2)
-			outputFilePath = args[1];
-		else
-			outputFilePath = DEFAULT_OUTPUT;
-
-		//Start program
-		TextToImage driver = new TextToImage();
-		driver.start();
+		this.inputFile = inputFile;
+		this.outputFile = outputFile;
 	}
 
-	private void start()
+	public void start()
 	{
 		//Text group separation character
 		char unitSeparator = (char) 31;
 
-		//File to read text from
-		File input = new File(inputFilePath);
-
-		//File to save final image
-		File output = new File(outputFilePath);
-
 		//Get text from file
-		String fileName = input.getName();
-		String fileText = readFile(input.getAbsolutePath());
-
+		String fileName = inputFile.getName();
+		List<String> lines = readFile(inputFile.getAbsolutePath());
+		String fileText = getFileText(lines);
+		
 		//Combine text and separators
 		String text = "";
 		text += fileName + unitSeparator;
@@ -60,22 +43,30 @@ public class TextToImage
 		BufferedImage image = createImage(dims, dims, pixels);
 
 		//Save image to output file
-		saveImage(image, output);
+		saveImage(image, outputFile);
 	}
 
-	private String readFile(String fileName)
-	{
+	private List<String> readFile(String fileName)
+	{	
 		//Read file data
 		List<String> lines = null;
 		try
 		{
-			lines = Files.readAllLines(Paths.get(fileName));
+			lines = Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
 		}
 		catch (IOException e)
 		{
+			//Display status
+			String errorMessage = "Unable to read file: " + fileName;
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, errorMessage, "Error!", JOptionPane.ERROR_MESSAGE);
 		}
 
+		return lines;
+	}
+	
+	private String getFileText(List<String> lines)
+	{
 		//Add data to buffer
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < lines.size(); i++)
@@ -149,12 +140,20 @@ public class TextToImage
 	{
 		try
 		{
+			//Write image to file
 			ImageIO.write(image, "png", output);
-			System.out.println(">>> File Created Successfully <<<");
+			
+			//Display status
+			String successMessage = "File created successfully!";
+			System.out.println(successMessage);
+			JOptionPane.showMessageDialog(null, successMessage, "Success!", JOptionPane.INFORMATION_MESSAGE);
 		}
 		catch (IOException e)
 		{
+			//Display status
+			String errorMessage = "Unable to write to file!";
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, errorMessage, "Error!", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

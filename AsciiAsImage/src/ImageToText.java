@@ -3,35 +3,39 @@ import java.awt.image.*;
 import java.io.*;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 public class ImageToText
 {
-	public static void main(String[] args)
+	private File inputFile;
+	private File outputDir;
+	
+	public ImageToText(File inputFile, File outputDir)
 	{
-		ImageToText driver = new ImageToText();
-		driver.start();
+		this.inputFile = inputFile;
+		this.outputDir = outputDir;
 	}
 	
-	private void start()
+	public void start()
 	{
 		//Text group separation character
 		String unitSeparator = "" + (char) 31;
 		
-		//File to read pixels from
-		File file = new File("Hello World.png");
-		
 		//Get pixels from file
-		BufferedImage image = readFile(file);
+		BufferedImage image = readFile(inputFile);
 		int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 		
 		//Build string from pixel info
 		String rawText = createText(pixels);
-
+		
 		//Parse string
 		String[] splitString = rawText.split(unitSeparator);
 		String fileName = splitString[0];
 		String fileText =  splitString[1];
-
+		
+		//Create output file path
+		fileName = outputDir + "/" + fileName;
+		
 		//Save text to output file
 		saveText(fileName, fileText);
 	}
@@ -82,10 +86,18 @@ public class ImageToText
 			Writer writer = new BufferedWriter(new FileWriter(fileName));
 			writer.write(fileText);
 			writer.close();
+			
+			//Display status
+			String successMessage = "File created successfully!";
+			System.out.println(successMessage);
+			JOptionPane.showMessageDialog(null, successMessage, "Success!", JOptionPane.INFORMATION_MESSAGE);
 		}
 		catch (IOException e)
 		{
+			//Display status
+			String errorMessage = "Unable to write to file!";
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, errorMessage, "Error!", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }
