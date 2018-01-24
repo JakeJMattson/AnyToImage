@@ -9,12 +9,12 @@ import javax.swing.JOptionPane;
 
 public class TextToImage
 {
-	private File inputFile;
+	private File[] inputFiles;
 	private File outputFile;
 
-	public TextToImage(File inputFile, File outputFile)
+	public TextToImage(File[] inputFiles, File outputFile)
 	{
-		this.inputFile = inputFile;
+		this.inputFiles = inputFiles;
 		this.outputFile = outputFile;
 	}
 
@@ -23,18 +23,23 @@ public class TextToImage
 		//Text group separation character
 		char unitSeparator = (char) 31;
 
-		//Get text from file
-		String fileName = inputFile.getName();
-		List<String> lines = readFile(inputFile.getAbsolutePath());
-		String fileText = getFileText(lines);
-		
-		//Combine text and separators
-		String text = "";
-		text += fileName + unitSeparator;
-		text += fileText + unitSeparator;
+		//Holds all required text
+		String allText = "";
+
+		for (int i = 0; i < inputFiles.length; i++)
+		{
+			//Get text from file
+			String fileName = inputFiles[i].getName();
+			List<String> lines = readFile(inputFiles[i].getAbsolutePath());
+			String fileText = getFileText(lines);
+
+			//Combine text and separators
+			allText += fileName + unitSeparator;
+			allText += fileText + unitSeparator;
+		}
 
 		//Assign text to pixel values
-		int[] pixels = createPixels(text);
+		int[] pixels = createPixels(allText);
 
 		//Calculate image size (Quick and dirty pack - leaves unused pixels)
 		int dims = (int) Math.ceil(Math.sqrt(pixels.length));
@@ -47,7 +52,7 @@ public class TextToImage
 	}
 
 	private List<String> readFile(String fileName)
-	{	
+	{
 		//Read file data
 		List<String> lines = null;
 		try
@@ -64,7 +69,7 @@ public class TextToImage
 
 		return lines;
 	}
-	
+
 	private String getFileText(List<String> lines)
 	{
 		//Add data to buffer
@@ -125,8 +130,7 @@ public class TextToImage
 		int pixelIndex = 0;
 
 		//Populate image with pixel info from array
-		outerloop:
-		for (int i = 0; i < height; i++)
+		outerloop: for (int i = 0; i < height; i++)
 			for (int j = 0; j < width; j++)
 				if (pixelIndex < pixels.length)
 					image.setRGB(j, i, pixels[pixelIndex++]);
@@ -142,7 +146,7 @@ public class TextToImage
 		{
 			//Write image to file
 			ImageIO.write(image, "png", output);
-			
+
 			//Display status
 			String successMessage = "File created successfully!";
 			System.out.println(successMessage);
