@@ -3,7 +3,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 import javax.swing.*;
@@ -364,158 +364,91 @@ public class FileHandler extends JFrame implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		if (e.getSource() == btnJfcInput[TEXT_TO_IMAGE])
+		Object buttonClicked = e.getSource();
+		int selection;
+
+		if ((selection = Arrays.asList(btnJfcInput).indexOf(buttonClicked)) != -1)
 		{
 			//Allow user to select an input file
 			File selectedFile = createFileChooser(JFileChooser.FILES_ONLY);
 
 			//Save file
 			if (selectedFile != null)
-				inputFiles.get(TEXT_TO_IMAGE).add(selectedFile);
+				inputFiles.get(selection).add(selectedFile);
 
 			//Refresh display
-			refreshInputDisplay(TEXT_TO_IMAGE);
+			refreshInputDisplay(selection);
 		}
 
-		else if (e.getSource() == btnJfcInput[IMAGE_TO_TEXT])
+		else if ((selection = Arrays.asList(btnJfcOutput).indexOf(buttonClicked)) != -1)
 		{
-			//Allow user to select an input file
-			File selectedFile = createFileChooser(JFileChooser.FILES_ONLY);
+			//Set type of file allowed
+			int[] fileTypes = {JFileChooser.FILES_ONLY, JFileChooser.DIRECTORIES_ONLY};
 
-			//Save file
-			if (selectedFile != null)
-				inputFiles.get(IMAGE_TO_TEXT).add(selectedFile);
-
-			//Refresh display
-			refreshInputDisplay(IMAGE_TO_TEXT);
-		}
-
-		else if (e.getSource() == btnJfcOutput[TEXT_TO_IMAGE])
-		{
 			//Allow user to select an output file
-			File selectedFile = createFileChooser(JFileChooser.FILES_ONLY);
+			File selectedFile = createFileChooser(fileTypes[selection]);
 
 			//Save file
 			if (selectedFile != null)
-				outputFile[TEXT_TO_IMAGE] = selectedFile;
+				outputFile[selection] = selectedFile;
 
 			//Refresh display
-			refreshOutputDisplay(TEXT_TO_IMAGE);
+			refreshOutputDisplay(selection);
 		}
 
-		else if (e.getSource() == btnJfcOutput[IMAGE_TO_TEXT])
+		else if ((selection = Arrays.asList(btnRemoveSelected).indexOf(buttonClicked)) != -1)
 		{
-			//Allow user to select an output directory
-			File selectedFile = createFileChooser(JFileChooser.DIRECTORIES_ONLY);
+			//Get user selection
+			int index = lstInput[selection].getSelectedIndex();
 
-			//Save file
-			if (selectedFile != null)
-				outputFile[IMAGE_TO_TEXT] = selectedFile;
+			if (index != -1)
+			{
+				//Remove selection from saved files
+				inputFiles.get(selection).remove(index);
 
-			//Refresh display
-			refreshOutputDisplay(IMAGE_TO_TEXT);
+				//Refresh display
+				refreshInputDisplay(selection);
+			}
 		}
 
-		else if (e.getSource() == btnClear[TEXT_TO_IMAGE])
-		{
-			//Clear saved files
-			inputFiles.get(TEXT_TO_IMAGE).clear();
-			outputFile[TEXT_TO_IMAGE] = null;
-
-			//Refresh display
-			refreshInputDisplay(TEXT_TO_IMAGE);
-			refreshOutputDisplay(TEXT_TO_IMAGE);
-		}
-
-		else if (e.getSource() == btnClear[IMAGE_TO_TEXT])
-		{
-			//Clear saved files
-			inputFiles.get(IMAGE_TO_TEXT).clear();
-			outputFile[IMAGE_TO_TEXT] = null;
-
-			//Refresh display
-			refreshInputDisplay(IMAGE_TO_TEXT);
-			refreshOutputDisplay(IMAGE_TO_TEXT);
-		}
-
-		else if (e.getSource() == btnSubmit[TEXT_TO_IMAGE])
+		else if ((selection = Arrays.asList(btnSubmit).indexOf(buttonClicked)) != -1)
 		{
 			//Validate input
-			if (!inputFiles.get(TEXT_TO_IMAGE).isEmpty())
+			if (isInputValid(selection))
 			{
-				if (outputFile[TEXT_TO_IMAGE] != null)
-				{
-					//Convert list to array
-					List<File> fileList = inputFiles.get(TEXT_TO_IMAGE);
-					File[] fileArray = fileList.toArray(new File[fileList.size()]);
+				//Convert list to array
+				List<File> fileList = inputFiles.get(selection);
+				File[] fileArray = fileList.toArray(new File[fileList.size()]);
 
-					//Process input
-					TextToImage driver = new TextToImage(fileArray, outputFile[TEXT_TO_IMAGE]);
+				//Process input
+				if (selection == TEXT_TO_IMAGE)
+				{
+					TextToImage driver = new TextToImage(fileArray, outputFile[selection]);
 					driver.start();
 				}
-				else
-					displayError("Please select an output file!");
-			}
-			else
-				displayError("Please select an input file!");
-		}
-
-		else if (e.getSource() == btnSubmit[IMAGE_TO_TEXT])
-		{
-			//Validate input
-			if (!inputFiles.get(IMAGE_TO_TEXT).isEmpty())
-			{
-				if (outputFile[IMAGE_TO_TEXT] != null)
+				else if (selection == IMAGE_TO_TEXT)
 				{
-					//Convert list to array
-					List<File> fileList = inputFiles.get(IMAGE_TO_TEXT);
-					File[] fileArray = fileList.toArray(new File[fileList.size()]);
-
-					//Process input
-					ImageToText driver = new ImageToText(fileArray, outputFile[IMAGE_TO_TEXT]);
+					ImageToText driver = new ImageToText(fileArray, outputFile[selection]);
 					driver.start();
 				}
-				else
-					displayError("Please select an output directory!");
 			}
-			else
-				displayError("Please select an input file!");
 		}
 
-		else if (e.getSource() == btnExit[TEXT_TO_IMAGE] || e.getSource() == btnExit[IMAGE_TO_TEXT])
+		else if (Arrays.asList(btnExit).contains(buttonClicked))
 		{
 			//Terminate program
 			System.exit(0);
 		}
 
-		else if (e.getSource() == btnRemoveSelected[TEXT_TO_IMAGE])
+		else if ((selection = Arrays.asList(btnClear).indexOf(buttonClicked)) != -1)
 		{
-			//Get user selection
-			int index = lstInput[TEXT_TO_IMAGE].getSelectedIndex();
+			//Clear saved files
+			inputFiles.get(selection).clear();
+			outputFile[selection] = null;
 
-			if (index != -1)
-			{
-				//Remove selection from saved files
-				inputFiles.get(TEXT_TO_IMAGE).remove(index);
-
-				//Refresh display
-				refreshInputDisplay(TEXT_TO_IMAGE);
-			}
-		}
-
-		else if (e.getSource() == btnRemoveSelected[IMAGE_TO_TEXT])
-		{
-			//Get user selection
-			int index = lstInput[IMAGE_TO_TEXT].getSelectedIndex();
-
-			if (index != -1)
-			{
-				//Remove selection from saved files
-				inputFiles.get(IMAGE_TO_TEXT).remove(index);
-
-				//Refresh display
-				refreshInputDisplay(IMAGE_TO_TEXT);
-			}
+			//Refresh display
+			refreshInputDisplay(selection);
+			refreshOutputDisplay(selection);
 		}
 	}
 
@@ -537,12 +470,6 @@ public class FileHandler extends JFrame implements ActionListener
 		}
 
 		return selectedFile;
-	}
-
-	private void displayError(String message)
-	{
-		//Display error dialog to user
-		JOptionPane.showMessageDialog(null, message, "Error!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	private void refreshInputDisplay(int tabNum)
@@ -568,5 +495,30 @@ public class FileHandler extends JFrame implements ActionListener
 		else
 			//Clear text
 			txtOutput[tabNum].setText("");
+	}
+
+	private boolean isInputValid(int selection)
+	{
+		boolean isValid = false;
+
+		if (!inputFiles.get(selection).isEmpty())
+		{
+			if (outputFile[selection] != null)
+			{
+				isValid = true;
+			}
+			else
+				displayError("Please select an output file!");
+		}
+		else
+			displayError("Please select an input file!");
+
+		return isValid;
+	}
+
+	private void displayError(String message)
+	{
+		//Display error dialog to user
+		JOptionPane.showMessageDialog(null, message, "Error!", JOptionPane.ERROR_MESSAGE);
 	}
 }
