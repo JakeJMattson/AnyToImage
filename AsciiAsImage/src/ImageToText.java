@@ -33,6 +33,10 @@ public class ImageToText
 			//Split string by unit separator
 			String[] splitString = rawText.split(unitSeparator);
 
+			String errorMessage = "The following files failed to decode from the image "
+					+ "(" + inputFiles[i].getName()+ "):\n";
+			int errorCount = 0;
+
 			for (int j = 0; j < splitString.length - 1; j += 2)
 			{
 				//Get text from split array
@@ -43,8 +47,20 @@ public class ImageToText
 				fileName = outputDir + "/" + fileName;
 
 				//Save text to output file
-				saveText(fileName, fileText);
+				boolean wasSuccessful = saveText(fileName, fileText);
+
+				if (!wasSuccessful)
+				{
+					errorCount++;
+					errorMessage += fileName;
+				}
 			}
+
+			if (errorCount != 0)
+				JOptionPane.showMessageDialog(null, errorMessage, "Error!", JOptionPane.ERROR_MESSAGE);
+			else
+				JOptionPane.showMessageDialog(null, "All files created successfully", "Success!",
+						JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
@@ -87,8 +103,10 @@ public class ImageToText
 		return buffer.toString();
 	}
 
-	private void saveText(String fileName, String fileText)
+	private boolean saveText(String fileName, String fileText)
 	{
+		boolean isSuccessful = false;
+
 		try
 		{
 			//Write text to file
@@ -96,17 +114,16 @@ public class ImageToText
 			writer.write(fileText);
 			writer.close();
 
-			//Display status
-			String successMessage = "File created successfully!";
-			System.out.println(successMessage);
-			JOptionPane.showMessageDialog(null, successMessage, "Success!", JOptionPane.INFORMATION_MESSAGE);
+			//Save status
+			isSuccessful = true;
 		}
 		catch (IOException e)
 		{
 			//Display status
-			String errorMessage = "Unable to write to file!";
-			e.printStackTrace();
+			String errorMessage = "Unable to write to file! (" + fileName + ")";
 			JOptionPane.showMessageDialog(null, errorMessage, "Error!", JOptionPane.ERROR_MESSAGE);
 		}
+
+		return isSuccessful;
 	}
 }

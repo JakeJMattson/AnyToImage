@@ -31,24 +31,32 @@ public class TextToImage
 			//Get text from file
 			String fileName = inputFiles[i].getName();
 			List<String> lines = readFile(inputFiles[i].getAbsolutePath());
-			String fileText = getFileText(lines);
-
-			//Combine text and separators
-			allText += fileName + unitSeparator;
-			allText += fileText + unitSeparator;
+			if (lines != null)
+			{
+				String fileText = getFileText(lines);
+	
+				//Combine text and separators
+				allText += fileName + unitSeparator;
+				allText += fileText + unitSeparator;
+			}
 		}
 
-		//Assign text to pixel values
-		int[] pixels = createPixels(allText);
-
-		//Calculate image size (Quick and dirty pack - leaves unused pixels)
-		int dims = (int) Math.ceil(Math.sqrt(pixels.length));
-
-		//Store pixel values in image
-		BufferedImage image = createImage(dims, dims, pixels);
-
-		//Save image to output file
-		saveImage(image, outputFile);
+		if (!allText.equals(""))
+		{
+			//Assign text to pixel values
+			int[] pixels = createPixels(allText);
+	
+			//Calculate image size (Quick and dirty pack - leaves unused pixels)
+			int dims = (int) Math.ceil(Math.sqrt(pixels.length));
+	
+			//Store pixel values in image
+			BufferedImage image = createImage(dims, dims, pixels);
+	
+			//Save image to output file
+			saveImage(image, outputFile);
+		}
+		else
+			JOptionPane.showMessageDialog(null, "No valid files input", "Image not created", JOptionPane.ERROR_MESSAGE);
 	}
 
 	private List<String> readFile(String fileName)
@@ -62,7 +70,8 @@ public class TextToImage
 		catch (IOException e)
 		{
 			//Display status
-			String errorMessage = "Unable to read file: " + fileName;
+			String errorMessage = "Unable to read file: " + fileName + "\n"
+					+ "It will be omitted from the final result";
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, errorMessage, "Error!", JOptionPane.ERROR_MESSAGE);
 		}
@@ -148,7 +157,7 @@ public class TextToImage
 			ImageIO.write(image, "png", output);
 
 			//Display status
-			String successMessage = "File created successfully!";
+			String successMessage = "Image created successfully!";
 			System.out.println(successMessage);
 			JOptionPane.showMessageDialog(null, successMessage, "Success!", JOptionPane.INFORMATION_MESSAGE);
 		}

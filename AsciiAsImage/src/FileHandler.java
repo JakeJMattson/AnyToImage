@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 //TODO fix known resizing issue upon filling JList in GUI
 
@@ -34,6 +35,11 @@ public class FileHandler extends JFrame implements ActionListener
 	private final int TEXT_TO_IMAGE = 0;
 	private final int IMAGE_TO_TEXT = 1;
 	private final int NUM_OF_TABS = 2;
+	private final FileNameExtensionFilter[] inputRestrictions = 
+		{
+			new FileNameExtensionFilter("Text file", "txt", "bat", "c", "cpp", "cs", "h", "java", "py", "sh", "sln", "swift", "vb", "xml"),
+			new FileNameExtensionFilter("*.png", "png")
+		};
 
 	public static void main(String[] args)
 	{
@@ -144,7 +150,6 @@ public class FileHandler extends JFrame implements ActionListener
 		//Format panels
 		inputPanel.setLayout(new GridLayout(2, 0));
 		dropPanel.setLayout(new GridBagLayout());
-		chooserPanel.setLayout(new GridLayout(0, 2));
 		inputPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), "Input",
 				TitledBorder.CENTER, TitledBorder.TOP));
 		chooserPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "OR",
@@ -155,14 +160,18 @@ public class FileHandler extends JFrame implements ActionListener
 		inputPanel.setDropTarget(dndZone);
 
 		//Create labels
-		String[] fileTypeOptions = {"a text file", "an image file"};
-		JLabel lblDrop = new JLabel("Drag and drop " + fileTypeOptions[tabNum] + " into this area");
-		JLabel lblJFC = new JLabel("Select from directories:");
+		String[] fileTypeOptions = {"a text", "an image"};
+		JLabel lblDrop = new JLabel("Drag and drop " + fileTypeOptions[tabNum] + " file into this area");
+		JLabel lblJFC = new JLabel("Select one from directories:");
+
+		//Create button
+		btnJfcInput[tabNum] = new JButton("Add File");
+		btnJfcInput[tabNum].addActionListener(this);
 
 		//Add components to intermediate panels
 		dropPanel.add(lblDrop);
 		chooserPanel.add(lblJFC);
-		chooserPanel.add(createChooserPanel(tabNum));
+		chooserPanel.add(btnJfcInput[tabNum]);
 
 		//Add intermediate panels
 		inputPanel.add(dropPanel);
@@ -194,11 +203,18 @@ public class FileHandler extends JFrame implements ActionListener
 						//Limit input to files
 						if (file.isFile())
 						{
-							inputFiles.get(tabNum).add(file);
-							System.out.println("Dropped file added: " + file.getAbsolutePath());
+							//Verify valid extension
+							String extension = getFileExtension(file);
+							
+							if (Arrays.asList(inputRestrictions[tabNum].getExtensions()).contains(extension))
+							{
+								inputFiles.get(tabNum).add(file);
+								System.out.println("Dropped file added: " + file.getAbsolutePath());
+							}
 						}
 					}
 
+					//Refresh display
 					refreshInputDisplay(tabNum);
 				}
 				catch (Exception ex)
@@ -211,19 +227,18 @@ public class FileHandler extends JFrame implements ActionListener
 		return target;
 	}
 
-	private JPanel createChooserPanel(int tabNum)
+	protected String getFileExtension(File file)
 	{
-		//Create panel
-		JPanel chooserPanel = new JPanel();
+		//Get path
+		String fileName = file.getAbsolutePath();
 
-		//Create button
-		btnJfcInput[tabNum] = new JButton("Select File");
-		btnJfcInput[tabNum].addActionListener(this);
+		//Parse path
+		String extension = "";
+		int index = fileName.lastIndexOf('.');
+		if (index > 0)
+			extension = fileName.substring(index + 1);
 
-		//Add button to panel
-		chooserPanel.add(btnJfcInput[tabNum]);
-
-		return chooserPanel;
+		return extension;
 	}
 
 	private JPanel createFileOutputPanel(int tabNum)
@@ -347,9 +362,10 @@ public class FileHandler extends JFrame implements ActionListener
 		JPanel textboxPanel = new JPanel();
 
 		//Format panel
+		String[] displayOptions = {"Output Image", "Output Directory"};
 		textboxPanel.setLayout(new BorderLayout());
 		textboxPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK),
-				"File output", TitledBorder.CENTER, TitledBorder.TOP));
+				displayOptions[tabNum], TitledBorder.CENTER, TitledBorder.TOP));
 
 		//Create text boxes
 		txtOutput[tabNum] = new JTextField();
@@ -370,7 +386,7 @@ public class FileHandler extends JFrame implements ActionListener
 		if ((selection = Arrays.asList(btnJfcInput).indexOf(buttonClicked)) != -1)
 		{
 			//Allow user to select an input file
-			File selectedFile = createFileChooser(JFileChooser.FILES_ONLY);
+			File selectedFile = createFileChooser(JFileChooser.FILES_ONLY, inputRestrictions[selection], true);
 
 			//Save file
 			if (selectedFile != null)
@@ -382,11 +398,13 @@ public class FileHandler extends JFrame implements ActionListener
 
 		else if ((selection = Arrays.asList(btnJfcOutput).indexOf(buttonClicked)) != -1)
 		{
-			//Set type of file allowed
+			//Restrict input
+			FileNameExtensionFilter[] fileFilters = {new FileNameExtensionFilter("*.png", "png"),
+					new FileNameExtensionFilter("Directory", " ")};
 			int[] fileTypes = {JFileChooser.FILES_ONLY, JFileChooser.DIRECTORIES_ONLY};
 
 			//Allow user to select an output file
-			File selectedFile = createFileChooser(fileTypes[selection]);
+			File selectedFile = createFileChooser(fileTypes[selection], fileFilters[selection], false);
 
 			//Save file
 			if (selectedFile != null)
@@ -413,7 +431,6 @@ public class FileHandler extends JFrame implements ActionListener
 
 		else if ((selection = Arrays.asList(btnSubmit).indexOf(buttonClicked)) != -1)
 		{
-			//Validate input
 			if (isInputValid(selection))
 			{
 				//Convert list to array
@@ -452,20 +469,42 @@ public class FileHandler extends JFrame implements ActionListener
 		}
 	}
 
-	private File createFileChooser(int selectionMode)
+	private File createFileChooser(int selectionMode, FileNameExtensionFilter fileFilter, boolean isOpening)
 	{
 		//Create file dialog
 		JFileChooser chooser = new JFileChooser();
+
+		//Set dialog options
 		chooser.setFileSelectionMode(selectionMode);
+		chooser.setFileFilter(fileFilter);
+		chooser.setAcceptAllFileFilterUsed(false);
 
 		//Display dialog
-		int returnValue = chooser.showOpenDialog(null);
+		int returnValue;
+		if (isOpening)
+			returnValue = chooser.showOpenDialog(null);
+		else
+			returnValue = chooser.showSaveDialog(null);
 
 		//Get user selection
 		File selectedFile = null;
 		if (returnValue == JFileChooser.APPROVE_OPTION)
 		{
 			selectedFile = chooser.getSelectedFile();
+
+			if (!isOpening)
+			{
+				//Verify extension
+				String defaultExtension = "";
+				String extension = fileFilter.getExtensions()[0].toLowerCase().trim();
+				defaultExtension = (!extension.equals("") ? "." : "") + extension;
+	
+				//Assert extension
+				String filePath = selectedFile.getPath();
+				if (!filePath.toLowerCase().endsWith(defaultExtension))
+					selectedFile = new File(filePath + defaultExtension);
+			}
+			
 			System.out.println("File selected from chooser: " + selectedFile.getAbsolutePath());
 		}
 
@@ -499,8 +538,8 @@ public class FileHandler extends JFrame implements ActionListener
 
 	private boolean isInputValid(int selection)
 	{
+		//Validate input
 		boolean isValid = false;
-
 		if (!inputFiles.get(selection).isEmpty())
 		{
 			if (outputFile[selection] != null)
