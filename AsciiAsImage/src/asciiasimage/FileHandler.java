@@ -1,3 +1,5 @@
+package asciiasimage;
+
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.*;
@@ -10,36 +12,38 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-//TODO fix known resizing issue upon filling JList in GUI
+//TODO fix resizing issue upon filling JList in GUI
+//TODO fix lingering tooltip text
 
+@SuppressWarnings("serial")
 public class FileHandler extends JFrame implements ActionListener
 {
 	//File inputs
-	private List<List<File>> inputFiles;
-	private File[] outputFile;
+	private final List<List<File>> inputFiles;
+	private final File[] outputFile;
 
 	//Buttons
-	private JButton[] btnJfcInput;
-	private JButton[] btnJfcOutput;
-	private JButton[] btnSubmit;
-	private JButton[] btnExit;
-	private JButton[] btnClear;
-	private JButton[] btnRemoveSelected;
+	private final JButton[] btnJfcInput;
+	private final JButton[] btnJfcOutput;
+	private final JButton[] btnSubmit;
+	private final JButton[] btnExit;
+	private final JButton[] btnClear;
+	private final JButton[] btnRemoveSelected;
 
 	//Input displays
-	private JList<String>[] lstInput;
-	private List<DefaultListModel<String>> listContent;
-	private JTextField[] txtOutput;
+	private final JList<String>[] lstInput;
+	private final List<DefaultListModel<String>> listContent;
+	private final JTextField[] txtOutput;
 
 	//Constants
 	private final int TEXT_TO_IMAGE = 0;
 	private final int IMAGE_TO_TEXT = 1;
 	private final int NUM_OF_TABS = 2;
-	private final FileNameExtensionFilter[] inputRestrictions = 
-		{
-			new FileNameExtensionFilter("Text file", "txt", "bat", "c", "cpp", "cs", "h", "java", "py", "sh", "sln", "swift", "vb", "xml"),
+	private final FileNameExtensionFilter[] inputRestrictions = {
+			new FileNameExtensionFilter("Text file", "txt", "bat", "c", "cpp", "cs", "h", "java", "py", "sh", "sln",
+					"swift", "vb", "xml"),
 			new FileNameExtensionFilter("*.png", "png")
-		};
+	};
 
 	public static void main(String[] args)
 	{
@@ -54,7 +58,7 @@ public class FileHandler extends JFrame implements ActionListener
 		super();
 
 		//File inputs
-		inputFiles = new ArrayList<List<File>>(NUM_OF_TABS);
+		inputFiles = new ArrayList<>(NUM_OF_TABS);
 		outputFile = new File[NUM_OF_TABS];
 
 		//Buttons
@@ -67,7 +71,7 @@ public class FileHandler extends JFrame implements ActionListener
 
 		//Input displays
 		lstInput = new JList[NUM_OF_TABS];
-		listContent = new ArrayList<DefaultListModel<String>>(NUM_OF_TABS);
+		listContent = new ArrayList<>(NUM_OF_TABS);
 		txtOutput = new JTextField[NUM_OF_TABS];
 	}
 
@@ -77,33 +81,28 @@ public class FileHandler extends JFrame implements ActionListener
 		JTabbedPane tabbedPane = new JTabbedPane();
 
 		//Add tabs to pane
-		tabbedPane.addTab("Text to Image", null, createDisplayPanel(TEXT_TO_IMAGE));
-		tabbedPane.addTab("Image to Text", null, createDisplayPanel(IMAGE_TO_TEXT));
+		tabbedPane.addTab("Text to Image", null, createTab(TEXT_TO_IMAGE));
+		tabbedPane.addTab("Image to Text", null, createTab(IMAGE_TO_TEXT));
 
 		//Add pane to frame
 		this.add(tabbedPane);
 
 		//Set frame preferences
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.pack();
-		this.setTitle("AsciiAsImage");
-		this.setVisible(true);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setTitle("AsciiAsImage");
+		pack();
+		setVisible(true);
 	}
 
-	private JPanel createDisplayPanel(int tabNum)
+	private JPanel createTab(int tabNum)
 	{
 		//Create panels
-		JPanel displayPanel = new JPanel();
+		JPanel tab = new JPanel(new GridBagLayout());
 		JPanel fileInputPanel = createFileInputPanel(tabNum);
 		JPanel fileOutputPanel = createFileOutputPanel(tabNum);
 		JPanel buttonPanel = createButtonPanel(tabNum);
 		JPanel inputDisplay = createListPanel(tabNum);
 		JPanel outputDisplay = createTextboxPanel(tabNum);
-
-		//Format panels
-		displayPanel.setLayout(new GridBagLayout());
-		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.fill = GridBagConstraints.BOTH;
 
 		//Create button
 		btnClear[tabNum] = new JButton("Clear all");
@@ -113,43 +112,44 @@ public class FileHandler extends JFrame implements ActionListener
 		inputFiles.add(new ArrayList<File>());
 
 		//Add components to panels
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.fill = GridBagConstraints.BOTH;
+
 		constraints.gridx = 0;
 		constraints.gridy = 0;
-		displayPanel.add(fileInputPanel, constraints);
+		tab.add(fileInputPanel, constraints);
 
 		constraints.gridx = 0;
 		constraints.gridy = 1;
-		displayPanel.add(fileOutputPanel, constraints);
+		tab.add(fileOutputPanel, constraints);
 
 		constraints.gridx = 0;
 		constraints.gridy = 2;
-		displayPanel.add(buttonPanel, constraints);
+		tab.add(buttonPanel, constraints);
 
 		constraints.gridx = 1;
 		constraints.gridy = 0;
-		displayPanel.add(inputDisplay, constraints);
+		tab.add(inputDisplay, constraints);
 
 		constraints.gridx = 1;
 		constraints.gridy = 1;
-		displayPanel.add(outputDisplay, constraints);
+		tab.add(outputDisplay, constraints);
 
 		constraints.gridx = 1;
 		constraints.gridy = 2;
-		displayPanel.add(btnClear[tabNum], constraints);
+		tab.add(btnClear[tabNum], constraints);
 
-		return displayPanel;
+		return tab;
 	}
 
 	private JPanel createFileInputPanel(int tabNum)
 	{
 		//Create panels
-		JPanel inputPanel = new JPanel();
-		JPanel dropPanel = new JPanel();
+		JPanel inputPanel = new JPanel(new GridLayout(2, 0));
+		JPanel dropPanel = new JPanel(new GridBagLayout());
 		JPanel chooserPanel = new JPanel();
 
-		//Format panels
-		inputPanel.setLayout(new GridLayout(2, 0));
-		dropPanel.setLayout(new GridBagLayout());
+		//Create border
 		inputPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), "Input",
 				TitledBorder.CENTER, TitledBorder.TOP));
 		chooserPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "OR",
@@ -199,20 +199,17 @@ public class FileHandler extends JFrame implements ActionListener
 							.getTransferData(DataFlavor.javaFileListFlavor);
 
 					for (File file : droppedFiles)
-					{
-						//Limit input to files
 						if (file.isFile())
 						{
 							//Verify valid extension
 							String extension = getFileExtension(file);
-							
+
 							if (Arrays.asList(inputRestrictions[tabNum].getExtensions()).contains(extension))
 							{
 								inputFiles.get(tabNum).add(file);
 								System.out.println("Dropped file added: " + file.getAbsolutePath());
 							}
 						}
-					}
 
 					//Refresh display
 					refreshInputDisplay(tabNum);
@@ -227,7 +224,7 @@ public class FileHandler extends JFrame implements ActionListener
 		return target;
 	}
 
-	protected String getFileExtension(File file)
+	private String getFileExtension(File file)
 	{
 		//Get path
 		String fileName = file.getAbsolutePath();
@@ -244,10 +241,9 @@ public class FileHandler extends JFrame implements ActionListener
 	private JPanel createFileOutputPanel(int tabNum)
 	{
 		//Create panel
-		JPanel outputPanel = new JPanel();
+		JPanel outputPanel = new JPanel(new GridLayout(0, 2));
 
-		//Format panel
-		outputPanel.setLayout(new GridLayout(0, 2));
+		//Create border
 		outputPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), "Output",
 				TitledBorder.CENTER, TitledBorder.TOP));
 
@@ -268,13 +264,11 @@ public class FileHandler extends JFrame implements ActionListener
 	private JPanel createButtonPanel(int tabNum)
 	{
 		//Create panel
-		JPanel buttonPanel = new JPanel();
-
-		//Format panel
-		buttonPanel.setLayout(new GridLayout(0, 2));
+		JPanel buttonPanel = new JPanel(new GridLayout(0, 2));
 
 		//Create buttons
-		btnSubmit[tabNum] = new JButton("Submit");
+		String[] submitOptions = {"Create Image", "Extract Files"};
+		btnSubmit[tabNum] = new JButton(submitOptions[tabNum]);
 		btnSubmit[tabNum].addActionListener(this);
 
 		btnExit[tabNum] = new JButton("Exit");
@@ -290,18 +284,16 @@ public class FileHandler extends JFrame implements ActionListener
 	private JPanel createListPanel(int tabNum)
 	{
 		//Create panels
-		JPanel listPanel = new JPanel();
-		JPanel listboxPanel = new JPanel();
+		JPanel listPanel = new JPanel(new GridBagLayout());
+		JPanel listboxPanel = new JPanel(new BorderLayout());
 
-		//Format panels
-		listboxPanel.setLayout(new BorderLayout());
-		listPanel.setLayout(new GridBagLayout());
+		//Create border
 		listPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), "Files",
 				TitledBorder.CENTER, TitledBorder.TOP));
 
 		//Create JList
 		listContent.add(new DefaultListModel<String>());
-		lstInput[tabNum] = new JList<String>(listContent.get(tabNum));
+		lstInput[tabNum] = new JList<>(listContent.get(tabNum));
 		lstInput[tabNum].setPrototypeCellValue("LongTestFileName.txt plus some");
 
 		//Configure tool tips
@@ -345,11 +337,9 @@ public class FileHandler extends JFrame implements ActionListener
 				//Get index of item
 				int index = list.locationToIndex(e.getPoint());
 
+				//Set tooltip text to complete file path
 				if (index > -1)
-				{
-					//Set tooltip text to the complete file path of the item
 					list.setToolTipText(inputFiles.get(tabNum).get(index).toString());
-				}
 			}
 		};
 
@@ -359,11 +349,10 @@ public class FileHandler extends JFrame implements ActionListener
 	private JPanel createTextboxPanel(int tabNum)
 	{
 		//Create panel
-		JPanel textboxPanel = new JPanel();
+		JPanel textboxPanel = new JPanel(new BorderLayout());
 
-		//Format panel
+		//Create border
 		String[] displayOptions = {"Output Image", "Output Directory"};
-		textboxPanel.setLayout(new BorderLayout());
 		textboxPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK),
 				displayOptions[tabNum], TitledBorder.CENTER, TitledBorder.TOP));
 
@@ -381,92 +370,86 @@ public class FileHandler extends JFrame implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		Object buttonClicked = e.getSource();
-		int selection;
+		int tabNum;
 
-		if ((selection = Arrays.asList(btnJfcInput).indexOf(buttonClicked)) != -1)
+		if ((tabNum = Arrays.asList(btnJfcInput).indexOf(buttonClicked)) != -1)
 		{
 			//Allow user to select an input file
-			File selectedFile = createFileChooser(JFileChooser.FILES_ONLY, inputRestrictions[selection], true);
+			File selectedFile = createFileChooser(JFileChooser.FILES_ONLY, inputRestrictions[tabNum], true);
 
 			//Save file
 			if (selectedFile != null)
-				inputFiles.get(selection).add(selectedFile);
+				inputFiles.get(tabNum).add(selectedFile);
 
 			//Refresh display
-			refreshInputDisplay(selection);
+			refreshInputDisplay(tabNum);
 		}
 
-		else if ((selection = Arrays.asList(btnJfcOutput).indexOf(buttonClicked)) != -1)
+		else if ((tabNum = Arrays.asList(btnJfcOutput).indexOf(buttonClicked)) != -1)
 		{
 			//Restrict input
+			int[] fileTypes = {JFileChooser.FILES_ONLY, JFileChooser.DIRECTORIES_ONLY};
 			FileNameExtensionFilter[] fileFilters = {new FileNameExtensionFilter("*.png", "png"),
 					new FileNameExtensionFilter("Directory", " ")};
-			int[] fileTypes = {JFileChooser.FILES_ONLY, JFileChooser.DIRECTORIES_ONLY};
 
 			//Allow user to select an output file
-			File selectedFile = createFileChooser(fileTypes[selection], fileFilters[selection], false);
+			File selectedFile = createFileChooser(fileTypes[tabNum], fileFilters[tabNum], false);
 
 			//Save file
 			if (selectedFile != null)
-				outputFile[selection] = selectedFile;
+				outputFile[tabNum] = selectedFile;
 
 			//Refresh display
-			refreshOutputDisplay(selection);
+			refreshOutputDisplay(tabNum);
 		}
 
-		else if ((selection = Arrays.asList(btnRemoveSelected).indexOf(buttonClicked)) != -1)
+		else if ((tabNum = Arrays.asList(btnRemoveSelected).indexOf(buttonClicked)) != -1)
 		{
 			//Get user selection
-			int index = lstInput[selection].getSelectedIndex();
+			int index = lstInput[tabNum].getSelectedIndex();
 
 			if (index != -1)
 			{
 				//Remove selection from saved files
-				inputFiles.get(selection).remove(index);
+				inputFiles.get(tabNum).remove(index);
 
 				//Refresh display
-				refreshInputDisplay(selection);
+				refreshInputDisplay(tabNum);
 			}
 		}
 
-		else if ((selection = Arrays.asList(btnSubmit).indexOf(buttonClicked)) != -1)
+		else if ((tabNum = Arrays.asList(btnSubmit).indexOf(buttonClicked)) != -1)
 		{
-			if (isInputValid(selection))
+			if (isInputValid(tabNum))
 			{
+				//Text group separation character
+				char unitSeparator = (char) 31;
+
 				//Convert list to array
-				List<File> fileList = inputFiles.get(selection);
+				List<File> fileList = inputFiles.get(tabNum);
 				File[] fileArray = fileList.toArray(new File[fileList.size()]);
 
 				//Process input
-				if (selection == TEXT_TO_IMAGE)
-				{
-					TextToImage driver = new TextToImage(fileArray, outputFile[selection]);
-					driver.start();
-				}
-				else if (selection == IMAGE_TO_TEXT)
-				{
-					ImageToText driver = new ImageToText(fileArray, outputFile[selection]);
-					driver.start();
-				}
+				if (tabNum == TEXT_TO_IMAGE)
+					TextToImage.convert(fileArray, outputFile[tabNum], unitSeparator);
+				else if (tabNum == IMAGE_TO_TEXT)
+					ImageToText.convert(fileArray, outputFile[tabNum], unitSeparator);
 			}
 		}
 
-		else if (Arrays.asList(btnExit).contains(buttonClicked))
-		{
-			//Terminate program
-			System.exit(0);
-		}
-
-		else if ((selection = Arrays.asList(btnClear).indexOf(buttonClicked)) != -1)
+		else if ((tabNum = Arrays.asList(btnClear).indexOf(buttonClicked)) != -1)
 		{
 			//Clear saved files
-			inputFiles.get(selection).clear();
-			outputFile[selection] = null;
+			inputFiles.get(tabNum).clear();
+			outputFile[tabNum] = null;
 
 			//Refresh display
-			refreshInputDisplay(selection);
-			refreshOutputDisplay(selection);
+			refreshInputDisplay(tabNum);
+			refreshOutputDisplay(tabNum);
 		}
+
+		else if (Arrays.asList(btnExit).contains(buttonClicked))
+			System.exit(0);
 	}
 
 	private File createFileChooser(int selectionMode, FileNameExtensionFilter fileFilter, boolean isOpening)
@@ -480,11 +463,7 @@ public class FileHandler extends JFrame implements ActionListener
 		chooser.setAcceptAllFileFilterUsed(false);
 
 		//Display dialog
-		int returnValue;
-		if (isOpening)
-			returnValue = chooser.showOpenDialog(null);
-		else
-			returnValue = chooser.showSaveDialog(null);
+		int returnValue = isOpening ? chooser.showOpenDialog(null) : chooser.showSaveDialog(null);
 
 		//Get user selection
 		File selectedFile = null;
@@ -495,16 +474,15 @@ public class FileHandler extends JFrame implements ActionListener
 			if (!isOpening)
 			{
 				//Verify extension
-				String defaultExtension = "";
 				String extension = fileFilter.getExtensions()[0].toLowerCase().trim();
-				defaultExtension = (!extension.equals("") ? "." : "") + extension;
-	
+				String defaultExtension = (!extension.equals("") ? "." : "") + extension;
+
 				//Assert extension
 				String filePath = selectedFile.getPath();
 				if (!filePath.toLowerCase().endsWith(defaultExtension))
 					selectedFile = new File(filePath + defaultExtension);
 			}
-			
+
 			System.out.println("File selected from chooser: " + selectedFile.getAbsolutePath());
 		}
 
@@ -517,47 +495,46 @@ public class FileHandler extends JFrame implements ActionListener
 		listContent.get(tabNum).clear();
 
 		//Fill list with current data
-		for (int i = 0; i < inputFiles.get(tabNum).size(); i++)
-			listContent.get(tabNum).addElement(inputFiles.get(tabNum).get(i).getName());
+		for (File file : inputFiles.get(tabNum))
+			listContent.get(tabNum).addElement(file.getName());
 	}
 
 	private void refreshOutputDisplay(int tabNum)
 	{
+		String fileName = "";
+		String filePath = null;
+
 		if (outputFile[tabNum] != null)
 		{
-			//Set display to file name
-			txtOutput[tabNum].setText(outputFile[tabNum].getName());
-
-			//Set tooltip text to file path
-			txtOutput[tabNum].setToolTipText(outputFile[tabNum].getAbsolutePath());
+			//Get file attributes
+			fileName = outputFile[tabNum].getName();
+			filePath = outputFile[tabNum].getAbsolutePath();
 		}
-		else
-			//Clear text
-			txtOutput[tabNum].setText("");
+
+		txtOutput[tabNum].setText(fileName);
+		txtOutput[tabNum].setToolTipText(filePath);
 	}
 
-	private boolean isInputValid(int selection)
+	private boolean isInputValid(int tabNum)
 	{
-		//Validate input
+		String[] outputOptions = {"Please name the output image!", "Please select an output directory!"};
+
 		boolean isValid = false;
-		if (!inputFiles.get(selection).isEmpty())
+		if (!inputFiles.get(tabNum).isEmpty())
 		{
-			if (outputFile[selection] != null)
-			{
+			if (outputFile[tabNum] != null)
 				isValid = true;
-			}
 			else
-				displayError("Please select an output file!");
+				displayError(outputOptions[tabNum]);
 		}
 		else
-			displayError("Please select an input file!");
+			displayError("Please add input file(s)!");
 
 		return isValid;
 	}
 
 	private void displayError(String message)
 	{
-		//Display error dialog to user
 		JOptionPane.showMessageDialog(null, message, "Error!", JOptionPane.ERROR_MESSAGE);
 	}
 }

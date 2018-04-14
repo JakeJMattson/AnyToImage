@@ -1,3 +1,5 @@
+package asciiasimage;
+
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -9,32 +11,21 @@ import javax.swing.JOptionPane;
 
 public class TextToImage
 {
-	private File[] inputFiles;
-	private File outputFile;
-
-	public TextToImage(File[] inputFiles, File outputFile)
+	public static void convert(File[] inputFiles, File outputFile, char unitSeparator)
 	{
-		this.inputFiles = inputFiles;
-		this.outputFile = outputFile;
-	}
-
-	public void start()
-	{
-		//Text group separation character
-		char unitSeparator = (char) 31;
-
 		//Holds all required text
 		String allText = "";
 
-		for (int i = 0; i < inputFiles.length; i++)
+		for (File inputFile : inputFiles)
 		{
 			//Get text from file
-			String fileName = inputFiles[i].getName();
-			List<String> lines = readFile(inputFiles[i].getAbsolutePath());
+			String fileName = inputFile.getName();
+			List<String> lines = readFile(inputFile.getAbsolutePath());
+
 			if (lines != null)
 			{
 				String fileText = getFileText(lines);
-	
+
 				//Combine text and separators
 				allText += fileName + unitSeparator;
 				allText += fileText + unitSeparator;
@@ -45,13 +36,13 @@ public class TextToImage
 		{
 			//Assign text to pixel values
 			int[] pixels = createPixels(allText);
-	
+
 			//Calculate image size (Quick and dirty pack - leaves unused pixels)
 			int dims = (int) Math.ceil(Math.sqrt(pixels.length));
-	
+
 			//Store pixel values in image
 			BufferedImage image = createImage(dims, dims, pixels);
-	
+
 			//Save image to output file
 			saveImage(image, outputFile);
 		}
@@ -59,7 +50,7 @@ public class TextToImage
 			JOptionPane.showMessageDialog(null, "No valid files input", "Image not created", JOptionPane.ERROR_MESSAGE);
 	}
 
-	private List<String> readFile(String fileName)
+	private static List<String> readFile(String fileName)
 	{
 		//Read file data
 		List<String> lines = null;
@@ -79,24 +70,21 @@ public class TextToImage
 		return lines;
 	}
 
-	private String getFileText(List<String> lines)
+	private static String getFileText(List<String> lines)
 	{
-		//Add data to buffer
+		String newline = System.getProperty("line.separator");
 		StringBuffer buffer = new StringBuffer();
-		for (int i = 0; i < lines.size(); i++)
-		{
-			//Add line text to buffer
-			buffer.append(lines.get(i));
 
-			//Add newline character to buffer (except last line)
-			if (i != lines.size() - 1)
-				buffer.append(System.getProperty("line.separator"));
-		}
+		for (String line : lines)
+			buffer.append(line + newline);
 
-		return buffer.toString();
+		//Remove final newline from buffer
+		String fileText = buffer.substring(0, buffer.length() - newline.length());
+
+		return fileText;
 	}
 
-	private int[] createPixels(String text)
+	private static int[] createPixels(String text)
 	{
 		//Number of image channels (RGB assumed)
 		int numOfChannels = 3;
@@ -119,24 +107,26 @@ public class TextToImage
 			//Read info from group into each channel
 			for (int j = 0; j < numOfChannels; j++)
 				if (i + j < charCount)
-					pixel[j] = (int) text.charAt(i + j);
+					pixel[j] = text.charAt(i + j);
 				else
 					pixel[j] = 0;
 
 			//Store current pixel into pixel array
-			pixels[i / numOfChannels] = (pixel[0] << 16) | (pixel[1] << 8) | pixel[2];
+			pixels[i / numOfChannels] = pixel[0] << 16 | pixel[1] << 8 | pixel[2];
 		}
 
 		return pixels;
 	}
 
-	private BufferedImage createImage(int width, int height, int[] pixels)
+	private static BufferedImage createImage(int width, int height, int[] pixels)
 	{
 		//Create empty image
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
 		//Create counter to navigate array
 		int pixelIndex = 0;
+
+		//TODO for each pixel (remove index)
 
 		//Populate image with pixel info from array
 		outerloop: for (int i = 0; i < height; i++)
@@ -149,7 +139,7 @@ public class TextToImage
 		return image;
 	}
 
-	private void saveImage(BufferedImage image, File output)
+	private static void saveImage(BufferedImage image, File output)
 	{
 		try
 		{
@@ -157,16 +147,14 @@ public class TextToImage
 			ImageIO.write(image, "png", output);
 
 			//Display status
-			String successMessage = "Image created successfully!";
-			System.out.println(successMessage);
-			JOptionPane.showMessageDialog(null, successMessage, "Success!", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Image created successfully!",
+					"Creation Complete!", JOptionPane.INFORMATION_MESSAGE);
 		}
 		catch (IOException e)
 		{
 			//Display status
-			String errorMessage = "Unable to write to file!";
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, errorMessage, "Error!", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Unable to write to file!", "Error!", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }
