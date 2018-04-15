@@ -1,3 +1,8 @@
+/*
+ * Class Description:
+ * Extract files from images created by the 'TextToImage' class
+ */
+
 package asciiasimage;
 
 import java.awt.Color;

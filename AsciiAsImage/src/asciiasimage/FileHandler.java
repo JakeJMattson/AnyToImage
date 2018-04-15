@@ -1,3 +1,8 @@
+/*
+ * Class Description:
+ * Display/Main - GUI to accept user input and convert files
+ */
+
 package asciiasimage;
 
 import java.awt.*;

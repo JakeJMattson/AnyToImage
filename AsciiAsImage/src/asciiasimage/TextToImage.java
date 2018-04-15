@@ -1,3 +1,8 @@
+/*
+ * Class Description:
+ * Create images from text files by converting ASCII values to RGB values
+ */
+
 package asciiasimage;
 
 import java.awt.image.BufferedImage;
