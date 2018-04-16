@@ -18,7 +18,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 //TODO fix resizing issue upon filling JList in GUI
-//TODO fix lingering tooltip text
 
 @SuppressWarnings("serial")
 public class FileHandler extends JFrame implements ActionListener
@@ -339,12 +338,17 @@ public class FileHandler extends JFrame implements ActionListener
 				@SuppressWarnings("unchecked")
 				JList<String> list = (JList<String>) e.getSource();
 
-				//Get index of item
-				int index = list.locationToIndex(e.getPoint());
+				if (inputFiles.get(tabNum).size() != 0)
+				{
+					//Get index of item
+					int index = list.locationToIndex(e.getPoint());
 
-				//Set tooltip text to complete file path
-				if (index > -1)
-					list.setToolTipText(inputFiles.get(tabNum).get(index).toString());
+					//Set tooltip text to complete file path
+					if (index > -1)
+						list.setToolTipText(inputFiles.get(tabNum).get(index).toString());
+				}
+				else
+					list.setToolTipText(null);
 			}
 		};
 
