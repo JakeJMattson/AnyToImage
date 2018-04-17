@@ -1,8 +1,3 @@
-/*
- * Class Description:
- * Extract files from images created by the 'TextToImage' class
- */
-
 package asciiasimage;
 
 import java.awt.Color;
@@ -12,8 +7,23 @@ import java.io.*;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
+/**
+ * Extract files from images created by the 'TextToImage' class
+ *
+ * @author mattson543
+ */
 public class ImageToText
 {
+	/**
+	 * Static method to initiate the conversion.
+	 *
+	 * @param inputFiles
+	 *            Array of image files to be converted
+	 * @param outputDir
+	 *            Directory to store all output files in
+	 * @param unitSeparator
+	 *            Separates files and contents (name; text; name; text...)
+	 */
 	public static void convert(File[] inputFiles, File outputDir, char unitSeparator)
 	{
 		for (File inputFile : inputFiles)
@@ -42,6 +52,13 @@ public class ImageToText
 				"Extraction Complete!", JOptionPane.INFORMATION_MESSAGE);
 	}
 
+	/**
+	 * Read an image from a file.
+	 *
+	 * @param file
+	 *            File containing the image to be read
+	 * @return Image from file
+	 */
 	private static BufferedImage readImage(File file)
 	{
 		BufferedImage image = null;
@@ -66,6 +83,13 @@ public class ImageToText
 		return image;
 	}
 
+	/**
+	 * Convert pixel information into text.
+	 *
+	 * @param pixels
+	 *            Int array containing all pixels from the image
+	 * @return String representation
+	 */
 	private static String extractText(int[] pixels)
 	{
 		StringBuffer buffer = new StringBuffer();
@@ -84,6 +108,14 @@ public class ImageToText
 		return buffer.toString();
 	}
 
+	/**
+	 * Create a new file and write text to it.
+	 *
+	 * @param fileName
+	 *            Name of text file to be created
+	 * @param fileText
+	 *            Text to be written to file
+	 */
 	private static void createFile(String fileName, String fileText)
 	{
 		try

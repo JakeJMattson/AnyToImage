@@ -1,6 +1,6 @@
 /*
- * Class Description:
- * Display/Main - GUI to accept user input and convert files
+ * Project Description:
+ * Convert between text and images.
  */
 
 package asciiasimage;
@@ -19,6 +19,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 //TODO fix resizing issue upon filling JList in GUI
 
+/**
+ * Display/Main - GUI to accept user input and convert files
+ *
+ * @author mattson543
+ */
 @SuppressWarnings("serial")
 public class FileHandler extends JFrame implements ActionListener
 {
@@ -55,6 +60,9 @@ public class FileHandler extends JFrame implements ActionListener
 		driver.buildGUI();
 	}
 
+	/**
+	 * Constructor - initializes all fields
+	 */
 	@SuppressWarnings("unchecked")
 	private FileHandler()
 	{
@@ -79,6 +87,9 @@ public class FileHandler extends JFrame implements ActionListener
 		txtOutput = new JTextField[NUM_OF_TABS];
 	}
 
+	/**
+	 * Construct the frame and all of its components
+	 */
 	private void buildGUI()
 	{
 		//Create pane
@@ -98,19 +109,26 @@ public class FileHandler extends JFrame implements ActionListener
 		setVisible(true);
 	}
 
-	private JPanel createTab(int tabNum)
+	/**
+	 * Create a new tab for the pane based on the index
+	 *
+	 * @param tabIndex
+	 *            Index of the current tab
+	 * @return Panel
+	 */
+	private JPanel createTab(int tabIndex)
 	{
 		//Create panels
 		JPanel tab = new JPanel(new GridBagLayout());
-		JPanel fileInputPanel = createFileInputPanel(tabNum);
-		JPanel fileOutputPanel = createFileOutputPanel(tabNum);
-		JPanel buttonPanel = createButtonPanel(tabNum);
-		JPanel inputDisplay = createListPanel(tabNum);
-		JPanel outputDisplay = createTextboxPanel(tabNum);
+		JPanel fileInputPanel = createFileInputPanel(tabIndex);
+		JPanel fileOutputPanel = createFileOutputPanel(tabIndex);
+		JPanel buttonPanel = createButtonPanel(tabIndex);
+		JPanel inputDisplay = createListPanel(tabIndex);
+		JPanel outputDisplay = createOutputPanel(tabIndex);
 
 		//Create button
-		btnClear[tabNum] = new JButton("Clear all");
-		btnClear[tabNum].addActionListener(this);
+		btnClear[tabIndex] = new JButton("Clear all");
+		btnClear[tabIndex].addActionListener(this);
 
 		//Create input list for each tab
 		inputFiles.add(new ArrayList<File>());
@@ -141,12 +159,19 @@ public class FileHandler extends JFrame implements ActionListener
 
 		constraints.gridx = 1;
 		constraints.gridy = 2;
-		tab.add(btnClear[tabNum], constraints);
+		tab.add(btnClear[tabIndex], constraints);
 
 		return tab;
 	}
 
-	private JPanel createFileInputPanel(int tabNum)
+	/**
+	 * Create the panel that allows a user to enter the input
+	 *
+	 * @param tabIndex
+	 *            Index of the current tab
+	 * @return Panel
+	 */
+	private JPanel createFileInputPanel(int tabIndex)
 	{
 		//Create panels
 		JPanel inputPanel = new JPanel(new GridLayout(2, 0));
@@ -160,22 +185,22 @@ public class FileHandler extends JFrame implements ActionListener
 				TitledBorder.CENTER, TitledBorder.ABOVE_TOP));
 
 		//Add Drag and Drop to panel
-		DropTarget dndZone = createDropTarget(tabNum);
+		DropTarget dndZone = createDropTarget(tabIndex);
 		inputPanel.setDropTarget(dndZone);
 
 		//Create labels
 		String[] fileTypeOptions = {"a text", "an image"};
-		JLabel lblDrop = new JLabel("Drag and drop " + fileTypeOptions[tabNum] + " file into this area");
+		JLabel lblDrop = new JLabel("Drag and drop " + fileTypeOptions[tabIndex] + " file into this area");
 		JLabel lblJFC = new JLabel("Select one from directories:");
 
 		//Create button
-		btnJfcInput[tabNum] = new JButton("Add File");
-		btnJfcInput[tabNum].addActionListener(this);
+		btnJfcInput[tabIndex] = new JButton("Add File");
+		btnJfcInput[tabIndex].addActionListener(this);
 
 		//Add components to intermediate panels
 		dropPanel.add(lblDrop);
 		chooserPanel.add(lblJFC);
-		chooserPanel.add(btnJfcInput[tabNum]);
+		chooserPanel.add(btnJfcInput[tabIndex]);
 
 		//Add intermediate panels
 		inputPanel.add(dropPanel);
@@ -184,7 +209,14 @@ public class FileHandler extends JFrame implements ActionListener
 		return inputPanel;
 	}
 
-	private DropTarget createDropTarget(int tabNum)
+	/**
+	 * Add drag and drop functionality
+	 *
+	 * @param tabIndex
+	 *            Index of the current tab
+	 * @return DropTarget
+	 */
+	private DropTarget createDropTarget(int tabIndex)
 	{
 		//Create new Drag and Drop zone
 		DropTarget target = new DropTarget()
@@ -208,15 +240,15 @@ public class FileHandler extends JFrame implements ActionListener
 							//Verify valid extension
 							String extension = getFileExtension(file);
 
-							if (Arrays.asList(inputRestrictions[tabNum].getExtensions()).contains(extension))
+							if (Arrays.asList(inputRestrictions[tabIndex].getExtensions()).contains(extension))
 							{
-								inputFiles.get(tabNum).add(file);
+								inputFiles.get(tabIndex).add(file);
 								System.out.println("Dropped file added: " + file.getAbsolutePath());
 							}
 						}
 
 					//Refresh display
-					refreshInputDisplay(tabNum);
+					refreshInputDisplay(tabIndex);
 				}
 				catch (Exception ex)
 				{
@@ -228,21 +260,36 @@ public class FileHandler extends JFrame implements ActionListener
 		return target;
 	}
 
+	/**
+	 * Extract extension from file
+	 *
+	 * @param file
+	 *            File to extract extension from
+	 * @return Extension
+	 */
 	private String getFileExtension(File file)
 	{
 		//Get path
-		String fileName = file.getAbsolutePath();
+		String fileName = file.getName();
 
 		//Parse path
 		String extension = "";
 		int index = fileName.lastIndexOf('.');
+
 		if (index > 0)
 			extension = fileName.substring(index + 1);
 
 		return extension;
 	}
 
-	private JPanel createFileOutputPanel(int tabNum)
+	/**
+	 * Create the panel that allows a user to enter the output
+	 *
+	 * @param tabIndex
+	 *            Index of the current tab
+	 * @return Panel
+	 */
+	private JPanel createFileOutputPanel(int tabIndex)
 	{
 		//Create panel
 		JPanel outputPanel = new JPanel(new GridLayout(0, 2));
@@ -255,37 +302,51 @@ public class FileHandler extends JFrame implements ActionListener
 		JLabel lblOutput = new JLabel("Select destination:");
 
 		//Create button
-		btnJfcOutput[tabNum] = new JButton("Select Output");
-		btnJfcOutput[tabNum].addActionListener(this);
+		btnJfcOutput[tabIndex] = new JButton("Select Output");
+		btnJfcOutput[tabIndex].addActionListener(this);
 
 		//Add components to panel
 		outputPanel.add(lblOutput);
-		outputPanel.add(btnJfcOutput[tabNum]);
+		outputPanel.add(btnJfcOutput[tabIndex]);
 
 		return outputPanel;
 	}
 
-	private JPanel createButtonPanel(int tabNum)
+	/**
+	 * Create a panel to hold all basic buttons
+	 *
+	 * @param tabIndex
+	 *            Index of the current tab
+	 * @return Panel
+	 */
+	private JPanel createButtonPanel(int tabIndex)
 	{
 		//Create panel
 		JPanel buttonPanel = new JPanel(new GridLayout(0, 2));
 
 		//Create buttons
 		String[] submitOptions = {"Create Image", "Extract Files"};
-		btnSubmit[tabNum] = new JButton(submitOptions[tabNum]);
-		btnSubmit[tabNum].addActionListener(this);
+		btnSubmit[tabIndex] = new JButton(submitOptions[tabIndex]);
+		btnSubmit[tabIndex].addActionListener(this);
 
-		btnExit[tabNum] = new JButton("Exit");
-		btnExit[tabNum].addActionListener(this);
+		btnExit[tabIndex] = new JButton("Exit");
+		btnExit[tabIndex].addActionListener(this);
 
 		//Add buttons to panel
-		buttonPanel.add(btnSubmit[tabNum]);
-		buttonPanel.add(btnExit[tabNum]);
+		buttonPanel.add(btnSubmit[tabIndex]);
+		buttonPanel.add(btnExit[tabIndex]);
 
 		return buttonPanel;
 	}
 
-	private JPanel createListPanel(int tabNum)
+	/**
+	 * Create a panel to display the list of file inputs
+	 *
+	 * @param tabIndex
+	 *            Index of the current tab
+	 * @return Panel
+	 */
+	private JPanel createListPanel(int tabIndex)
 	{
 		//Create panels
 		JPanel listPanel = new JPanel(new GridBagLayout());
@@ -297,20 +358,20 @@ public class FileHandler extends JFrame implements ActionListener
 
 		//Create JList
 		listContent.add(new DefaultListModel<String>());
-		lstInput[tabNum] = new JList<>(listContent.get(tabNum));
-		lstInput[tabNum].setPrototypeCellValue("LongTestFileName.txt plus some");
+		lstInput[tabIndex] = new JList<>(listContent.get(tabIndex));
+		lstInput[tabIndex].setPrototypeCellValue("LongTestFileName.txt plus some");
 
 		//Configure tool tips
-		MouseMotionAdapter listener = createMouseMotionAdapter(tabNum);
-		lstInput[tabNum].addMouseMotionListener(listener);
+		MouseMotionAdapter listener = createMouseMotionAdapter(tabIndex);
+		lstInput[tabIndex].addMouseMotionListener(listener);
 
 		//Create JScrolPane for JList
-		JScrollPane scrollPane = new JScrollPane(lstInput[tabNum]);
+		JScrollPane scrollPane = new JScrollPane(lstInput[tabIndex]);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		//Create button
-		btnRemoveSelected[tabNum] = new JButton("Remove Selected");
-		btnRemoveSelected[tabNum].addActionListener(this);
+		btnRemoveSelected[tabIndex] = new JButton("Remove Selected");
+		btnRemoveSelected[tabIndex].addActionListener(this);
 
 		//Add components to panels
 		listboxPanel.add(scrollPane, BorderLayout.CENTER);
@@ -322,12 +383,19 @@ public class FileHandler extends JFrame implements ActionListener
 		listPanel.add(listboxPanel, constraints);
 
 		constraints.gridy = 1;
-		listPanel.add(btnRemoveSelected[tabNum], constraints);
+		listPanel.add(btnRemoveSelected[tabIndex], constraints);
 
 		return listPanel;
 	}
 
-	private MouseMotionAdapter createMouseMotionAdapter(int tabNum)
+	/**
+	 * Create a listener for the list boxes to add dynamic tool tips
+	 *
+	 * @param tabIndex
+	 *            Index of the current tab
+	 * @return Listener
+	 */
+	private MouseMotionAdapter createMouseMotionAdapter(int tabIndex)
 	{
 		MouseMotionAdapter listener = new MouseMotionAdapter()
 		{
@@ -338,14 +406,14 @@ public class FileHandler extends JFrame implements ActionListener
 				@SuppressWarnings("unchecked")
 				JList<String> list = (JList<String>) e.getSource();
 
-				if (inputFiles.get(tabNum).size() != 0)
+				if (inputFiles.get(tabIndex).size() != 0)
 				{
 					//Get index of item
 					int index = list.locationToIndex(e.getPoint());
 
 					//Set tooltip text to complete file path
 					if (index > -1)
-						list.setToolTipText(inputFiles.get(tabNum).get(index).toString());
+						list.setToolTipText(inputFiles.get(tabIndex).get(index).toString());
 				}
 				else
 					list.setToolTipText(null);
@@ -355,46 +423,58 @@ public class FileHandler extends JFrame implements ActionListener
 		return listener;
 	}
 
-	private JPanel createTextboxPanel(int tabNum)
+	/**
+	 * Create a panel to hold the output image/directory name
+	 *
+	 * @param tabIndex
+	 *            Index of the current tab
+	 * @return Panel
+	 */
+	private JPanel createOutputPanel(int tabIndex)
 	{
 		//Create panel
-		JPanel textboxPanel = new JPanel(new BorderLayout());
+		JPanel outputPanel = new JPanel(new BorderLayout());
 
 		//Create border
 		String[] displayOptions = {"Output Image", "Output Directory"};
-		textboxPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK),
-				displayOptions[tabNum], TitledBorder.CENTER, TitledBorder.TOP));
+		outputPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK),
+				displayOptions[tabIndex], TitledBorder.CENTER, TitledBorder.TOP));
 
 		//Create text boxes
-		txtOutput[tabNum] = new JTextField();
-		txtOutput[tabNum].setEditable(false);
+		txtOutput[tabIndex] = new JTextField();
+		txtOutput[tabIndex].setEditable(false);
 
 		//Add components to panel
-		textboxPanel.add(txtOutput[tabNum]);
+		outputPanel.add(txtOutput[tabIndex]);
 
-		return textboxPanel;
+		return outputPanel;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		Object buttonClicked = e.getSource();
-		int tabNum;
+		int tabIndex;
 
-		if ((tabNum = Arrays.asList(btnJfcInput).indexOf(buttonClicked)) != -1)
+		if ((tabIndex = Arrays.asList(btnJfcInput).indexOf(buttonClicked)) != -1)
 		{
 			//Allow user to select an input file
-			File selectedFile = createFileChooser(JFileChooser.FILES_ONLY, inputRestrictions[tabNum], true);
+			File selectedFile = createFileChooser(JFileChooser.FILES_ONLY, inputRestrictions[tabIndex], true);
 
 			//Save file
 			if (selectedFile != null)
-				inputFiles.get(tabNum).add(selectedFile);
+				inputFiles.get(tabIndex).add(selectedFile);
 
 			//Refresh display
-			refreshInputDisplay(tabNum);
+			refreshInputDisplay(tabIndex);
 		}
 
-		else if ((tabNum = Arrays.asList(btnJfcOutput).indexOf(buttonClicked)) != -1)
+		else if ((tabIndex = Arrays.asList(btnJfcOutput).indexOf(buttonClicked)) != -1)
 		{
 			//Restrict input
 			int[] fileTypes = {JFileChooser.FILES_ONLY, JFileChooser.DIRECTORIES_ONLY};
@@ -402,72 +482,93 @@ public class FileHandler extends JFrame implements ActionListener
 					new FileNameExtensionFilter("Directory", " ")};
 
 			//Allow user to select an output file
-			File selectedFile = createFileChooser(fileTypes[tabNum], fileFilters[tabNum], false);
+			File selectedFile = createFileChooser(fileTypes[tabIndex], fileFilters[tabIndex], false);
 
 			//Save file
 			if (selectedFile != null)
-				outputFile[tabNum] = selectedFile;
+				outputFile[tabIndex] = selectedFile;
 
 			//Refresh display
-			refreshOutputDisplay(tabNum);
+			refreshOutputDisplay(tabIndex);
 		}
 
-		else if ((tabNum = Arrays.asList(btnRemoveSelected).indexOf(buttonClicked)) != -1)
+		else if ((tabIndex = Arrays.asList(btnRemoveSelected).indexOf(buttonClicked)) != -1)
 		{
 			//Get user selection
-			int index = lstInput[tabNum].getSelectedIndex();
+			int index = lstInput[tabIndex].getSelectedIndex();
 
 			if (index != -1)
 			{
 				//Remove selection from saved files
-				inputFiles.get(tabNum).remove(index);
+				inputFiles.get(tabIndex).remove(index);
 
 				//Refresh display
-				refreshInputDisplay(tabNum);
+				refreshInputDisplay(tabIndex);
 			}
 		}
 
-		else if ((tabNum = Arrays.asList(btnSubmit).indexOf(buttonClicked)) != -1)
+		else if ((tabIndex = Arrays.asList(btnSubmit).indexOf(buttonClicked)) != -1)
 		{
-			if (isInputValid(tabNum))
+			if (!inputFiles.get(tabIndex).isEmpty())
 			{
-				//Text group separation character
-				char unitSeparator = (char) 31;
+				if (outputFile[tabIndex] != null)
+				{
+					//Text group separation character
+					char unitSeparator = (char) 31;
 
-				//Convert list to array
-				List<File> fileList = inputFiles.get(tabNum);
-				File[] fileArray = fileList.toArray(new File[fileList.size()]);
+					//Convert list to array
+					List<File> fileList = inputFiles.get(tabIndex);
+					File[] fileArray = fileList.toArray(new File[fileList.size()]);
 
-				//Process input
-				if (tabNum == TEXT_TO_IMAGE)
-					TextToImage.convert(fileArray, outputFile[tabNum], unitSeparator);
-				else if (tabNum == IMAGE_TO_TEXT)
-					ImageToText.convert(fileArray, outputFile[tabNum], unitSeparator);
+					//Process input
+					if (tabIndex == TEXT_TO_IMAGE)
+						TextToImage.convert(fileArray, outputFile[tabIndex], unitSeparator);
+					else if (tabIndex == IMAGE_TO_TEXT)
+						ImageToText.convert(fileArray, outputFile[tabIndex], unitSeparator);
+				}
+				else
+				{
+					String[] outputOptions = {"Please name the output image!", "Please select an output directory!"};
+					displayError(outputOptions[tabIndex]);
+				}
 			}
+			else
+				displayError("Please add input file(s)!");
 		}
 
-		else if ((tabNum = Arrays.asList(btnClear).indexOf(buttonClicked)) != -1)
+		else if ((tabIndex = Arrays.asList(btnClear).indexOf(buttonClicked)) != -1)
 		{
 			//Clear saved files
-			inputFiles.get(tabNum).clear();
-			outputFile[tabNum] = null;
+			inputFiles.get(tabIndex).clear();
+			outputFile[tabIndex] = null;
 
 			//Refresh display
-			refreshInputDisplay(tabNum);
-			refreshOutputDisplay(tabNum);
+			refreshInputDisplay(tabIndex);
+			refreshOutputDisplay(tabIndex);
 		}
 
 		else if (Arrays.asList(btnExit).contains(buttonClicked))
 			System.exit(0);
 	}
 
-	private File createFileChooser(int selectionMode, FileNameExtensionFilter fileFilter, boolean isOpening)
+	/**
+	 * Display a dialog to allow the user to select a file.
+	 *
+	 * @param selectionType
+	 *            Type of files the user is allowed to select: Files/Directories
+	 * @param fileFilter
+	 *            Extension filter to prevent the selection of invalid files
+	 * @param isOpening
+	 *            Boolean to determine operation: Opening/Saving
+	 * @return File selected by the user
+	 */
+	private File createFileChooser(int selectionType, FileNameExtensionFilter fileFilter, boolean isOpening)
 	{
 		//Create file dialog
 		JFileChooser chooser = new JFileChooser();
 
 		//Set dialog options
-		chooser.setFileSelectionMode(selectionMode);
+		chooser.setFileSelectionMode(selectionType);
 		chooser.setFileFilter(fileFilter);
 		chooser.setAcceptAllFileFilterUsed(false);
 
@@ -498,50 +599,50 @@ public class FileHandler extends JFrame implements ActionListener
 		return selectedFile;
 	}
 
-	private void refreshInputDisplay(int tabNum)
+	/**
+	 * Empty the list and refill it with the correct data
+	 *
+	 * @param tabIndex
+	 *            Index of the current tab
+	 */
+	private void refreshInputDisplay(int tabIndex)
 	{
 		//Clear old list data
-		listContent.get(tabNum).clear();
+		listContent.get(tabIndex).clear();
 
 		//Fill list with current data
-		for (File file : inputFiles.get(tabNum))
-			listContent.get(tabNum).addElement(file.getName());
+		for (File file : inputFiles.get(tabIndex))
+			listContent.get(tabIndex).addElement(file.getName());
 	}
 
-	private void refreshOutputDisplay(int tabNum)
+	/**
+	 * Determine the text to display in the output box
+	 *
+	 * @param tabIndex
+	 *            Index of the current tab
+	 */
+	private void refreshOutputDisplay(int tabIndex)
 	{
 		String fileName = "";
 		String filePath = null;
 
-		if (outputFile[tabNum] != null)
+		if (outputFile[tabIndex] != null)
 		{
 			//Get file attributes
-			fileName = outputFile[tabNum].getName();
-			filePath = outputFile[tabNum].getAbsolutePath();
+			fileName = outputFile[tabIndex].getName();
+			filePath = outputFile[tabIndex].getAbsolutePath();
 		}
 
-		txtOutput[tabNum].setText(fileName);
-		txtOutput[tabNum].setToolTipText(filePath);
+		txtOutput[tabIndex].setText(fileName);
+		txtOutput[tabIndex].setToolTipText(filePath);
 	}
 
-	private boolean isInputValid(int tabNum)
-	{
-		String[] outputOptions = {"Please name the output image!", "Please select an output directory!"};
-
-		boolean isValid = false;
-		if (!inputFiles.get(tabNum).isEmpty())
-		{
-			if (outputFile[tabNum] != null)
-				isValid = true;
-			else
-				displayError(outputOptions[tabNum]);
-		}
-		else
-			displayError("Please add input file(s)!");
-
-		return isValid;
-	}
-
+	/**
+	 * Display a dialog to report an error to the user.
+	 *
+	 * @param message
+	 *            Error message to be displayed
+	 */
 	private void displayError(String message)
 	{
 		JOptionPane.showMessageDialog(null, message, "Error!", JOptionPane.ERROR_MESSAGE);

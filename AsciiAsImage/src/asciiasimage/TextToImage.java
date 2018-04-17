@@ -1,8 +1,3 @@
-/*
- * Class Description:
- * Create images from text files by converting ASCII values to RGB values
- */
-
 package asciiasimage;
 
 import java.awt.image.BufferedImage;
@@ -14,81 +9,95 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
+/**
+ * Create images from text files by converting ASCII values to RGB values
+ *
+ * @author mattson543
+ */
 public class TextToImage
 {
+	/**
+	 * Static method to initiate the conversion.
+	 *
+	 * @param inputFiles
+	 *            Array of text files to be converted
+	 * @param outputFile
+	 *            Image file to be output by conversion
+	 * @param unitSeparator
+	 *            Separates files and contents (name; text; name; text...)
+	 */
 	public static void convert(File[] inputFiles, File outputFile, char unitSeparator)
 	{
 		//Holds all required text
-		String allText = "";
+		StringBuffer text = new StringBuffer();
 
 		for (File inputFile : inputFiles)
 		{
-			//Get text from file
-			String fileName = inputFile.getName();
-			List<String> lines = readFile(inputFile.getAbsolutePath());
-
-			if (lines != null)
-			{
-				String fileText = getFileText(lines);
-
-				//Combine text and separators
-				allText += fileName + unitSeparator;
-				allText += fileText + unitSeparator;
-			}
+			//Build text from file
+			text.append(inputFile.getName() + unitSeparator);
+			text.append(readFile(inputFile) + unitSeparator);
 		}
 
-		if (!allText.equals(""))
-		{
-			//Assign text to pixel values
-			int[] pixels = createPixels(allText);
+		//Assign text to pixel values
+		int[] pixels = createPixels(text.toString());
 
-			//Calculate image size (Quick and dirty pack - leaves unused pixels)
-			int dims = (int) Math.ceil(Math.sqrt(pixels.length));
+		//Calculate image size (Quick and dirty pack - leaves "empty" pixels)
+		int dims = (int) Math.ceil(Math.sqrt(pixels.length));
 
-			//Store pixel values in image
-			BufferedImage image = createImage(dims, dims, pixels);
+		//Store pixel values in image
+		BufferedImage image = createImage(dims, dims, pixels);
 
-			//Save image to output file
-			saveImage(image, outputFile);
-		}
-		else
-			JOptionPane.showMessageDialog(null, "No valid files input", "Image not created", JOptionPane.ERROR_MESSAGE);
+		//Save image to output file
+		saveImage(image, outputFile);
 	}
 
-	private static List<String> readFile(String fileName)
+	/**
+	 * Read all text from the file.
+	 *
+	 * @param inputFile
+	 *            File to the read text from
+	 * @return File text
+	 */
+	private static String readFile(File inputFile)
 	{
-		//Read file data
-		List<String> lines = null;
+		String newline = System.getProperty("line.separator");
+		String fileText = "";
+
 		try
 		{
-			lines = Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
+			//Read all lines from the file
+			List<String> lines = Files.readAllLines(Paths.get(inputFile.getAbsolutePath()), StandardCharsets.UTF_8);
+
+			StringBuffer buffer = new StringBuffer();
+
+			for (String line : lines)
+				buffer.append(line + newline);
+
+			//Remove final newline from buffer
+			fileText = buffer.substring(0, buffer.length() - newline.length());
 		}
 		catch (IOException e)
 		{
+			//Error text
+			fileText = "Could not read data from the original file!";
+
 			//Display status
-			String errorMessage = "Unable to read file: " + fileName + "\n"
+			String errorMessage = "Unable to read file: " + inputFile + newline
 					+ "It will be omitted from the final result";
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, errorMessage, "Error!", JOptionPane.ERROR_MESSAGE);
 		}
 
-		return lines;
-	}
-
-	private static String getFileText(List<String> lines)
-	{
-		String newline = System.getProperty("line.separator");
-		StringBuffer buffer = new StringBuffer();
-
-		for (String line : lines)
-			buffer.append(line + newline);
-
-		//Remove final newline from buffer
-		String fileText = buffer.substring(0, buffer.length() - newline.length());
-
 		return fileText;
 	}
 
+	/**
+	 * Create the pixels that will make up the image.
+	 *
+	 * @param text
+	 *            Text from the file to be converted
+	 * @return Array of pixel data
+	 */
 	private static int[] createPixels(String text)
 	{
 		//Number of image channels (RGB assumed)
@@ -111,10 +120,7 @@ public class TextToImage
 
 			//Read info from group into each channel
 			for (int j = 0; j < numOfChannels; j++)
-				if (i + j < charCount)
-					pixel[j] = text.charAt(i + j);
-				else
-					pixel[j] = 0;
+				pixel[j] = i + j < charCount ? text.charAt(i + j) : 0;
 
 			//Store current pixel into pixel array
 			pixels[i / numOfChannels] = pixel[0] << 16 | pixel[1] << 8 | pixel[2];
@@ -123,6 +129,17 @@ public class TextToImage
 		return pixels;
 	}
 
+	/**
+	 * Create the output image with the pixel data.
+	 *
+	 * @param width
+	 *            Width of the output image
+	 * @param height
+	 *            Height of the output image
+	 * @param pixels
+	 *            Array of pixel data
+	 * @return The created image
+	 */
 	private static BufferedImage createImage(int width, int height, int[] pixels)
 	{
 		//Create empty image
@@ -130,8 +147,6 @@ public class TextToImage
 
 		//Create counter to navigate array
 		int pixelIndex = 0;
-
-		//TODO for each pixel (remove index)
 
 		//Populate image with pixel info from array
 		outerloop: for (int i = 0; i < height; i++)
@@ -144,6 +159,14 @@ public class TextToImage
 		return image;
 	}
 
+	/**
+	 * Save the image to the disk in the output location.
+	 *
+	 * @param image
+	 *            The output image to be saved
+	 * @param output
+	 *            The desired file location of the output image
+	 */
 	private static void saveImage(BufferedImage image, File output)
 	{
 		try
