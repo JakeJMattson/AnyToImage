@@ -31,6 +31,7 @@ public class TextToImage
 		for (File file : inputFiles)
 			try
 			{
+				//Write all necessary file information into the stream
 				bytes.write(file.getName().getBytes());
 				bytes.write(unitSeparator);
 				bytes.write(Files.readAllBytes(file.toPath()));
@@ -41,8 +42,10 @@ public class TextToImage
 				e.printStackTrace();
 			}
 
+		//Create pixels from file information
 		int[] pixels = bytesToPixels(bytes.toByteArray());
 
+		//Create image from pixels
 		createImage(pixels, outputFile);
 	}
 
@@ -63,7 +66,6 @@ public class TextToImage
 
 		//Determine total number of pixels
 		int pixelCount = (int) Math.pow(Math.ceil(Math.sqrt(byteCount / numOfChannels)), 2);
-
 		int[] pixels = new int[pixelCount];
 
 		//Read text in groups of [channel count]

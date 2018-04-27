@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.image.*;
 import java.io.*;
 import java.nio.file.*;
-import java.util.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
@@ -30,10 +29,13 @@ public class ImageToText
 	{
 		for (File file : inputFiles)
 		{
+			//Extract individual pixels from an image
 			int[] pixels = extractPixels(file);
 
+			//Separate pixels into bytes
 			byte[] allBytes = extractBytes(pixels);
 
+			//Create files from bytes
 			createFiles(allBytes, unitSeparator, outputDir);
 		}
 
@@ -64,6 +66,7 @@ public class ImageToText
 			//Draw the image from the file into the buffer
 			image.getGraphics().drawImage(fileImage, 0, 0, null);
 
+			//Read all pixels from image
 			pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 		}
 		catch (IOException e)
@@ -111,17 +114,17 @@ public class ImageToText
 	 */
 	private static void createFiles(byte[] bytes, byte unitSeparator, File outputDir)
 	{
-		List<byte[]> allName = new ArrayList<>();
-		List<byte[]> allData = new ArrayList<>();
-
+		//File name and contents
 		ByteArrayOutputStream name = new ByteArrayOutputStream();
 		ByteArrayOutputStream data = new ByteArrayOutputStream();
 
+		//Control flow
 		boolean isName = true;
 
 		for (byte currentByte : bytes)
 			if (currentByte != unitSeparator)
 			{
+				//Store byte
 				if (isName)
 					name.write(currentByte);
 				else
@@ -129,29 +132,25 @@ public class ImageToText
 			}
 			else
 			{
-				if (isName)
+				if (!isName)
 				{
-					allName.add(name.toByteArray());
-					name = new ByteArrayOutputStream();
-				}
-				else
-				{
-					allData.add(data.toByteArray());
-					data = new ByteArrayOutputStream();
+					try
+					{
+						//Create file
+						Path path = Paths.get(outputDir + "/" + new String(name.toByteArray()));
+						Files.write(path, data.toByteArray());
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+
+					//Clear stream once file is created
+					name.reset();
+					data.reset();
 				}
 
 				isName = !isName;
-			}
-
-		for (int i = 0; i < allName.size(); i++)
-			try
-			{
-				Path path = Paths.get(outputDir + "/" + new String(allName.get(i)));
-				Files.write(path, allData.get(i));
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
 			}
 	}
 }
