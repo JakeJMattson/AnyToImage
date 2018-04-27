@@ -2,15 +2,13 @@ package asciiasimage;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.List;
+import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 /**
- * Create images from text files by converting ASCII values to RGB values
+ * Create images from text files by converting bytes to RGB values
  *
  * @author mattson543
  */
@@ -26,101 +24,60 @@ public class TextToImage
 	 * @param unitSeparator
 	 *            Separates files and contents (name; text; name; text...)
 	 */
-	public static void convert(File[] inputFiles, File outputFile, char unitSeparator)
+	public static void convert(File[] inputFiles, File outputFile, byte unitSeparator)
 	{
-		//Holds all required text
-		StringBuffer text = new StringBuffer();
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
-		for (File inputFile : inputFiles)
-		{
-			//Build text from file
-			text.append(inputFile.getName() + unitSeparator);
-			text.append(readFile(inputFile) + unitSeparator);
-		}
+		for (File file : inputFiles)
+			try
+			{
+				bytes.write(file.getName().getBytes());
+				bytes.write(unitSeparator);
+				bytes.write(Files.readAllBytes(file.toPath()));
+				bytes.write(unitSeparator);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
 
-		//Assign text to pixel values
-		int[] pixels = createPixels(text.toString());
+		int[] pixels = bytesToPixels(bytes.toByteArray());
 
-		//Calculate image size (Quick and dirty pack - leaves "empty" pixels)
-		int dims = (int) Math.ceil(Math.sqrt(pixels.length));
-
-		//Store pixel values in image
-		BufferedImage image = createImage(dims, dims, pixels);
-
-		//Save image to output file
-		saveImage(image, outputFile);
+		createImage(pixels, outputFile);
 	}
 
 	/**
-	 * Read all text from the file.
+	 * Covert file bytes into an integer (pixel)
 	 *
-	 * @param inputFile
-	 *            File to the read text from
-	 * @return File text
+	 * @param bytes
+	 *            Bytes that make up an file
+	 * @return All pixels
 	 */
-	private static String readFile(File inputFile)
+	private static int[] bytesToPixels(byte[] bytes)
 	{
-		String newline = System.getProperty("line.separator");
-		String fileText = "";
-
-		try
-		{
-			//Read all lines from the file
-			List<String> lines = Files.readAllLines(Paths.get(inputFile.getAbsolutePath()), StandardCharsets.UTF_8);
-
-			StringBuffer buffer = new StringBuffer();
-
-			for (String line : lines)
-				buffer.append(line + newline);
-
-			//Remove final newline from buffer
-			fileText = buffer.substring(0, buffer.length() - newline.length());
-		}
-		catch (IOException e)
-		{
-			//Error text
-			fileText = "Could not read data from the original file!";
-
-			//Display status
-			String errorMessage = "Unable to read file: " + inputFile + newline
-					+ "It will be omitted from the final result";
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, errorMessage, "Error!", JOptionPane.ERROR_MESSAGE);
-		}
-
-		return fileText;
-	}
-
-	/**
-	 * Create the pixels that will make up the image.
-	 *
-	 * @param text
-	 *            Text from the file to be converted
-	 * @return Array of pixel data
-	 */
-	private static int[] createPixels(String text)
-	{
-		//Number of image channels (RGB assumed)
+		//Number of image channels (RGB)
 		int numOfChannels = 3;
 
 		//Total number of characters to convert
-		int charCount = text.length();
-
-		//Determine if all pixels will be fully populated
-		boolean doesOverflow = charCount % numOfChannels != 0;
+		int byteCount = bytes.length;
 
 		//Determine total number of pixels
-		int[] pixels = new int[charCount / numOfChannels + (doesOverflow ? 1 : 0)];
+		int pixelCount = (int) Math.pow(Math.ceil(Math.sqrt(byteCount / numOfChannels)), 2);
+
+		int[] pixels = new int[pixelCount];
 
 		//Read text in groups of [channel count]
-		for (int i = 0; i < charCount; i += numOfChannels)
+		for (int i = 0; i < byteCount; i += numOfChannels)
 		{
 			//Array of current pixel info
-			int[] pixel = new int[numOfChannels];
+			byte[] pixel = new byte[numOfChannels];
 
 			//Read info from group into each channel
 			for (int j = 0; j < numOfChannels; j++)
-				pixel[j] = i + j < charCount ? text.charAt(i + j) : 0;
+				if (i + j < byteCount)
+					pixel[j] = bytes[i + j];
+				else
+					break;
 
 			//Store current pixel into pixel array
 			pixels[i / numOfChannels] = pixel[0] << 16 | pixel[1] << 8 | pixel[2];
@@ -130,47 +87,24 @@ public class TextToImage
 	}
 
 	/**
-	 * Create the output image with the pixel data.
+	 * Create an image from pixels and save to disk.
 	 *
-	 * @param width
-	 *            Width of the output image
-	 * @param height
-	 *            Height of the output image
 	 * @param pixels
-	 *            Array of pixel data
-	 * @return The created image
-	 */
-	private static BufferedImage createImage(int width, int height, int[] pixels)
-	{
-		//Create empty image
-		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
-		//Create counter to navigate array
-		int pixelIndex = 0;
-
-		//Populate image with pixel info from array
-		outerloop: for (int i = 0; i < height; i++)
-			for (int j = 0; j < width; j++)
-				if (pixelIndex < pixels.length)
-					image.setRGB(j, i, pixels[pixelIndex++]);
-				else
-					break outerloop;
-
-		return image;
-	}
-
-	/**
-	 * Save the image to the disk in the output location.
-	 *
-	 * @param image
-	 *            The output image to be saved
+	 *            The pixel data to be written to the image
 	 * @param output
 	 *            The desired file location of the output image
 	 */
-	private static void saveImage(BufferedImage image, File output)
+	private static void createImage(int[] pixels, File output)
 	{
 		try
 		{
+			//Calculate image dimensions
+			int dims = (int) Math.ceil(Math.sqrt(pixels.length));
+
+			//Store pixel values in image
+			BufferedImage image = new BufferedImage(dims, dims, BufferedImage.TYPE_INT_RGB);
+			image.setRGB(0, 0, dims, dims, pixels, 0, dims);
+
 			//Write image to file
 			ImageIO.write(image, "png", output);
 

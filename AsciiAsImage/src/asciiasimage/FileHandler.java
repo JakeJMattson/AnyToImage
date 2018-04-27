@@ -17,7 +17,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-//TODO fix resizing issue upon filling JList in GUI
+// TODO fix resizing issue upon filling JList in GUI
 
 /**
  * Display/Main - GUI to accept user input and convert files
@@ -49,8 +49,8 @@ public class FileHandler extends JFrame implements ActionListener
 	private final int IMAGE_TO_TEXT = 1;
 	private final int NUM_OF_TABS = 2;
 	private final FileNameExtensionFilter[] inputRestrictions = {
-			new FileNameExtensionFilter("Text file", "txt", "bat", "c", "cpp", "cs", "h", "java", "py", "sh", "sln",
-					"swift", "vb", "xml"),
+			new FileNameExtensionFilter("Text file", "txt", "bat", "c", "cpp", "cs", "h", "java", "py", "sh",
+					"sln", "swift", "vb", "xml"),
 			new FileNameExtensionFilter("*.png", "png")
 	};
 
@@ -514,7 +514,7 @@ public class FileHandler extends JFrame implements ActionListener
 				if (outputFile[tabIndex] != null)
 				{
 					//Text group separation character
-					char unitSeparator = (char) 31;
+					byte unitSeparator = (byte) 31;
 
 					//Convert list to array
 					List<File> fileList = inputFiles.get(tabIndex);

@@ -3,6 +3,8 @@ package asciiasimage;
 import java.awt.Color;
 import java.awt.image.*;
 import java.io.*;
+import java.nio.file.*;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
@@ -24,31 +26,18 @@ public class ImageToText
 	 * @param unitSeparator
 	 *            Separates files and contents (name; text; name; text...)
 	 */
-	public static void convert(File[] inputFiles, File outputDir, char unitSeparator)
+	public static void convert(File[] inputFiles, File outputDir, byte unitSeparator)
 	{
-		for (File inputFile : inputFiles)
+		for (File file : inputFiles)
 		{
-			//Get pixels from file
-			BufferedImage image = readImage(inputFile);
-			int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+			int[] pixels = extractPixels(file);
 
-			//Build string from pixel info
-			String rawText = extractText(pixels);
+			byte[] allBytes = extractBytes(pixels);
 
-			//Split string by unit separator
-			String[] fileInfo = rawText.split("" + unitSeparator);
-
-			for (int i = 0; i < fileInfo.length - 1; i += 2)
-			{
-				//Construct arguments
-				String fileName = outputDir + "/" + fileInfo[i];
-				String fileText = fileInfo[i + 1];
-
-				createFile(fileName, fileText);
-			}
+			createFiles(allBytes, unitSeparator, outputDir);
 		}
 
-		JOptionPane.showMessageDialog(null, "All valid files have been extracted from the image.",
+		JOptionPane.showMessageDialog(null, "All valid files have been extracted from the input.",
 				"Extraction Complete!", JOptionPane.INFORMATION_MESSAGE);
 	}
 
@@ -57,11 +46,11 @@ public class ImageToText
 	 *
 	 * @param file
 	 *            File containing the image to be read
-	 * @return Image from file
+	 * @return Pixels from image
 	 */
-	private static BufferedImage readImage(File file)
+	private static int[] extractPixels(File file)
 	{
-		BufferedImage image = null;
+		int[] pixels = null;
 
 		try
 		{
@@ -69,30 +58,32 @@ public class ImageToText
 			BufferedImage fileImage = ImageIO.read(file);
 
 			//Create a buffered image with the desired type
-			image = new BufferedImage(fileImage.getWidth(), fileImage.getHeight(),
+			BufferedImage image = new BufferedImage(fileImage.getWidth(), fileImage.getHeight(),
 					BufferedImage.TYPE_INT_RGB);
 
 			//Draw the image from the file into the buffer
 			image.getGraphics().drawImage(fileImage, 0, 0, null);
+
+			pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 
-		return image;
+		return pixels;
 	}
 
 	/**
-	 * Convert pixel information into text.
+	 * Extract bytes from each pixel
 	 *
 	 * @param pixels
 	 *            Int array containing all pixels from the image
-	 * @return String representation
+	 * @return Bytes
 	 */
-	private static String extractText(int[] pixels)
+	private static byte[] extractBytes(int[] pixels)
 	{
-		StringBuffer buffer = new StringBuffer();
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
 		for (int pixel : pixels)
 		{
@@ -100,36 +91,67 @@ public class ImageToText
 			Color color = new Color(pixel);
 
 			//Read channels from color object
-			buffer.append((char) color.getRed());
-			buffer.append((char) color.getGreen());
-			buffer.append((char) color.getBlue());
+			bytes.write((byte) color.getRed());
+			bytes.write((byte) color.getGreen());
+			bytes.write((byte) color.getBlue());
 		}
 
-		return buffer.toString();
+		return bytes.toByteArray();
 	}
 
 	/**
-	 * Create a new file and write text to it.
+	 * Create all files contained within the image
 	 *
-	 * @param fileName
-	 *            Name of text file to be created
-	 * @param fileText
-	 *            Text to be written to file
+	 * @param bytes
+	 *            File names and data as a byte array
+	 * @param unitSeparator
+	 *            Separates files and contents
+	 * @param outputDir
+	 *            Directory to store all output files in
 	 */
-	private static void createFile(String fileName, String fileText)
+	private static void createFiles(byte[] bytes, byte unitSeparator, File outputDir)
 	{
-		try
-		{
-			//Write text to file
-			Writer writer = new BufferedWriter(new FileWriter(fileName));
-			writer.write(fileText);
-			writer.close();
-		}
-		catch (IOException e)
-		{
-			//Display status
-			String errorMessage = "Unable to write to file! (" + fileName + ")";
-			JOptionPane.showMessageDialog(null, errorMessage, "Error!", JOptionPane.ERROR_MESSAGE);
-		}
+		List<byte[]> allName = new ArrayList<>();
+		List<byte[]> allData = new ArrayList<>();
+
+		ByteArrayOutputStream name = new ByteArrayOutputStream();
+		ByteArrayOutputStream data = new ByteArrayOutputStream();
+
+		boolean isName = true;
+
+		for (byte currentByte : bytes)
+			if (currentByte != unitSeparator)
+			{
+				if (isName)
+					name.write(currentByte);
+				else
+					data.write(currentByte);
+			}
+			else
+			{
+				if (isName)
+				{
+					allName.add(name.toByteArray());
+					name = new ByteArrayOutputStream();
+				}
+				else
+				{
+					allData.add(data.toByteArray());
+					data = new ByteArrayOutputStream();
+				}
+
+				isName = !isName;
+			}
+
+		for (int i = 0; i < allName.size(); i++)
+			try
+			{
+				Path path = Paths.get(outputDir + "/" + new String(allName.get(i)));
+				Files.write(path, allData.get(i));
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
 	}
 }
