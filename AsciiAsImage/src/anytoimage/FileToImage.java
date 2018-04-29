@@ -31,9 +31,9 @@ public class FileToImage
 			{
 				//Acquire file information
 				byte[] name = file.getName().getBytes();
-				byte[] nameLength = ByteUtils.intToBytes(name.length);
+				byte[] nameLength = {(byte) name.length};
 				byte[] data = Files.readAllBytes(file.toPath());
-				byte[] dataLength = ByteUtils.intToBytes(data.length);
+				byte[] dataLength = ByteUtils.intToBytes(data.length, 4);
 
 				//Write information into the stream
 				bytes.write(nameLength);
@@ -62,9 +62,6 @@ public class FileToImage
 	 */
 	private static int[] bytesToPixels(byte[] bytes)
 	{
-		//Convert signed bytes to positive integers
-		int[] bytesAsInt = ByteUtils.unsignBytes(bytes);
-
 		//Number of image channels (RGB)
 		int numOfChannels = 3;
 
@@ -72,19 +69,19 @@ public class FileToImage
 		int byteCount = bytes.length;
 
 		//Determine total number of pixels
-		int pixelCount = (int) Math.pow(Math.ceil(Math.sqrt((double) byteCount / numOfChannels)), 2);
+		int pixelCount = (int) Math.pow(Math.ceil(Math.sqrt(byteCount / numOfChannels)), 2);
 		int[] pixels = new int[pixelCount];
 
 		//Read text in groups of [channel count]
 		for (int i = 0; i < byteCount; i += numOfChannels)
 		{
 			//Array of current pixel info
-			int[] pixel = new int[numOfChannels];
+			byte[] pixel = new byte[numOfChannels];
 
 			//Read info from group into each channel
 			for (int j = 0; j < numOfChannels; j++)
 				if (i + j < byteCount)
-					pixel[j] = bytesAsInt[i + j];
+					pixel[j] = bytes[i + j];
 				else
 					break;
 

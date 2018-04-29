@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 /**
- * Extract files from images created by the 'TextToImage' class.
+ * Extract files from images created by the 'FileToImage' class.
  *
  * @author mattson543
  */
@@ -87,7 +87,7 @@ public class ImageToFile
 
 		//Read channels from pixel
 		for (int pixel : pixels)
-			bytes.write(ByteUtils.intToBytes(pixel));
+			bytes.write(ByteUtils.intToBytes(pixel, 3));
 
 		return bytes.toByteArray();
 	}
@@ -114,9 +114,14 @@ public class ImageToFile
 		while (index != bytes.length)
 		{
 			//Calculate the number of bytes in each cluster (name/data)
-			byte[] sizeBytes = {bytes[index++], bytes[index++], bytes[index++]};
-			int[] lengthAsBytes = ByteUtils.unsignBytes(sizeBytes);
-			int clusterLength = ByteUtils.bytesToInt(lengthAsBytes);
+			byte[] sizeBytes;
+
+			if (isName)
+				sizeBytes = new byte[] {0, 0, bytes[index++]};
+			else
+				sizeBytes = new byte[] {bytes[index++], bytes[index++], bytes[index++], bytes[index++]};
+
+			int clusterLength = ByteUtils.bytesToInt(sizeBytes);
 
 			//EOF
 			if (clusterLength == 0)

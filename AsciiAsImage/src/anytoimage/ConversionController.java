@@ -212,7 +212,7 @@ public class ConversionController extends JFrame implements ActionListener
 	 *            Index of the current tab
 	 * @return DropTarget
 	 */
-	private DropTarget createDropTarget(int tabIndex)
+	private DropTarget createDropTarget(final int tabIndex)
 	{
 		//Create new Drag and Drop zone
 		DropTarget target = new DropTarget()
@@ -390,7 +390,7 @@ public class ConversionController extends JFrame implements ActionListener
 	 *            Index of the current tab
 	 * @return Listener
 	 */
-	private MouseMotionAdapter createMouseMotionAdapter(int tabIndex)
+	private MouseMotionAdapter createMouseMotionAdapter(final int tabIndex)
 	{
 		MouseMotionAdapter listener = new MouseMotionAdapter()
 		{
