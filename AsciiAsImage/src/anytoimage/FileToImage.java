@@ -1,4 +1,4 @@
-package asciiasimage;
+package anytoimage;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -8,19 +8,19 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 /**
- * Create images from text files by converting bytes to RGB values
+ * Create images from files by converting bytes to RGB values.
  *
  * @author mattson543
  */
-public class TextToImage
+public class FileToImage
 {
 	/**
 	 * Static method to initiate the conversion.
 	 *
 	 * @param inputFiles
-	 *            Array of text files to be converted
+	 *            Array of files to be converted
 	 * @param outputFile
-	 *            Image file to be output by conversion
+	 *            Image file to be output when conversion is complete
 	 */
 	public static void convert(File[] inputFiles, File outputFile)
 	{
@@ -54,14 +54,15 @@ public class TextToImage
 	}
 
 	/**
-	 * Covert file bytes into an integer (pixel)
+	 * Covert file bytes into an integer (pixel).
 	 *
 	 * @param bytes
-	 *            Bytes that make up an file
+	 *            All bytes to be converted
 	 * @return All pixels
 	 */
 	private static int[] bytesToPixels(byte[] bytes)
 	{
+		//Convert signed bytes to positive integers
 		int[] bytesAsInt = ByteUtils.unsignBytes(bytes);
 
 		//Number of image channels (RGB)

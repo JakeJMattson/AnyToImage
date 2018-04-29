@@ -1,9 +1,9 @@
 /*
  * Project Description:
- * Convert between text and images.
+ * Convert files to images using file bytes.
  */
 
-package asciiasimage;
+package anytoimage;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -20,12 +20,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 // TODO fix resizing issue upon filling JList in GUI
 
 /**
- * Display/Main - GUI to accept user input and convert files
+ * Display/Main - GUI to accept user input and convert files.
  *
  * @author mattson543
  */
 @SuppressWarnings("serial")
-public class FileHandler extends JFrame implements ActionListener
+public class ConversionController extends JFrame implements ActionListener
 {
 	//File inputs
 	private final List<List<File>> inputFiles;
@@ -45,22 +45,22 @@ public class FileHandler extends JFrame implements ActionListener
 	private final JTextField[] txtOutput;
 
 	//Constants
-	private final int TEXT_TO_IMAGE = 0;
-	private final int IMAGE_TO_TEXT = 1;
+	private final int FILE_TO_IMAGE = 0;
+	private final int IMAGE_TO_FILE = 1;
 	private final int NUM_OF_TABS = 2;
 	private final FileNameExtensionFilter pngFilter = new FileNameExtensionFilter("*.png", "png");
 
 	public static void main(String[] args)
 	{
-		FileHandler driver = new FileHandler();
+		ConversionController driver = new ConversionController();
 		driver.buildGUI();
 	}
 
 	/**
-	 * Constructor - initializes all fields
+	 * Constructor - initializes all fields.
 	 */
 	@SuppressWarnings("unchecked")
-	private FileHandler()
+	private ConversionController()
 	{
 		//Create frame
 		super();
@@ -84,7 +84,7 @@ public class FileHandler extends JFrame implements ActionListener
 	}
 
 	/**
-	 * Construct the frame and all of its components
+	 * Construct the frame and all of its components.
 	 */
 	private void buildGUI()
 	{
@@ -92,21 +92,21 @@ public class FileHandler extends JFrame implements ActionListener
 		JTabbedPane tabbedPane = new JTabbedPane();
 
 		//Add tabs to pane
-		tabbedPane.addTab("Text to Image", null, createTab(TEXT_TO_IMAGE));
-		tabbedPane.addTab("Image to Text", null, createTab(IMAGE_TO_TEXT));
+		tabbedPane.addTab("File to Image", null, createTab(FILE_TO_IMAGE));
+		tabbedPane.addTab("Image to File", null, createTab(IMAGE_TO_FILE));
 
 		//Add pane to frame
 		this.add(tabbedPane);
 
 		//Set frame preferences
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setTitle("AsciiAsImage");
+		setTitle("AnyToImage");
 		pack();
 		setVisible(true);
 	}
 
 	/**
-	 * Create a new tab for the pane based on the index
+	 * Create a new tab for the pane based on the index.
 	 *
 	 * @param tabIndex
 	 *            Index of the current tab
@@ -161,7 +161,7 @@ public class FileHandler extends JFrame implements ActionListener
 	}
 
 	/**
-	 * Create the panel that allows a user to enter the input
+	 * Create the panel that allows a user to enter the input.
 	 *
 	 * @param tabIndex
 	 *            Index of the current tab
@@ -185,7 +185,7 @@ public class FileHandler extends JFrame implements ActionListener
 		inputPanel.setDropTarget(dndZone);
 
 		//Create labels
-		String[] fileTypeOptions = {"a text", "an image"};
+		String[] fileTypeOptions = {"any", "an image"};
 		JLabel lblDrop = new JLabel("Drag and drop " + fileTypeOptions[tabIndex] + " file into this area");
 		JLabel lblJFC = new JLabel("Select one from directories:");
 
@@ -206,7 +206,7 @@ public class FileHandler extends JFrame implements ActionListener
 	}
 
 	/**
-	 * Add drag and drop functionality
+	 * Add drag and drop functionality.
 	 *
 	 * @param tabIndex
 	 *            Index of the current tab
@@ -232,7 +232,7 @@ public class FileHandler extends JFrame implements ActionListener
 
 					for (File file : droppedFiles)
 						if (file.isFile())
-							if (tabIndex == IMAGE_TO_TEXT)
+							if (tabIndex == IMAGE_TO_FILE)
 							{
 								//Verify valid extension
 								String extension = getFileExtension(file);
@@ -256,7 +256,7 @@ public class FileHandler extends JFrame implements ActionListener
 	}
 
 	/**
-	 * Extract extension from file
+	 * Extract extension from file.
 	 *
 	 * @param file
 	 *            File to extract extension from
@@ -278,7 +278,7 @@ public class FileHandler extends JFrame implements ActionListener
 	}
 
 	/**
-	 * Create the panel that allows a user to enter the output
+	 * Create the panel that allows a user to enter the output.
 	 *
 	 * @param tabIndex
 	 *            Index of the current tab
@@ -308,7 +308,7 @@ public class FileHandler extends JFrame implements ActionListener
 	}
 
 	/**
-	 * Create a panel to hold all basic buttons
+	 * Create a panel to hold all basic buttons.
 	 *
 	 * @param tabIndex
 	 *            Index of the current tab
@@ -335,7 +335,7 @@ public class FileHandler extends JFrame implements ActionListener
 	}
 
 	/**
-	 * Create a panel to display the list of file inputs
+	 * Create a panel to display the list of file inputs.
 	 *
 	 * @param tabIndex
 	 *            Index of the current tab
@@ -384,7 +384,7 @@ public class FileHandler extends JFrame implements ActionListener
 	}
 
 	/**
-	 * Create a listener for the list boxes to add dynamic tool tips
+	 * Create a listener for the list boxes to add dynamic tool tips.
 	 *
 	 * @param tabIndex
 	 *            Index of the current tab
@@ -419,7 +419,7 @@ public class FileHandler extends JFrame implements ActionListener
 	}
 
 	/**
-	 * Create a panel to hold the output image/directory name
+	 * Create a panel to hold the output image/directory name.
 	 *
 	 * @param tabIndex
 	 *            Index of the current tab
@@ -514,10 +514,10 @@ public class FileHandler extends JFrame implements ActionListener
 					File[] fileArray = fileList.toArray(new File[fileList.size()]);
 
 					//Process input
-					if (tabIndex == TEXT_TO_IMAGE)
-						TextToImage.convert(fileArray, outputFile[tabIndex]);
-					else if (tabIndex == IMAGE_TO_TEXT)
-						ImageToText.convert(fileArray, outputFile[tabIndex]);
+					if (tabIndex == FILE_TO_IMAGE)
+						FileToImage.convert(fileArray, outputFile[tabIndex]);
+					else if (tabIndex == IMAGE_TO_FILE)
+						ImageToFile.convert(fileArray, outputFile[tabIndex]);
 				}
 				else
 				{
@@ -591,7 +591,7 @@ public class FileHandler extends JFrame implements ActionListener
 	}
 
 	/**
-	 * Empty the list and refill it with the correct data
+	 * Empty the list and refill it with the correct data.
 	 *
 	 * @param tabIndex
 	 *            Index of the current tab
@@ -607,7 +607,7 @@ public class FileHandler extends JFrame implements ActionListener
 	}
 
 	/**
-	 * Determine the text to display in the output box
+	 * Determine the text to display in the output box.
 	 *
 	 * @param tabIndex
 	 *            Index of the current tab

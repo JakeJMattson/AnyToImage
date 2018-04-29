@@ -1,4 +1,4 @@
-package asciiasimage;
+package anytoimage;
 
 import java.awt.image.*;
 import java.io.*;
@@ -8,11 +8,11 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 /**
- * Extract files from images created by the 'TextToImage' class
+ * Extract files from images created by the 'TextToImage' class.
  *
  * @author mattson543
  */
-public class ImageToText
+public class ImageToFile
 {
 	/**
 	 * Static method to initiate the conversion.
@@ -73,7 +73,7 @@ public class ImageToText
 	}
 
 	/**
-	 * Extract bytes from each pixel
+	 * Extract bytes from each pixel.
 	 *
 	 * @param pixels
 	 *            Int array containing all pixels from the image
@@ -93,7 +93,7 @@ public class ImageToText
 	}
 
 	/**
-	 * Create all files contained within the image
+	 * Create all files contained within the image.
 	 *
 	 * @param bytes
 	 *            File names and data as a byte array

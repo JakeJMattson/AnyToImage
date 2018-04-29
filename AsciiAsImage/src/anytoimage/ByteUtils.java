@@ -1,14 +1,14 @@
-package asciiasimage;
+package anytoimage;
 
 /**
- * Limited utility for handling bytes and conversions
+ * Limited utility for handling bytes and conversions.
  *
  * @author mattson543
  */
 public class ByteUtils
 {
 	/**
-	 * Split integer into 3 values
+	 * Split integer into 3 values.
 	 *
 	 * @param pixel
 	 *            Integer to be split
@@ -26,7 +26,7 @@ public class ByteUtils
 	}
 
 	/**
-	 * Combine 3 values into an integer
+	 * Combine 3 values into an integer.
 	 *
 	 * @param bytes
 	 *            Values to be shifted
@@ -38,7 +38,7 @@ public class ByteUtils
 	}
 
 	/**
-	 * Convert signed bytes into positive integers
+	 * Convert signed bytes into positive integers.
 	 *
 	 * @param bytes
 	 *            Bytes to be unsigned
