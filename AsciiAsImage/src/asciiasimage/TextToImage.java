@@ -21,21 +21,25 @@ public class TextToImage
 	 *            Array of text files to be converted
 	 * @param outputFile
 	 *            Image file to be output by conversion
-	 * @param unitSeparator
-	 *            Separates files and contents (name; text; name; text...)
 	 */
-	public static void convert(File[] inputFiles, File outputFile, byte unitSeparator)
+	public static void convert(File[] inputFiles, File outputFile)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
 		for (File file : inputFiles)
 			try
 			{
-				//Write all necessary file information into the stream
-				bytes.write(file.getName().getBytes());
-				bytes.write(unitSeparator);
-				bytes.write(Files.readAllBytes(file.toPath()));
-				bytes.write(unitSeparator);
+				//Acquire file information
+				byte[] name = file.getName().getBytes();
+				byte[] nameLength = ByteUtils.intToBytes(name.length);
+				byte[] data = Files.readAllBytes(file.toPath());
+				byte[] dataLength = ByteUtils.intToBytes(data.length);
+
+				//Write information into the stream
+				bytes.write(nameLength);
+				bytes.write(name);
+				bytes.write(dataLength);
+				bytes.write(data);
 			}
 			catch (IOException e)
 			{
@@ -58,6 +62,8 @@ public class TextToImage
 	 */
 	private static int[] bytesToPixels(byte[] bytes)
 	{
+		int[] bytesAsInt = ByteUtils.unsignBytes(bytes);
+
 		//Number of image channels (RGB)
 		int numOfChannels = 3;
 
@@ -65,24 +71,24 @@ public class TextToImage
 		int byteCount = bytes.length;
 
 		//Determine total number of pixels
-		int pixelCount = (int) Math.pow(Math.ceil(Math.sqrt(byteCount / numOfChannels)), 2);
+		int pixelCount = (int) Math.pow(Math.ceil(Math.sqrt((double) byteCount / numOfChannels)), 2);
 		int[] pixels = new int[pixelCount];
 
 		//Read text in groups of [channel count]
 		for (int i = 0; i < byteCount; i += numOfChannels)
 		{
 			//Array of current pixel info
-			byte[] pixel = new byte[numOfChannels];
+			int[] pixel = new int[numOfChannels];
 
 			//Read info from group into each channel
 			for (int j = 0; j < numOfChannels; j++)
 				if (i + j < byteCount)
-					pixel[j] = bytes[i + j];
+					pixel[j] = bytesAsInt[i + j];
 				else
 					break;
 
 			//Store current pixel into pixel array
-			pixels[i / numOfChannels] = pixel[0] << 16 | pixel[1] << 8 | pixel[2];
+			pixels[i / numOfChannels] = ByteUtils.bytesToInt(pixel);
 		}
 
 		return pixels;

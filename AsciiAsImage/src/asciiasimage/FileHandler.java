@@ -48,11 +48,7 @@ public class FileHandler extends JFrame implements ActionListener
 	private final int TEXT_TO_IMAGE = 0;
 	private final int IMAGE_TO_TEXT = 1;
 	private final int NUM_OF_TABS = 2;
-	private final FileNameExtensionFilter[] inputRestrictions = {
-			new FileNameExtensionFilter("Text file", "txt", "bat", "c", "cpp", "cs", "h", "java", "py", "sh",
-					"sln", "swift", "vb", "xml"),
-			new FileNameExtensionFilter("*.png", "png")
-	};
+	private final FileNameExtensionFilter pngFilter = new FileNameExtensionFilter("*.png", "png");
 
 	public static void main(String[] args)
 	{
@@ -236,17 +232,16 @@ public class FileHandler extends JFrame implements ActionListener
 
 					for (File file : droppedFiles)
 						if (file.isFile())
-						{
-							//Verify valid extension
-							String extension = getFileExtension(file);
-
-							if (Arrays.asList(inputRestrictions[tabIndex].getExtensions()).contains(extension))
+							if (tabIndex == IMAGE_TO_TEXT)
 							{
-								inputFiles.get(tabIndex).add(file);
-								System.out.println("Dropped file added: " + file.getAbsolutePath());
-							}
-						}
+								//Verify valid extension
+								String extension = getFileExtension(file);
 
+								if (Arrays.asList(pngFilter.getExtensions()).contains(extension))
+									inputFiles.get(tabIndex).add(file);
+							}
+							else
+								inputFiles.get(tabIndex).add(file);
 					//Refresh display
 					refreshInputDisplay(tabIndex);
 				}
@@ -464,7 +459,8 @@ public class FileHandler extends JFrame implements ActionListener
 		if ((tabIndex = Arrays.asList(btnJfcInput).indexOf(buttonClicked)) != -1)
 		{
 			//Allow user to select an input file
-			File selectedFile = createFileChooser(JFileChooser.FILES_ONLY, inputRestrictions[tabIndex], true);
+			FileNameExtensionFilter[] fileFilters = {null, pngFilter};
+			File selectedFile = createFileChooser(JFileChooser.FILES_ONLY, fileFilters[tabIndex], true);
 
 			//Save file
 			if (selectedFile != null)
@@ -478,7 +474,7 @@ public class FileHandler extends JFrame implements ActionListener
 		{
 			//Restrict input
 			int[] fileTypes = {JFileChooser.FILES_ONLY, JFileChooser.DIRECTORIES_ONLY};
-			FileNameExtensionFilter[] fileFilters = {new FileNameExtensionFilter("*.png", "png"),
+			FileNameExtensionFilter[] fileFilters = {pngFilter,
 					new FileNameExtensionFilter("Directory", " ")};
 
 			//Allow user to select an output file
@@ -513,18 +509,15 @@ public class FileHandler extends JFrame implements ActionListener
 			{
 				if (outputFile[tabIndex] != null)
 				{
-					//Text group separation character
-					byte unitSeparator = (byte) 31;
-
 					//Convert list to array
 					List<File> fileList = inputFiles.get(tabIndex);
 					File[] fileArray = fileList.toArray(new File[fileList.size()]);
 
 					//Process input
 					if (tabIndex == TEXT_TO_IMAGE)
-						TextToImage.convert(fileArray, outputFile[tabIndex], unitSeparator);
+						TextToImage.convert(fileArray, outputFile[tabIndex]);
 					else if (tabIndex == IMAGE_TO_TEXT)
-						ImageToText.convert(fileArray, outputFile[tabIndex], unitSeparator);
+						ImageToText.convert(fileArray, outputFile[tabIndex]);
 				}
 				else
 				{
@@ -592,8 +585,6 @@ public class FileHandler extends JFrame implements ActionListener
 				if (!filePath.toLowerCase().endsWith(defaultExtension))
 					selectedFile = new File(filePath + defaultExtension);
 			}
-
-			System.out.println("File selected from chooser: " + selectedFile.getAbsolutePath());
 		}
 
 		return selectedFile;

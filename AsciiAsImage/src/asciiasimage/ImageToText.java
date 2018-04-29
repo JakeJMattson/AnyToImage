@@ -1,6 +1,5 @@
 package asciiasimage;
 
-import java.awt.Color;
 import java.awt.image.*;
 import java.io.*;
 import java.nio.file.*;
@@ -22,57 +21,53 @@ public class ImageToText
 	 *            Array of image files to be converted
 	 * @param outputDir
 	 *            Directory to store all output files in
-	 * @param unitSeparator
-	 *            Separates files and contents (name; text; name; text...)
 	 */
-	public static void convert(File[] inputFiles, File outputDir, byte unitSeparator)
+	public static void convert(File[] inputFiles, File outputDir)
 	{
 		for (File file : inputFiles)
-		{
-			//Extract individual pixels from an image
-			int[] pixels = extractPixels(file);
+			try
+			{
+				//Extract individual pixels from an image
+				int[] pixels = extractPixels(file);
 
-			//Separate pixels into bytes
-			byte[] allBytes = extractBytes(pixels);
+				//Separate pixels into bytes
+				byte[] allBytes = extractBytes(pixels);
 
-			//Create files from bytes
-			createFiles(allBytes, unitSeparator, outputDir);
-		}
+				//Create files from bytes
+				createFiles(allBytes, outputDir);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
 
 		JOptionPane.showMessageDialog(null, "All valid files have been extracted from the input.",
 				"Extraction Complete!", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	/**
-	 * Read an image from a file.
+	 * Read an image from a file and extract pixels.
 	 *
 	 * @param file
 	 *            File containing the image to be read
 	 * @return Pixels from image
+	 * @throws IOException
+	 *             Failed to read image from file
 	 */
-	private static int[] extractPixels(File file)
+	private static int[] extractPixels(File file) throws IOException
 	{
-		int[] pixels = null;
+		//Read image from file
+		BufferedImage fileImage = ImageIO.read(file);
 
-		try
-		{
-			//Read image from file
-			BufferedImage fileImage = ImageIO.read(file);
+		//Create a buffered image with the desired type
+		BufferedImage image = new BufferedImage(fileImage.getWidth(), fileImage.getHeight(),
+				BufferedImage.TYPE_INT_RGB);
 
-			//Create a buffered image with the desired type
-			BufferedImage image = new BufferedImage(fileImage.getWidth(), fileImage.getHeight(),
-					BufferedImage.TYPE_INT_RGB);
+		//Draw the image from the file into the buffer
+		image.getGraphics().drawImage(fileImage, 0, 0, null);
 
-			//Draw the image from the file into the buffer
-			image.getGraphics().drawImage(fileImage, 0, 0, null);
-
-			//Read all pixels from image
-			pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		//Read all pixels from image
+		int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
 		return pixels;
 	}
@@ -83,21 +78,16 @@ public class ImageToText
 	 * @param pixels
 	 *            Int array containing all pixels from the image
 	 * @return Bytes
+	 * @throws IOException
+	 *             Failed to write byte array to stream
 	 */
-	private static byte[] extractBytes(int[] pixels)
+	private static byte[] extractBytes(int[] pixels) throws IOException
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 
+		//Read channels from pixel
 		for (int pixel : pixels)
-		{
-			//Create color object from pixel info
-			Color color = new Color(pixel);
-
-			//Read channels from color object
-			bytes.write((byte) color.getRed());
-			bytes.write((byte) color.getGreen());
-			bytes.write((byte) color.getBlue());
-		}
+			bytes.write(ByteUtils.intToBytes(pixel));
 
 		return bytes.toByteArray();
 	}
@@ -107,50 +97,49 @@ public class ImageToText
 	 *
 	 * @param bytes
 	 *            File names and data as a byte array
-	 * @param unitSeparator
-	 *            Separates files and contents
 	 * @param outputDir
 	 *            Directory to store all output files in
+	 * @throws IOException
+	 *             Failed to create file (write bytes)
 	 */
-	private static void createFiles(byte[] bytes, byte unitSeparator, File outputDir)
+	private static void createFiles(byte[] bytes, File outputDir) throws IOException
 	{
-		//File name and contents
+		//Create stream to store file info
 		ByteArrayOutputStream name = new ByteArrayOutputStream();
 		ByteArrayOutputStream data = new ByteArrayOutputStream();
 
-		//Control flow
 		boolean isName = true;
+		int index = 0;
 
-		for (byte currentByte : bytes)
-			if (currentByte != unitSeparator)
-			{
-				//Store byte
+		while (index != bytes.length)
+		{
+			//Calculate the number of bytes in each cluster (name/data)
+			byte[] sizeBytes = {bytes[index++], bytes[index++], bytes[index++]};
+			int[] lengthAsBytes = ByteUtils.unsignBytes(sizeBytes);
+			int clusterLength = ByteUtils.bytesToInt(lengthAsBytes);
+
+			//EOF
+			if (clusterLength == 0)
+				break;
+
+			for (int i = 0; i < clusterLength; i++)
 				if (isName)
-					name.write(currentByte);
+					name.write(bytes[index++]);
 				else
-					data.write(currentByte);
-			}
-			else
+					data.write(bytes[index++]);
+
+			if (!isName)
 			{
-				if (!isName)
-				{
-					try
-					{
-						//Create file
-						Path path = Paths.get(outputDir + "/" + new String(name.toByteArray()));
-						Files.write(path, data.toByteArray());
-					}
-					catch (IOException e)
-					{
-						e.printStackTrace();
-					}
+				//Create file
+				Path path = Paths.get(outputDir + "/" + new String(name.toByteArray()));
+				Files.write(path, data.toByteArray());
 
-					//Clear stream once file is created
-					name.reset();
-					data.reset();
-				}
-
-				isName = !isName;
+				//Clear streams
+				name.reset();
+				data.reset();
 			}
+
+			isName = !isName;
+		}
 	}
 }
