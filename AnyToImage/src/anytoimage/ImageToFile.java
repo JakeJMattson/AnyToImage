@@ -2,7 +2,8 @@ package anytoimage;
 
 import java.awt.image.*;
 import java.io.*;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
@@ -18,11 +19,13 @@ public class ImageToFile
 	 * Static method to initiate the conversion.
 	 *
 	 * @param inputFiles
-	 *            Array of image files to be converted
+	 *            List of image files to be converted
 	 * @param outputDir
 	 *            Directory to store all output files in
+	 * @param displayMode
+	 *            How to display information to a user: GUI = true; CLI = false
 	 */
-	public static void convert(File[] inputFiles, File outputDir)
+	public static void convert(List<File> inputFiles, File outputDir, boolean displayMode)
 	{
 		for (File file : inputFiles)
 			try
@@ -41,8 +44,11 @@ public class ImageToFile
 				e.printStackTrace();
 			}
 
-		JOptionPane.showMessageDialog(null, "All valid files have been extracted from the input.",
-				"Extraction Complete!", JOptionPane.INFORMATION_MESSAGE);
+		if (displayMode)
+			JOptionPane.showMessageDialog(null, "All valid files have been extracted from the input.",
+					"Extraction Complete!", JOptionPane.INFORMATION_MESSAGE);
+		else
+			System.out.println("Extraction Complete!");
 	}
 
 	/**
@@ -138,13 +144,10 @@ public class ImageToFile
 				//Create file
 				File newFile = new File(outputDir + "/" + new String(name.toByteArray()));
 				File parentDir = newFile.getParentFile();
-				
-				System.out.println("File out: " + newFile.toString());
-				System.out.println("Parent dir: " + parentDir.toString());
-				
+
 				if (!parentDir.exists())
 					Files.createDirectories(parentDir.toPath());
-				
+
 				Files.write(newFile.toPath(), data.toByteArray());
 
 				//Clear streams

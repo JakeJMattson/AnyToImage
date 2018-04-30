@@ -20,11 +20,13 @@ public class FileToImage
 	 * Static method to initiate the conversion.
 	 *
 	 * @param inputFiles
-	 *            Array of files to be converted
+	 *            List of files to be converted
 	 * @param outputFile
 	 *            Image file to be output when conversion is complete
+	 * @param displayMode
+	 *            How to display information to a user: GUI = true; CLI = false
 	 */
-	public static void convert(File[] inputFiles, File outputFile)
+	public static void convert(List<File> inputFiles, File outputFile, boolean displayMode)
 	{
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
@@ -45,8 +47,26 @@ public class FileToImage
 		//Create pixels from file information
 		int[] pixels = bytesToPixels(stream.toByteArray());
 
-		//Create image from pixels
-		createImage(pixels, outputFile);
+		try
+		{
+			//Create image from pixels
+			createImage(pixels, outputFile);
+
+			//Display status
+			if (displayMode)
+				JOptionPane.showMessageDialog(null, "Image created successfully!", "Creation Complete!",
+						JOptionPane.INFORMATION_MESSAGE);
+			else
+				System.out.println("Creation complete!");
+		}
+		catch (IOException e)
+		{
+			//Display status
+			if (displayMode)
+				JOptionPane.showMessageDialog(null, "Unable to write to file!", "Error!", JOptionPane.ERROR_MESSAGE);
+			else
+				e.printStackTrace();
+		}
 	}
 
 	/**
@@ -155,29 +175,16 @@ public class FileToImage
 	 * @param output
 	 *            The desired file location of the output image
 	 */
-	private static void createImage(int[] pixels, File output)
+	private static void createImage(int[] pixels, File output) throws IOException
 	{
-		try
-		{
-			//Calculate image dimensions
-			int dims = (int) Math.ceil(Math.sqrt(pixels.length));
+		//Calculate image dimensions
+		int dims = (int) Math.ceil(Math.sqrt(pixels.length));
 
-			//Store pixel values in image
-			BufferedImage image = new BufferedImage(dims, dims, BufferedImage.TYPE_INT_RGB);
-			image.setRGB(0, 0, dims, dims, pixels, 0, dims);
+		//Store pixel values in image
+		BufferedImage image = new BufferedImage(dims, dims, BufferedImage.TYPE_INT_RGB);
+		image.setRGB(0, 0, dims, dims, pixels, 0, dims);
 
-			//Write image to file
-			ImageIO.write(image, "png", output);
-
-			//Display status
-			JOptionPane.showMessageDialog(null, "Image created successfully!",
-					"Creation Complete!", JOptionPane.INFORMATION_MESSAGE);
-		}
-		catch (IOException e)
-		{
-			//Display status
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Unable to write to file!", "Error!", JOptionPane.ERROR_MESSAGE);
-		}
+		//Write image to file
+		ImageIO.write(image, "png", output);
 	}
 }

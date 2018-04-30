@@ -25,11 +25,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author mattson543
  */
 @SuppressWarnings("serial")
-public class ConversionController extends JFrame implements ActionListener
+public class ConversionController implements ActionListener
 {
 	//File inputs
 	private final List<List<File>> inputFiles;
 	private final File[] outputFile;
+
+	//Frame
+	private final JFrame frame;
 
 	//Buttons
 	private final JButton[] btnJfcInput;
@@ -45,15 +48,38 @@ public class ConversionController extends JFrame implements ActionListener
 	private final JTextField[] txtOutput;
 
 	//Constants
-	private final int FILE_TO_IMAGE = 0;
-	private final int IMAGE_TO_FILE = 1;
-	private final int NUM_OF_TABS = 2;
+	private final static int FILE_TO_IMAGE = 0;
+	private final static int IMAGE_TO_FILE = 1;
+	private final static int NUM_OF_TABS = 2;
 	private final FileNameExtensionFilter pngFilter = new FileNameExtensionFilter("*.png", "png");
 
 	public static void main(String[] args)
 	{
-		ConversionController driver = new ConversionController();
-		driver.buildGUI();
+		if (args.length == 0) //GUI mode
+		{
+			ConversionController driver = new ConversionController();
+			driver.buildGUI();
+		}
+		else if (args.length >= 3) //CLI mode
+		{
+			int conversionType = Integer.parseInt(args[0]);
+			List<File> input = new ArrayList<>();
+
+			for (int i = 1; i < args.length - 1; i++)
+				input.add(new File(args[i]));
+
+			File output = new File(args[args.length - 1]);
+
+			//Process input
+			if (conversionType == FILE_TO_IMAGE)
+				FileToImage.convert(input, output, false);
+			else if (conversionType == IMAGE_TO_FILE)
+				ImageToFile.convert(input, output, false);
+			else
+				System.out.println("Unknown conversion type!");
+		}
+		else
+			System.out.println("Insufficient arguments!");
 	}
 
 	/**
@@ -63,7 +89,7 @@ public class ConversionController extends JFrame implements ActionListener
 	private ConversionController()
 	{
 		//Create frame
-		super();
+		frame = new JFrame();
 
 		//File inputs
 		inputFiles = new ArrayList<>(NUM_OF_TABS);
@@ -96,13 +122,13 @@ public class ConversionController extends JFrame implements ActionListener
 		tabbedPane.addTab("Image to File", null, createTab(IMAGE_TO_FILE));
 
 		//Add pane to frame
-		this.add(tabbedPane);
+		frame.add(tabbedPane);
 
 		//Set frame preferences
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setTitle("AnyToImage");
-		pack();
-		setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setTitle("AnyToImage");
+		frame.pack();
+		frame.setVisible(true);
 	}
 
 	/**
@@ -231,17 +257,16 @@ public class ConversionController extends JFrame implements ActionListener
 							.getTransferData(DataFlavor.javaFileListFlavor);
 
 					for (File file : droppedFiles)
-						if (file.isFile())
-							if (tabIndex == IMAGE_TO_FILE)
-							{
-								//Verify valid extension
-								String extension = getFileExtension(file);
+						if (tabIndex == IMAGE_TO_FILE)
+						{
+							//Verify valid extension
+							String extension = getFileExtension(file);
 
-								if (Arrays.asList(pngFilter.getExtensions()).contains(extension))
-									inputFiles.get(tabIndex).add(file);
-							}
-							else
+							if (Arrays.asList(pngFilter.getExtensions()).contains(extension))
 								inputFiles.get(tabIndex).add(file);
+						}
+						else
+							inputFiles.get(tabIndex).add(file);
 					//Refresh display
 					refreshInputDisplay(tabIndex);
 				}
@@ -509,15 +534,13 @@ public class ConversionController extends JFrame implements ActionListener
 			{
 				if (outputFile[tabIndex] != null)
 				{
-					//Convert list to array
-					List<File> fileList = inputFiles.get(tabIndex);
-					File[] fileArray = fileList.toArray(new File[fileList.size()]);
+					List<File> input = inputFiles.get(tabIndex);
 
 					//Process input
 					if (tabIndex == FILE_TO_IMAGE)
-						FileToImage.convert(fileArray, outputFile[tabIndex]);
+						FileToImage.convert(input, outputFile[tabIndex], true);
 					else if (tabIndex == IMAGE_TO_FILE)
-						ImageToFile.convert(fileArray, outputFile[tabIndex]);
+						ImageToFile.convert(input, outputFile[tabIndex], true);
 				}
 				else
 				{
