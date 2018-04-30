@@ -2,7 +2,9 @@ package anytoimage;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.file.Files;
+import java.nio.file.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
@@ -24,22 +26,16 @@ public class FileToImage
 	 */
 	public static void convert(File[] inputFiles, File outputFile)
 	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
 		for (File file : inputFiles)
 			try
 			{
-				//Acquire file information
-				byte[] name = file.getName().getBytes();
-				byte[] nameLength = {(byte) name.length};
-				byte[] data = Files.readAllBytes(file.toPath());
-				byte[] dataLength = ByteUtils.intToBytes(data.length, 4);
-
-				//Write information into the stream
-				bytes.write(nameLength);
-				bytes.write(name);
-				bytes.write(dataLength);
-				bytes.write(data);
+				if (file.exists())
+					if (file.isDirectory())
+						directoryToBytes(stream, file);
+					else if (file.isFile())
+						fileToBytes(stream, file, file.getName());
 			}
 			catch (IOException e)
 			{
@@ -47,10 +43,69 @@ public class FileToImage
 			}
 
 		//Create pixels from file information
-		int[] pixels = bytesToPixels(bytes.toByteArray());
+		int[] pixels = bytesToPixels(stream.toByteArray());
 
 		//Create image from pixels
 		createImage(pixels, outputFile);
+	}
+
+	/**
+	 * Turn directory into bytes.
+	 *
+	 * @param stream
+	 *            Byte stream currently open
+	 * @param file
+	 *            Directory to extract bytes from
+	 * @throws IOException
+	 *             Failed to traverse directory structure
+	 */
+	private static void directoryToBytes(ByteArrayOutputStream stream, File file) throws IOException
+	{
+		//Get selected directory
+		String parentDir = file.getName();
+
+		//Get all files from the directory and sub-directories
+		List<Path> paths = Files.walk(file.toPath())
+				.filter(Files::isRegularFile)
+				.collect(Collectors.toList());
+
+		for (Path path : paths)
+		{
+			//Construct
+			File fileFromDir = path.toFile();
+			String fullPath = fileFromDir.toString();
+			String fileName = fullPath.substring(fullPath.indexOf(parentDir));
+
+			//Retrieve bytes
+			fileToBytes(stream, fileFromDir, fileName);
+		}
+	}
+
+	/**
+	 * Turn file into bytes.
+	 *
+	 * @param stream
+	 *            Byte stream currently open
+	 * @param file
+	 *            File to extract bytes from
+	 * @param fileName
+	 *            Name (with / without folder structure)
+	 * @throws IOException
+	 *             Failed to write byte array to stream
+	 */
+	private static void fileToBytes(ByteArrayOutputStream stream, File file, String fileName) throws IOException
+	{
+		//Acquire file information
+		byte[] name = fileName.getBytes();
+		byte[] nameLength = {(byte) name.length};
+		byte[] data = Files.readAllBytes(file.toPath());
+		byte[] dataLength = ByteUtils.intToBytes(data.length, 4);
+
+		//Write information into the stream
+		stream.write(nameLength);
+		stream.write(name);
+		stream.write(dataLength);
+		stream.write(data);
 	}
 
 	/**

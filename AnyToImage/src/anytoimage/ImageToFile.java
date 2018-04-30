@@ -136,8 +136,16 @@ public class ImageToFile
 			if (!isName)
 			{
 				//Create file
-				Path path = Paths.get(outputDir + "/" + new String(name.toByteArray()));
-				Files.write(path, data.toByteArray());
+				File newFile = new File(outputDir + "/" + new String(name.toByteArray()));
+				File parentDir = newFile.getParentFile();
+				
+				System.out.println("File out: " + newFile.toString());
+				System.out.println("Parent dir: " + parentDir.toString());
+				
+				if (!parentDir.exists())
+					Files.createDirectories(parentDir.toPath());
+				
+				Files.write(newFile.toPath(), data.toByteArray());
 
 				//Clear streams
 				name.reset();

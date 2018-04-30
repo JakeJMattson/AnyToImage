@@ -185,8 +185,8 @@ public class ConversionController extends JFrame implements ActionListener
 		inputPanel.setDropTarget(dndZone);
 
 		//Create labels
-		String[] fileTypeOptions = {"any", "an image"};
-		JLabel lblDrop = new JLabel("Drag and drop " + fileTypeOptions[tabIndex] + " file into this area");
+		String[] fileTypeOptions = {"a file or directory", "an image file"};
+		JLabel lblDrop = new JLabel("Drag and drop " + fileTypeOptions[tabIndex] + " into this area");
 		JLabel lblJFC = new JLabel("Select one from directories:");
 
 		//Create button
@@ -459,8 +459,9 @@ public class ConversionController extends JFrame implements ActionListener
 		if ((tabIndex = Arrays.asList(btnJfcInput).indexOf(buttonClicked)) != -1)
 		{
 			//Allow user to select an input file
+			int[] fileTypes = {JFileChooser.FILES_AND_DIRECTORIES, JFileChooser.FILES_ONLY};
 			FileNameExtensionFilter[] fileFilters = {null, pngFilter};
-			File selectedFile = createFileChooser(JFileChooser.FILES_ONLY, fileFilters[tabIndex], true);
+			File selectedFile = createFileChooser(fileTypes[tabIndex], fileFilters[tabIndex], true);
 
 			//Save file
 			if (selectedFile != null)
@@ -474,8 +475,7 @@ public class ConversionController extends JFrame implements ActionListener
 		{
 			//Restrict input
 			int[] fileTypes = {JFileChooser.FILES_ONLY, JFileChooser.DIRECTORIES_ONLY};
-			FileNameExtensionFilter[] fileFilters = {pngFilter,
-					new FileNameExtensionFilter("Directory", " ")};
+			FileNameExtensionFilter[] fileFilters = {pngFilter, new FileNameExtensionFilter("Directory", " ")};
 
 			//Allow user to select an output file
 			File selectedFile = createFileChooser(fileTypes[tabIndex], fileFilters[tabIndex], false);
