@@ -125,7 +125,7 @@ public class ConversionController implements ActionListener
 		frame.add(tabbedPane);
 
 		//Set frame preferences
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setTitle("AnyToImage");
 		frame.pack();
 		frame.setVisible(true);

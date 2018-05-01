@@ -36,6 +36,10 @@ public class ImageToFile
 				//Separate pixels into bytes
 				byte[] allBytes = extractBytes(pixels);
 
+				//Free memory
+				pixels = null;
+				System.gc();
+
 				//Create files from bytes
 				createFiles(allBytes, outputDir);
 			}

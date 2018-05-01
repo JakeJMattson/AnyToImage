@@ -49,6 +49,11 @@ public class FileToImage
 
 		try
 		{
+			//Free memory
+			inputFiles = null;
+			stream = null;
+			System.gc();
+
 			//Create image from pixels
 			createImage(pixels, outputFile);
 
@@ -70,7 +75,7 @@ public class FileToImage
 	}
 
 	/**
-	 * Turn directory into bytes.
+	 * Turn directory into bytes and preserve directory structure.
 	 *
 	 * @param stream
 	 *            Byte stream currently open
@@ -91,13 +96,12 @@ public class FileToImage
 
 		for (Path path : paths)
 		{
-			//Construct
-			File fileFromDir = path.toFile();
-			String fullPath = fileFromDir.toString();
+			//Construct arguments
+			String fullPath = path.toString();
 			String fileName = fullPath.substring(fullPath.indexOf(parentDir));
 
 			//Retrieve bytes
-			fileToBytes(stream, fileFromDir, fileName);
+			fileToBytes(stream, path.toFile(), fileName);
 		}
 	}
 
