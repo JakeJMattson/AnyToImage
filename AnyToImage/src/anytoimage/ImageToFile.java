@@ -49,8 +49,8 @@ public class ImageToFile
 			}
 
 		if (displayMode)
-			JOptionPane.showMessageDialog(null, "All valid files have been extracted from the input.",
-					"Extraction Complete!", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "All valid files have been extracted!", "Extraction Complete!",
+					JOptionPane.INFORMATION_MESSAGE);
 		else
 			System.out.println("Extraction Complete!");
 	}
@@ -88,18 +88,25 @@ public class ImageToFile
 	 * @param pixels
 	 *            Int array containing all pixels from the image
 	 * @return Bytes
-	 * @throws IOException
-	 *             Failed to write byte array to stream
 	 */
-	private static byte[] extractBytes(int[] pixels) throws IOException
+	private static byte[] extractBytes(int[] pixels)
 	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
 		//Read channels from pixel
 		for (int pixel : pixels)
-			bytes.write(ByteUtils.intToBytes(pixel, 3));
+			try
+			{
+				stream.write(ByteUtils.intToBytes(pixel, 3));
+			}
+			catch (IOException e)
+			{
+				//Mandatory catch when writing array to stream
+				//Failure expanding stream when heap is full
+				System.out.println("Error writing array to stream!");
+			}
 
-		return bytes.toByteArray();
+		return stream.toByteArray();
 	}
 
 	/**
