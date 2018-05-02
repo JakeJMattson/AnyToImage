@@ -19,5 +19,8 @@ Users who plan to solely use the program (run the pre-built JAR file) are only r
 The minimum compiler compliance is 1.8, meaning that systems with installations of Java 8 and above can run the JAR. 
 Simply install the version of your choice for your operating system, and you can convert almost any file into an image!
 
+## License
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
 ## Adaptations
 [Web interface](https://img.kyle.tools/) written by [Kyle  Sferrazza](https://github.com/kylesferrazza)
