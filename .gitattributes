@@ -1,2 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+
+# Fix incorrect language labeling
+* linguist-vendored
+*.java linguist-vendored=false
