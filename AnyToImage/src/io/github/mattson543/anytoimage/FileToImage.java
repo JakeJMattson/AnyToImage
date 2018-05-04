@@ -1,4 +1,4 @@
-package anytoimage;
+package io.github.mattson543.anytoimage;
 
 import java.awt.image.BufferedImage;
 import java.io.*;

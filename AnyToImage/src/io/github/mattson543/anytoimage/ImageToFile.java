@@ -1,4 +1,4 @@
-package anytoimage;
+package io.github.mattson543.anytoimage;
 
 import java.awt.image.*;
 import java.io.*;
@@ -28,25 +28,19 @@ public class ImageToFile
 	public static void convert(List<File> inputFiles, File outputDir, boolean displayMode)
 	{
 		for (File file : inputFiles)
-			try
-			{
-				//Extract individual pixels from an image
-				int[] pixels = extractPixels(file);
+		{
+			//Extract individual pixels from an image
+			int[] pixels = extractPixels(file);
 
-				//Separate pixels into bytes
-				byte[] allBytes = extractBytes(pixels);
+			//Separate pixels into bytes
+			byte[] allBytes = extractBytes(pixels);
 
-				//Free memory
-				pixels = null;
-				System.gc();
+			//Free memory
+			pixels = null;
 
-				//Create files from bytes
-				createFiles(allBytes, outputDir);
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
+			//Create files from bytes
+			createFiles(allBytes, outputDir);
+		}
 
 		if (displayMode)
 			JOptionPane.showMessageDialog(null, "All valid files have been extracted!", "Extraction Complete!",
@@ -64,20 +58,29 @@ public class ImageToFile
 	 * @throws IOException
 	 *             Failed to read image from file
 	 */
-	private static int[] extractPixels(File file) throws IOException
+	private static int[] extractPixels(File file)
 	{
-		//Read image from file
-		BufferedImage fileImage = ImageIO.read(file);
+		int[] pixels = null;
 
-		//Create a buffered image with the desired type
-		BufferedImage image = new BufferedImage(fileImage.getWidth(), fileImage.getHeight(),
-				BufferedImage.TYPE_INT_RGB);
+		try
+		{
+			//Read image from file
+			BufferedImage fileImage = ImageIO.read(file);
 
-		//Draw the image from the file into the buffer
-		image.getGraphics().drawImage(fileImage, 0, 0, null);
+			//Create a buffered image with the desired type
+			BufferedImage image = new BufferedImage(fileImage.getWidth(), fileImage.getHeight(),
+					BufferedImage.TYPE_INT_RGB);
 
-		//Read all pixels from image
-		int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+			//Draw the image from the file into the buffer
+			image.getGraphics().drawImage(fileImage, 0, 0, null);
+
+			//Read all pixels from image
+			pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+		}
+		catch (IOException e)
+		{
+			System.out.println("Failed to read image: " + file.toString());
+		}
 
 		return pixels;
 	}
@@ -119,7 +122,7 @@ public class ImageToFile
 	 * @throws IOException
 	 *             Failed to create file (write bytes)
 	 */
-	private static void createFiles(byte[] bytes, File outputDir) throws IOException
+	private static void createFiles(byte[] bytes, File outputDir)
 	{
 		//Create stream to store file info
 		ByteArrayOutputStream name = new ByteArrayOutputStream();
@@ -157,9 +160,16 @@ public class ImageToFile
 				File parentDir = newFile.getParentFile();
 
 				if (!parentDir.exists())
-					Files.createDirectories(parentDir.toPath());
+					parentDir.mkdirs();
 
-				Files.write(newFile.toPath(), data.toByteArray());
+				try
+				{
+					Files.write(newFile.toPath(), data.toByteArray());
+				}
+				catch (IOException e)
+				{
+					System.out.println("Failed to create file: " + newFile.toString());
+				}
 
 				//Clear streams
 				name.reset();

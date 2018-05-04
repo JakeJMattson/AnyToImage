@@ -1,4 +1,4 @@
-package anytoimage;
+package io.github.mattson543.anytoimage;
 
 /**
  * Limited utility class for handling bytes and conversions.
