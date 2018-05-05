@@ -1,7 +1,5 @@
 # AnyToImage
 
-<img src="AnyToImage/demo/Output/Demo.png" align="right" width="60%" />
-
 <p align="justify">
 This project allows you to convert almost any file, group of files, or directory into an image.
 By reading bytes from a file and using those bytes as color channel values, pixels can be constructed and used to form an image.
@@ -12,9 +10,13 @@ There are no additional libraries to configure.
 
 ## Demo
 
+<p align="center">
+  <img src="AnyToImage/demo/Output/Demo.png" width="60%" />
+</p>
+
 <p align="justify">
-The image to the right is a demonstration of the possibilities of this code. 
-It is a single image composed of 521 files spread across 27 folders. 
+The image above is a demonstration of this code. 
+It is composed of 27 folders containing a total of 520 files.
 Each source file is a representation of "Hello World" in a different programming language.
 The files were obtained from the <a href="https://github.com/leachim6/hello-world">hello-world</a> repository
 which was inspired by <a href="https://helloworldcollection.github.io/">The Hello World Collection</a>.
@@ -28,10 +30,12 @@ which was inspired by <a href="https://helloworldcollection.github.io/">The Hell
 ## Getting Started
 
 ### Installing Java
+<p align="justify">
 Installing the Java Development Kit (JDK) is only a requirement for developers. 
 Users who plan to solely use the program (run the pre-built JAR file) are only required to install the Java Runtime Environment (JRE). 
 The minimum compiler compliance is 1.8, meaning that systems with installations of Java 8 and above can run the JAR. 
 Simply install the version of your choice for your operating system, and you can convert almost any file into an image!
+</p>
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
