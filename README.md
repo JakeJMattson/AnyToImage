@@ -8,10 +8,8 @@ This program is written purely in Java, meaning that it can run on all systems s
 There are no additional libraries to configure.
 </p>
 
-## Demo
-
 <p align="center">
-  <img src="AnyToImage/demo/Output/Demo.png" width="60%" />
+  <img src="AnyToImage/demo/Output/Demo.png" width="90%" />
 </p>
 
 <p align="justify">
