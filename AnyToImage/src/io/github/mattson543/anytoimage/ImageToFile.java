@@ -55,8 +55,6 @@ public class ImageToFile
 	 * @param file
 	 *            File containing the image to be read
 	 * @return Pixels from image
-	 * @throws IOException
-	 *             Failed to read image from file
 	 */
 	private static int[] extractPixels(File file)
 	{
@@ -119,8 +117,6 @@ public class ImageToFile
 	 *            File names and data as a byte array
 	 * @param outputDir
 	 *            Directory to store all output files in
-	 * @throws IOException
-	 *             Failed to create file (write bytes)
 	 */
 	private static void createFiles(byte[] bytes, File outputDir)
 	{
