@@ -1,4 +1,0 @@
-PROGRAM hello_world
-BEGIN
-  WRITE('Hello, world!', CR)
-END hello_world

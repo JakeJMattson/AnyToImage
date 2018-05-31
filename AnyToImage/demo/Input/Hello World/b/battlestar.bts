@@ -1,3 +1,0 @@
-#!/usr/bin/bts
-const hello = "Hello, world!\n"
-print(hello)
