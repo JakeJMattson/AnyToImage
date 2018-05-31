@@ -9,14 +9,14 @@ There are no additional libraries to configure.
 </p>
 
 <p align="center">
-  <img src="AnyToImage/demo/Output/Demo.png" width="90%" />
+  <img src="AnyToImage/demo/Demo.png" width="100%" />
 </p>
 
 <p align="justify">
 The image above is a demonstration of this code. 
 It is composed of 27 folders containing a total of 520 files.
 Each source file is a representation of "Hello World" in a different programming language.
-The files were obtained from the <a href="https://github.com/leachim6/hello-world">hello-world</a> repository
+The files can be obtained from the <a href="https://github.com/leachim6/hello-world">hello-world</a> repository
 which was inspired by <a href="https://helloworldcollection.github.io/">The Hello World Collection</a>.
 </p>
 
