@@ -5,7 +5,7 @@
     <img src="https://img.shields.io/badge/Java-8-blue.svg" alt="Java 8">
   </a>
   <a href="LICENSE.md">
-    <img src="https://img.shields.io/github/license/mattson543/FacialRecognition.svg">
+    <img src="https://img.shields.io/github/license/mattson543/AnyToImage.svg">
   </a>
 </p>
 
@@ -13,9 +13,11 @@
 This project allows you to convert almost any file, group of files, or directory into an image.
 By reading bytes from a file and using those bytes as color channel values, pixels can be constructed and used to form an image.
 The current build allows you to convert files to images, and extract files from converted images.
+</p>
 
 <img src="AnyToImage/demo/Demo.png" width="100%" />
 
+<p align="justify">
 The image above is a demonstration of this code. 
 It is composed of 27 folders containing a total of 520 files.
 Each source file is an implementation of "Hello World" in a different programming language.
