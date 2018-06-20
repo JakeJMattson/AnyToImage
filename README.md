@@ -5,7 +5,10 @@
     <img src="https://img.shields.io/badge/Java-8-blue.svg" alt="Java 8">
   </a>
   <a href="LICENSE.md">
-    <img src="https://img.shields.io/github/license/mattson543/AnyToImage.svg">
+    <img src="https://img.shields.io/github/license/mattson543/AnyToImage.svg" alt="license">
+  </a>
+  <a href="https://GitHub.com/mattson543/AnyToImage/releases/">
+    <img src="https://img.shields.io/github/release/mattson543/AnyToImage.svg" alt="release">
   </a>
 </p>
 
