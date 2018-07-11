@@ -48,10 +48,10 @@ public class ConversionController implements ActionListener
 	private final JTextField[] txtOutput;
 
 	//Constants
-	private final static int FILE_TO_IMAGE = 0;
-	private final static int IMAGE_TO_FILE = 1;
-	private final static int NUM_OF_TABS = 2;
-	private final FileNameExtensionFilter pngFilter = new FileNameExtensionFilter("*.png", "png");
+	private static final int FILE_TO_IMAGE = 0;
+	private static final int IMAGE_TO_FILE = 1;
+	private static final int NUM_OF_TABS = 2;
+	private static final FileNameExtensionFilter pngFilter = new FileNameExtensionFilter("*.png", "png");
 
 	public static void main(String[] args)
 	{
@@ -75,8 +75,6 @@ public class ConversionController implements ActionListener
 				FileToImage.convert(input, output, false);
 			else if (conversionType == IMAGE_TO_FILE)
 				ImageToFile.convert(input, output, false);
-			else
-				System.out.println("Unknown conversion type!");
 		}
 		else
 			System.out.println("Insufficient arguments!");
@@ -241,7 +239,7 @@ public class ConversionController implements ActionListener
 	private DropTarget createDropTarget(final int tabIndex)
 	{
 		//Create new Drag and Drop zone
-		DropTarget target = new DropTarget()
+		return new DropTarget()
 		{
 			@Override
 			public synchronized void drop(DropTargetDropEvent drop)
@@ -267,6 +265,7 @@ public class ConversionController implements ActionListener
 						}
 						else
 							inputFiles.get(tabIndex).add(file);
+
 					//Refresh display
 					refreshInputDisplay(tabIndex);
 				}
@@ -276,8 +275,6 @@ public class ConversionController implements ActionListener
 				}
 			}
 		};
-
-		return target;
 	}
 
 	/**
@@ -417,7 +414,7 @@ public class ConversionController implements ActionListener
 	 */
 	private MouseMotionAdapter createMouseMotionAdapter(final int tabIndex)
 	{
-		MouseMotionAdapter listener = new MouseMotionAdapter()
+		return new MouseMotionAdapter()
 		{
 			@Override
 			public void mouseMoved(MouseEvent e)
@@ -426,7 +423,7 @@ public class ConversionController implements ActionListener
 				@SuppressWarnings("unchecked")
 				JList<String> list = (JList<String>) e.getSource();
 
-				if (inputFiles.get(tabIndex).size() != 0)
+				if (!inputFiles.get(tabIndex).isEmpty())
 				{
 					//Get index of item
 					int index = list.locationToIndex(e.getPoint());
@@ -439,8 +436,6 @@ public class ConversionController implements ActionListener
 					list.setToolTipText(null);
 			}
 		};
-
-		return listener;
 	}
 
 	/**

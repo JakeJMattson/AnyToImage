@@ -7,6 +7,11 @@ package io.github.mattson543.anytoimage;
  */
 public class ByteUtils
 {
+	private ByteUtils()
+	{
+		throw new IllegalStateException("Utility class");
+	}
+
 	/**
 	 * Split integer into bytes.
 	 *

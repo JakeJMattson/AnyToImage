@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.*;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
@@ -16,6 +16,11 @@ import javax.swing.JOptionPane;
  */
 public class FileToImage
 {
+	private FileToImage()
+	{
+		throw new IllegalStateException("Stateless class");
+	}
+
 	/**
 	 * Static method to initiate the conversion.
 	 *
@@ -40,11 +45,6 @@ public class FileToImage
 
 		//Create pixels from file information
 		int[] pixels = bytesToPixels(stream.toByteArray());
-
-		//Free memory
-		inputFiles = null;
-		stream = null;
-		System.gc();
 
 		//Create image from pixels
 		boolean wasCreated = createImage(pixels, outputFile);
@@ -76,29 +76,25 @@ public class FileToImage
 		//Get selected directory
 		String parentDir = file.getName();
 
-		List<Path> paths = null;
-
-		try
+		try (Stream<Path> files = Files.walk(file.toPath()))
 		{
 			//Get all files from the directory and its sub-directories
-			paths = Files.walk(file.toPath())
-					.filter(Files::isRegularFile)
-					.collect(Collectors.toList());
+			List<Path> paths = files.filter(Files::isRegularFile).collect(Collectors.toList());
+
+			for (Path path : paths)
+			{
+				//Construct arguments
+				String fullPath = path.toString();
+				String fileName = fullPath.substring(fullPath.indexOf(parentDir));
+
+				//Retrieve bytes from each file
+				fileToBytes(stream, path.toFile(), fileName);
+			}
 		}
 		catch (IOException e)
 		{
 			//Mandatory catch when walking directory
 			System.out.println("Unable to walk directory: " + file.toString());
-		}
-
-		for (Path path : paths)
-		{
-			//Construct arguments
-			String fullPath = path.toString();
-			String fileName = fullPath.substring(fullPath.indexOf(parentDir));
-
-			//Retrieve bytes from each file
-			fileToBytes(stream, path.toFile(), fileName);
 		}
 	}
 
@@ -216,7 +212,6 @@ public class FileToImage
 		catch (IOException e)
 		{
 			System.out.println("Error creating image!");
-			e.printStackTrace();
 			return false;
 		}
 	}

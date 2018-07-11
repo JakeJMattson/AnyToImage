@@ -15,6 +15,11 @@ import javax.swing.JOptionPane;
  */
 public class ImageToFile
 {
+	private ImageToFile()
+	{
+		throw new IllegalStateException("Stateless class");
+	}
+
 	/**
 	 * Static method to initiate the conversion.
 	 *
@@ -34,9 +39,6 @@ public class ImageToFile
 
 			//Separate pixels into bytes
 			byte[] allBytes = extractBytes(pixels);
-
-			//Free memory
-			pixels = null;
 
 			//Create files from bytes
 			createFiles(allBytes, outputDir);
@@ -152,7 +154,7 @@ public class ImageToFile
 			if (!isName)
 			{
 				//Create file
-				File newFile = new File(outputDir + "/" + new String(name.toByteArray()));
+				File newFile = new File(outputDir + File.separator + new String(name.toByteArray()));
 				File parentDir = newFile.getParentFile();
 
 				if (!parentDir.exists())
