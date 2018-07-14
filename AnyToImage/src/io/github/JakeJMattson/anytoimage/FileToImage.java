@@ -1,4 +1,4 @@
-package io.github.mattson543.anytoimage;
+package io.github.JakeJMattson.anytoimage;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 /**
  * Create images from files by converting bytes to RGB values.
  *
- * @author mattson543
+ * @author JakeJMattson
  */
 public class FileToImage
 {

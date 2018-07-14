@@ -1,4 +1,4 @@
-package io.github.mattson543.anytoimage;
+package io.github.JakeJMattson.anytoimage;
 
 import java.awt.image.*;
 import java.io.*;
@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 /**
  * Extract files from images created by the 'FileToImage' class.
  *
- * @author mattson543
+ * @author JakeJMattson
  */
 public class ImageToFile
 {

@@ -3,7 +3,7 @@
  * Convert files to images using file bytes.
  */
 
-package io.github.mattson543.anytoimage;
+package io.github.JakeJMattson.anytoimage;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -22,7 +22,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 /**
  * Display/Main - GUI to accept user input and convert files.
  *
- * @author mattson543
+ * @author JakeJMattson
  */
 @SuppressWarnings("serial")
 public class ConversionController implements ActionListener
@@ -48,9 +48,7 @@ public class ConversionController implements ActionListener
 	private final JTextField[] txtOutput;
 
 	//Constants
-	private static final int FILE_TO_IMAGE = 0;
-	private static final int IMAGE_TO_FILE = 1;
-	private static final int NUM_OF_TABS = 2;
+	private static final int FILE_TO_IMAGE = 0, IMAGE_TO_FILE = 1, NUM_OF_TABS = 2;
 	private static final FileNameExtensionFilter pngFilter = new FileNameExtensionFilter("*.png", "png");
 
 	public static void main(String[] args)

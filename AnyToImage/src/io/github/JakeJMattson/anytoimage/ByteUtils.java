@@ -1,9 +1,9 @@
-package io.github.mattson543.anytoimage;
+package io.github.JakeJMattson.anytoimage;
 
 /**
  * Limited utility class for handling bytes and conversions.
  *
- * @author mattson543
+ * @author JakeJMattson
  */
 public class ByteUtils
 {
