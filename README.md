@@ -16,7 +16,7 @@ By reading bytes from a file and using those bytes as color channel values, pixe
 The current build allows you to convert files to images, and extract files from converted images.
 </p>
 
-<img src="AnyToImage/demo/Demo.png" width="100%" />
+<img src="https://user-images.githubusercontent.com/22604455/43825094-6f3ad9c0-9ab9-11e8-869a-55f3602caf64.png" width="100%" />
 
 <p align="justify">
 The image above is a demonstration of this code. 
