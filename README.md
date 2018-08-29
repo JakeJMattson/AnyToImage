@@ -51,4 +51,4 @@ Run the installer and follow the instructions provided.
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Adaptations
-[Web interface](https://img.kyle.tools/) written by [Kyle  Sferrazza](https://github.com/kylesferrazza)
+~~[Web interface](https://img.kyle.tools/) written by [Kyle  Sferrazza](https://github.com/kylesferrazza)~~ Deprecated
