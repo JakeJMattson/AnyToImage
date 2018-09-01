@@ -3,7 +3,7 @@
  * Convert files to images using file bytes.
  */
 
-package io.github.JakeJMattson.anytoimage;
+package io.github.jakejmattson.anytoimage;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
