@@ -31,7 +31,28 @@ public class Gui extends Application
 
 	public static void main(String[] args)
 	{
-		launch(args);
+		if (args.length == 0) //GUI mode
+		{
+			launch(args);
+		}
+		else if (args.length >= 3) //CLI mode
+		{
+			int conversionType = Integer.parseInt(args[0]);
+			List<File> input = new ArrayList<>();
+
+			for (int i = 1; i < args.length - 1; i++)
+				input.add(new File(args[i]));
+
+			File output = new File(args[args.length - 1]);
+
+			//Process input
+			if (conversionType == 0)
+				FileToImage.convert(input, output);
+			else if (conversionType == 1)
+				ImageToFile.convert(input, output);
+		}
+		else
+			System.out.println("Insufficient arguments!");
 	}
 
 	@Override
