@@ -12,6 +12,8 @@ import javafx.stage.*;
 import java.io.*;
 import java.util.*;
 
+//TODO validate dropped file extensions
+
 public class Gui extends Application
 {
 	@FXML Button btnAddFile, btnAddDirectory, btnOutput, btnRemove, btnSubmit, btnClear;
@@ -21,7 +23,6 @@ public class Gui extends Application
 	@FXML TextField txtOutput;
 	@FXML Label lblDirectionArrow;
 
-	//Backing fields
 	private List<File> inputFiles = new ArrayList<>();
 	private File outputFile;
 
@@ -143,33 +144,56 @@ public class Gui extends Application
 		if (!validateConversion())
 			return;
 
+		Alert.AlertType infoType = Alert.AlertType.INFORMATION, errorType = Alert.AlertType.ERROR;
+		String infoTitle = "Operation successful!", errorTitle = "Operation failed!";
+
 		if (radFiles.isSelected())
-			FileToImage.convert(inputFiles, outputFile, true);
+		{
+			boolean wasSuccessful = FileToImage.convert(inputFiles, outputFile);
+
+			if (wasSuccessful)
+				displayDialog(infoType, infoTitle, "Image created from files.");
+			else
+				displayDialog(errorType, errorTitle, "Image not created due to errors.");
+		}
 		else
-			ImageToFile.convert(inputFiles, outputFile, true);
+		{
+			boolean wasSuccessful = ImageToFile.convert(inputFiles, outputFile);
+
+			if (wasSuccessful)
+				displayDialog(infoType, infoTitle, "Files extracted from image.");
+			else
+				displayDialog(errorType, errorTitle, "Unable to extract any files.");
+		}
 	}
 
 	private boolean validateConversion()
 	{
-		Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Incomplete field");
-		alert.setHeaderText(null);
+		Alert.AlertType type = Alert.AlertType.ERROR;
+		String title = "Incomplete field";
 
 		if (inputFiles.size() == 0)
 		{
-			alert.setContentText("Please add input files to continue.");
-			alert.showAndWait();
+			displayDialog(type, title, "Please add input files to continue.");
 			return false;
 		}
 
 		if (outputFile == null)
 		{
-			alert.setContentText("Please specify the output to continue.");
-			alert.showAndWait();
+			displayDialog(type, title, "Please specify the output to continue.");
 			return false;
 		}
 
 		return true;
+	}
+
+	private void displayDialog(Alert.AlertType type, String title, String content)
+	{
+		Alert dialog = new Alert(type);
+		dialog.setTitle(title);
+		dialog.setHeaderText(null);
+		dialog.setContentText(content);
+		dialog.showAndWait();
 	}
 
 	private void clearAll()

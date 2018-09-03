@@ -1,12 +1,10 @@
 package io.github.jakejmattson.anytoimage;
 
+import javax.imageio.ImageIO;
 import java.awt.image.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 
 /**
  * Extract files from images created by the 'FileToImage' class.
@@ -27,28 +25,28 @@ public class ImageToFile
 	 *            List of image files to be converted
 	 * @param outputDir
 	 *            Directory to store all output files in
-	 * @param displayMode
-	 *            How to display information to a user: GUI = true; CLI = false
 	 */
-	public static void convert(List<File> inputFiles, File outputDir, boolean displayMode)
+	public static boolean convert(List<File> inputFiles, File outputDir)
 	{
+		boolean wasSuccessful = false;
+
 		for (File file : inputFiles)
 		{
 			//Extract individual pixels from an image
 			int[] pixels = extractPixels(file);
 
+			if (pixels == null)
+				continue;
+
 			//Separate pixels into bytes
 			byte[] allBytes = extractBytes(pixels);
 
 			//Create files from bytes
-			createFiles(allBytes, outputDir);
+			if (createFiles(allBytes, outputDir))
+				wasSuccessful = true;
 		}
 
-		if (displayMode)
-			JOptionPane.showMessageDialog(null, "All valid files have been extracted!", "Extraction Complete!",
-					JOptionPane.INFORMATION_MESSAGE);
-		else
-			System.out.println("Extraction Complete!");
+		return wasSuccessful;
 	}
 
 	/**
@@ -120,12 +118,13 @@ public class ImageToFile
 	 * @param outputDir
 	 *            Directory to store all output files in
 	 */
-	private static void createFiles(byte[] bytes, File outputDir)
+	private static boolean createFiles(byte[] bytes, File outputDir)
 	{
 		//Create stream to store file info
 		ByteArrayOutputStream name = new ByteArrayOutputStream();
 		ByteArrayOutputStream data = new ByteArrayOutputStream();
 
+		boolean filesExtracted = false;
 		boolean isName = true;
 		int index = 0;
 
@@ -163,6 +162,7 @@ public class ImageToFile
 				try
 				{
 					Files.write(newFile.toPath(), data.toByteArray());
+					filesExtracted = true;
 				}
 				catch (IOException e)
 				{
@@ -176,5 +176,7 @@ public class ImageToFile
 
 			isName = !isName;
 		}
+
+		return filesExtracted;
 	}
 }

@@ -1,13 +1,11 @@
 package io.github.jakejmattson.anytoimage;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.*;
 import java.util.List;
 import java.util.stream.*;
-
-import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 
 /**
  * Create images from files by converting bytes to RGB values.
@@ -28,10 +26,8 @@ public class FileToImage
 	 *            List of files to be converted
 	 * @param outputFile
 	 *            Image file to be output when conversion is complete
-	 * @param displayMode
-	 *            How to display information to a user: GUI = true; CLI = false
 	 */
-	public static void convert(List<File> inputFiles, File outputFile, boolean displayMode)
+	public static boolean convert(List<File> inputFiles, File outputFile)
 	{
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
@@ -46,21 +42,8 @@ public class FileToImage
 		//Create pixels from file information
 		int[] pixels = bytesToPixels(stream.toByteArray());
 
-		//Create image from pixels
-		boolean wasCreated = createImage(pixels, outputFile);
-
-		//Status messages
-		String success = "Image created successfully!";
-		String failure = "Unable to write to file!";
-
-		//Display status
-		if (displayMode)
-			if (wasCreated)
-				displayDialog(success, "Creation Complete!", JOptionPane.INFORMATION_MESSAGE);
-			else
-				displayDialog(failure, "Error!", JOptionPane.ERROR_MESSAGE);
-		else
-			System.out.println(wasCreated ? success : failure);
+		//Create image and return success status
+		return createImage(pixels, outputFile);
 	}
 
 	/**
@@ -199,6 +182,9 @@ public class FileToImage
 		//Calculate image dimensions
 		int dims = (int) Math.ceil(Math.sqrt(pixels.length));
 
+		if (dims == 0)
+			return false;
+
 		//Store pixel values in image
 		BufferedImage image = new BufferedImage(dims, dims, BufferedImage.TYPE_INT_RGB);
 		image.setRGB(0, 0, dims, dims, pixels, 0, dims);
@@ -214,10 +200,5 @@ public class FileToImage
 			System.out.println("Error creating image!");
 			return false;
 		}
-	}
-
-	private static void displayDialog(String message, String title, int type)
-	{
-		JOptionPane.showMessageDialog(null, message, title, type);
 	}
 }

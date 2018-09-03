@@ -5,6 +5,9 @@
 
 package io.github.jakejmattson.anytoimage;
 
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.*;
@@ -12,10 +15,6 @@ import java.awt.event.*;
 import java.io.File;
 import java.util.*;
 import java.util.List;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 // TODO fix resizing issue upon filling JList in GUI
 
@@ -70,9 +69,9 @@ public class ConversionController implements ActionListener
 
 			//Process input
 			if (conversionType == FILE_TO_IMAGE)
-				FileToImage.convert(input, output, false);
+				FileToImage.convert(input, output);
 			else if (conversionType == IMAGE_TO_FILE)
-				ImageToFile.convert(input, output, false);
+				ImageToFile.convert(input, output);
 		}
 		else
 			System.out.println("Insufficient arguments!");
@@ -531,9 +530,9 @@ public class ConversionController implements ActionListener
 
 					//Process input
 					if (tabIndex == FILE_TO_IMAGE)
-						FileToImage.convert(input, outputFile[tabIndex], true);
+						FileToImage.convert(input, outputFile[tabIndex]);
 					else if (tabIndex == IMAGE_TO_FILE)
-						ImageToFile.convert(input, outputFile[tabIndex], true);
+						ImageToFile.convert(input, outputFile[tabIndex]);
 				}
 				else
 				{
