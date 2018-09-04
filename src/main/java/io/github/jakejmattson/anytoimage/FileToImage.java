@@ -76,8 +76,7 @@ public class FileToImage
 		}
 		catch (IOException e)
 		{
-			//Mandatory catch when walking directory
-			System.out.println("Unable to walk directory: " + file.toString());
+			ExceptionDisplay.display(e, "Unable to walk directory: " + file.toString());
 		}
 	}
 
@@ -106,8 +105,7 @@ public class FileToImage
 		}
 		catch (IOException e)
 		{
-			//Possible causes: File locked; no access
-			System.out.println("Unable to read file: " + file.toString());
+			ExceptionDisplay.display(e, "Unable to read file: " + file.toString());
 		}
 
 		try
@@ -123,9 +121,7 @@ public class FileToImage
 		}
 		catch (IOException e)
 		{
-			//Mandatory catch when writing array to stream
-			//Failure expanding stream when heap is full
-			System.out.println("Error writing array to stream!");
+			ExceptionDisplay.display(e, "Error writing array to stream!");
 		}
 	}
 
@@ -197,7 +193,7 @@ public class FileToImage
 		}
 		catch (IOException e)
 		{
-			System.out.println("Error creating image!");
+			ExceptionDisplay.display(e, "Error creating image!");
 			return false;
 		}
 	}

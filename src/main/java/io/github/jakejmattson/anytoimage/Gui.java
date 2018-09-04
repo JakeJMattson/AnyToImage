@@ -31,11 +31,7 @@ public class Gui extends Application
 
 	public static void main(String[] args)
 	{
-		if (args.length == 0) //GUI mode
-		{
-			launch(args);
-		}
-		else if (args.length >= 3) //CLI mode
+		if (args.length >= 3) //CLI mode
 		{
 			int conversionType = Integer.parseInt(args[0]);
 			List<File> input = new ArrayList<>();
@@ -50,9 +46,13 @@ public class Gui extends Application
 				FileToImage.convert(input, output);
 			else if (conversionType == 1)
 				ImageToFile.convert(input, output);
+			else
+				ExceptionDisplay.display(new Exception(), "Unrecognized conversion type!");
 		}
+		else if (args.length == 0) //GUI mode
+			launch(args);
 		else
-			System.out.println("Insufficient arguments!");
+			ExceptionDisplay.display(new Exception(), "Insufficient arguments!");
 	}
 
 	@Override
