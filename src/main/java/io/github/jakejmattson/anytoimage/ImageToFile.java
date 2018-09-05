@@ -77,7 +77,7 @@ public class ImageToFile
 		}
 		catch (IOException e)
 		{
-			ExceptionDisplay.display(e, "Failed to read image: " + file.toString());
+			DialogDisplay.displayException(e, "Failed to read image: " + file.toString());
 		}
 
 		return pixels;
@@ -102,7 +102,7 @@ public class ImageToFile
 			}
 			catch (IOException e)
 			{
-				ExceptionDisplay.display(e, "Error writing array to stream!");
+				DialogDisplay.displayException(e, "Error writing array to stream!");
 			}
 
 		return stream.toByteArray();
@@ -164,7 +164,7 @@ public class ImageToFile
 				}
 				catch (IOException e)
 				{
-					ExceptionDisplay.display(e, "Failed to create file: " + newFile.toString());
+					DialogDisplay.displayException(e, "Failed to create file: " + newFile.toString());
 				}
 
 				//Clear streams

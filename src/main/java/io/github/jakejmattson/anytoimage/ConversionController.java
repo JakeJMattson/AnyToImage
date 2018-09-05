@@ -48,12 +48,12 @@ public class ConversionController extends Application
 			else if (conversionType == 1)
 				ImageToFile.convert(input, output);
 			else
-				ExceptionDisplay.display(new Exception(), "Unrecognized conversion type!");
+				DialogDisplay.displayException(new Exception(), "Unrecognized conversion type!");
 		}
 		else if (args.length == 0) //GUI mode
 			launch(args);
 		else
-			ExceptionDisplay.display(new Exception(), "Insufficient arguments!");
+			DialogDisplay.displayException(new Exception(), "Insufficient arguments!");
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class ConversionController extends Application
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Add input file");
 
-		if (radFiles.isSelected())
+		if (radImage.isSelected())
 			chooser.getExtensionFilters().add(pngFilter);
 
 		File selection = chooser.showOpenDialog(null);
@@ -166,7 +166,6 @@ public class ConversionController extends Application
 		if (!validateConversion())
 			return;
 
-		Alert.AlertType infoType = Alert.AlertType.INFORMATION, errorType = Alert.AlertType.ERROR;
 		String infoTitle = "Operation successful!", errorTitle = "Operation failed!";
 
 		if (radFiles.isSelected())
@@ -174,48 +173,38 @@ public class ConversionController extends Application
 			boolean wasSuccessful = FileToImage.convert(inputFiles, outputFile);
 
 			if (wasSuccessful)
-				displayDialog(infoType, infoTitle, "Image created from files.");
+				DialogDisplay.displayInfo(infoTitle, "Image created from files.");
 			else
-				displayDialog(errorType, errorTitle, "Image not created due to errors.");
+				DialogDisplay.displayError(errorTitle, "Image not created due to errors.");
 		}
 		else
 		{
 			boolean wasSuccessful = ImageToFile.convert(inputFiles, outputFile);
 
 			if (wasSuccessful)
-				displayDialog(infoType, infoTitle, "Files extracted from image.");
+				DialogDisplay.displayInfo(infoTitle, "Files extracted from image.");
 			else
-				displayDialog(errorType, errorTitle, "Unable to extract any files.");
+				DialogDisplay.displayError(errorTitle, "Unable to extract any files.");
 		}
 	}
 
 	private boolean validateConversion()
 	{
-		Alert.AlertType type = Alert.AlertType.ERROR;
 		String title = "Incomplete field";
 
 		if (inputFiles.size() == 0)
 		{
-			displayDialog(type, title, "Please add input files to continue.");
+			DialogDisplay.displayError(title, "Please add input files to continue.");
 			return false;
 		}
 
 		if (outputFile == null)
 		{
-			displayDialog(type, title, "Please specify the output to continue.");
+			DialogDisplay.displayError(title, "Please specify the output to continue.");
 			return false;
 		}
 
 		return true;
-	}
-
-	private void displayDialog(Alert.AlertType type, String title, String content)
-	{
-		Alert dialog = new Alert(type);
-		dialog.setTitle(title);
-		dialog.setHeaderText(null);
-		dialog.setContentText(content);
-		dialog.showAndWait();
 	}
 
 	private void clearAll()

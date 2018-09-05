@@ -76,7 +76,7 @@ public class FileToImage
 		}
 		catch (IOException e)
 		{
-			ExceptionDisplay.display(e, "Unable to walk directory: " + file.toString());
+			DialogDisplay.displayException(e, "Unable to walk directory: " + file.toString());
 		}
 	}
 
@@ -105,7 +105,7 @@ public class FileToImage
 		}
 		catch (IOException e)
 		{
-			ExceptionDisplay.display(e, "Unable to read file: " + file.toString());
+			DialogDisplay.displayException(e, "Unable to read file: " + file.toString());
 		}
 
 		try
@@ -121,7 +121,7 @@ public class FileToImage
 		}
 		catch (IOException e)
 		{
-			ExceptionDisplay.display(e, "Error writing array to stream!");
+			DialogDisplay.displayException(e, "Error writing array to stream!");
 		}
 	}
 
@@ -193,7 +193,7 @@ public class FileToImage
 		}
 		catch (IOException e)
 		{
-			ExceptionDisplay.display(e, "Error creating image!");
+			DialogDisplay.displayException(e, "Error creating image!");
 			return false;
 		}
 	}

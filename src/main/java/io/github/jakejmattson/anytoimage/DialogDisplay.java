@@ -5,9 +5,27 @@ import javafx.scene.layout.*;
 
 import java.io.*;
 
-public class ExceptionDisplay
+public class DialogDisplay
 {
-	public static void display(Exception e, String message)
+	public static void displayInfo(String title, String message)
+	{
+		Alert dialog = new Alert(Alert.AlertType.INFORMATION);
+		dialog.setTitle(title);
+		dialog.setHeaderText(null);
+		dialog.setContentText(message);
+		dialog.showAndWait();
+	}
+
+	public static void displayError(String title, String message)
+	{
+		Alert dialog = new Alert(Alert.AlertType.ERROR);
+		dialog.setTitle(title);
+		dialog.setHeaderText(null);
+		dialog.setContentText(message);
+		dialog.showAndWait();
+	}
+
+	public static void displayException(Exception e, String message)
 	{
 		System.out.println(message);
 		e.printStackTrace();
