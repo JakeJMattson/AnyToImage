@@ -13,8 +13,9 @@ import java.io.*;
 import java.util.*;
 
 //TODO validate dropped file extensions
+//TODO fix "add directory" (image -> files)
 
-public class Gui extends Application
+public class ConversionController extends Application
 {
 	@FXML Button btnAddFile, btnAddDirectory, btnOutput, btnRemove, btnSubmit, btnClear;
 	@FXML RadioButton radFiles, radImage;
@@ -58,7 +59,7 @@ public class Gui extends Application
 	@Override
 	public void start(Stage primaryStage) throws IOException
 	{
-		Parent root = FXMLLoader.load(getClass().getResource("/Gui.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/ConversionView.fxml"));
 		primaryStage.setTitle("AnyToImage");
 		primaryStage.setScene(new Scene(root));
 		primaryStage.setResizable(false);
