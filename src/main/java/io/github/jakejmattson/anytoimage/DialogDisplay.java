@@ -5,36 +5,48 @@ import javafx.scene.layout.*;
 
 import java.io.*;
 
-public class DialogDisplay
+class DialogDisplay
 {
-	public static void displayInfo(String title, String message)
+	static boolean isGraphical = true;
+	static boolean shouldPrint = true;
+
+	static void displayInfo(String title, String message)
 	{
-		Alert dialog = new Alert(Alert.AlertType.INFORMATION);
-		dialog.setTitle(title);
-		dialog.setHeaderText(null);
-		dialog.setContentText(message);
+		if (shouldPrint)
+			System.out.println(message);
+
+		if (!isGraphical)
+			return;
+
+		Alert dialog = createDialog(Alert.AlertType.INFORMATION, title, message);
 		dialog.showAndWait();
 	}
 
-	public static void displayError(String title, String message)
+	static void displayError(String title, String message)
 	{
-		Alert dialog = new Alert(Alert.AlertType.ERROR);
-		dialog.setTitle(title);
-		dialog.setHeaderText(null);
-		dialog.setContentText(message);
+		if (shouldPrint)
+			System.out.println(message);
+
+		if (!isGraphical)
+			return;
+
+		Alert dialog = createDialog(Alert.AlertType.ERROR, title, message);
 		dialog.showAndWait();
 	}
 
-	public static void displayException(Exception e, String message)
+	static void displayException(Exception e, String message)
 	{
-		System.out.println(message);
-		e.printStackTrace();
+		if (shouldPrint)
+		{
+			System.out.println(message);
+			e.printStackTrace();
+		}
+
+		if (!isGraphical)
+			return;
 
 		//Create dialog
-		Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Something went wrong!");
-		alert.setHeaderText(null);
-		alert.setContentText(message);
+		Alert alert = createDialog(Alert.AlertType.ERROR, "Something went wrong!", message);
 
 		//Get exception as string
 		StringWriter sw = new StringWriter();
@@ -47,6 +59,8 @@ public class DialogDisplay
 		textArea.setEditable(false);
 
 		//Format content
+		GridPane.setVgrow(textArea, Priority.ALWAYS);
+		GridPane.setHgrow(textArea, Priority.ALWAYS);
 		GridPane expContent = new GridPane();
 		expContent.add(new Label("Exception stacktrace:"), 0, 0);
 		expContent.add(textArea, 0, 1);
@@ -54,5 +68,14 @@ public class DialogDisplay
 		//Display exception
 		alert.getDialogPane().setExpandableContent(expContent);
 		alert.showAndWait();
+	}
+
+	private static Alert createDialog(Alert.AlertType type, String title, String message)
+	{
+		Alert dialog = new Alert(type, message);
+		dialog.setTitle(title);
+		dialog.setHeaderText(null);
+
+		return dialog;
 	}
 }

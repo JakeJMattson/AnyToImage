@@ -34,6 +34,8 @@ public class ConversionController extends Application
 	{
 		if (args.length >= 3) //CLI mode
 		{
+			DialogDisplay.isGraphical = false;
+
 			int conversionType = Integer.parseInt(args[0]);
 			List<File> input = new ArrayList<>();
 

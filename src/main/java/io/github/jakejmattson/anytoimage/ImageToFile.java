@@ -3,7 +3,7 @@ package io.github.jakejmattson.anytoimage;
 import javax.imageio.ImageIO;
 import java.awt.image.*;
 import java.io.*;
-import java.nio.file.Files;
+import java.nio.file.*;
 import java.util.List;
 
 /**
@@ -118,7 +118,7 @@ public class ImageToFile
 	 */
 	private static boolean createFiles(byte[] bytes, File outputDir)
 	{
-		//Create stream to store file info
+		//Create streams to store file info
 		ByteArrayOutputStream name = new ByteArrayOutputStream();
 		ByteArrayOutputStream data = new ByteArrayOutputStream();
 
@@ -126,53 +126,64 @@ public class ImageToFile
 		boolean isName = true;
 		int index = 0;
 
-		while (index != bytes.length)
+		File newFile = null;
+
+		try
 		{
-			//Calculate the number of bytes in each cluster (name/data)
-			byte[] sizeBytes;
-
-			if (isName)
-				sizeBytes = new byte[] {0, 0, bytes[index++]};
-			else
-				sizeBytes = new byte[] {bytes[index++], bytes[index++], bytes[index++], bytes[index++]};
-
-			int clusterLength = ByteUtils.bytesToInt(sizeBytes);
-
-			//EOF
-			if (clusterLength == 0)
-				break;
-
-			for (int i = 0; i < clusterLength; i++)
-				if (isName)
-					name.write(bytes[index++]);
-				else
-					data.write(bytes[index++]);
-
-			if (!isName)
+			while (index != bytes.length)
 			{
-				//Create file
-				File newFile = new File(outputDir + File.separator + new String(name.toByteArray()));
-				File parentDir = newFile.getParentFile();
+				//Calculate the number of bytes in each cluster (name/data)
+				byte[] sizeBytes;
 
-				if (!parentDir.exists())
-					parentDir.mkdirs();
+				if (isName)
+					sizeBytes = new byte[] {0, 0, bytes[index++]};
+				else
+					sizeBytes = new byte[] {bytes[index++], bytes[index++], bytes[index++], bytes[index++]};
 
-				try
+				int clusterLength = ByteUtils.bytesToInt(sizeBytes);
+
+				//EOF
+				if (clusterLength == 0)
+					break;
+
+				for (int i = 0; i < clusterLength; i++)
+					if (isName)
+						name.write(bytes[index++]);
+					else
+						data.write(bytes[index++]);
+
+				if (!isName)
 				{
+					//Create file
+					newFile = new File(outputDir + File.separator + new String(name.toByteArray()));
+					File parentDir = newFile.getParentFile();
+
+					if (!parentDir.exists())
+						parentDir.mkdirs();
+
 					Files.write(newFile.toPath(), data.toByteArray());
 					filesExtracted = true;
-				}
-				catch (IOException e)
-				{
-					DialogDisplay.displayException(e, "Failed to create file: " + newFile.toString());
+
+					//Clear streams
+					name.reset();
+					data.reset();
 				}
 
-				//Clear streams
-				name.reset();
-				data.reset();
+				isName = !isName;
 			}
-
-			isName = !isName;
+		}
+		catch (ArrayIndexOutOfBoundsException e)
+		{
+			DialogDisplay.displayException(e, "Bad input data!");
+		}
+		catch (InvalidPathException e)
+		{
+			DialogDisplay.displayException(e, "Bad input image lead to invalid output path.");
+		}
+		catch (IOException e)
+		{
+			//General case
+			DialogDisplay.displayException(e, "Failed to create file: " + newFile.toString());
 		}
 
 		return filesExtracted;
