@@ -4,7 +4,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.*;
 import java.io.*;
 import java.nio.file.*;
-import java.util.List;
+import java.util.*;
 
 /**
  * Extract files from images created by the 'FileToImage' class.
@@ -127,6 +127,7 @@ public class ImageToFile
 		int index = 0;
 
 		File newFile = null;
+		List<File> allNewFiles = new ArrayList<>();
 
 		try
 		{
@@ -157,6 +158,7 @@ public class ImageToFile
 					//Create file
 					newFile = new File(outputDir + File.separator + new String(name.toByteArray()));
 					File parentDir = newFile.getParentFile();
+					allNewFiles.add(newFile);
 
 					if (!parentDir.exists())
 						parentDir.mkdirs();
@@ -178,6 +180,11 @@ public class ImageToFile
 		}
 		catch (InvalidPathException e)
 		{
+			filesExtracted = false;
+
+			for (File file : allNewFiles)
+				file.delete();
+
 			DialogDisplay.displayException(e, "Bad input image lead to invalid output path.");
 		}
 		catch (IOException e)
