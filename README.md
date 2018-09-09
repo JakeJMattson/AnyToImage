@@ -36,8 +36,7 @@ which was inspired by <a href="https://helloworldcollection.github.io/">The Hell
 
 ## Getting Started
 <p align="justify">
-The minimum version requirements for each additional software are listed in the badges at the top of the readme.
-It is recommended that you install the most updated version at your time of installation.
+The version numbers for each additional software used to build this project are listed in the badges at the top of the page. These dependencies are handled by Maven during build. If building manually, other versions may work, but this is not guaranteed.
 </p>
 
 ### Installing Java
