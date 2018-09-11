@@ -17,12 +17,18 @@ import java.util.*;
 
 public class ConversionController extends Application
 {
-	@FXML Button btnAddFile, btnAddDirectory, btnOutput, btnRemove, btnSubmit, btnClear;
-	@FXML RadioButton radFiles, radImage;
-	@FXML Pane dndPane;
-	@FXML ListView<String> lstInputs;
-	@FXML TextField txtOutput;
-	@FXML Label lblDirectionArrow;
+	@FXML private Button btnAddFile;
+	@FXML private Button btnAddDirectory;
+	@FXML private Button btnOutput;
+	@FXML private Button btnRemove;
+	@FXML private Button btnSubmit;
+	@FXML private Button btnClear;
+	@FXML private RadioButton radFiles;
+	@FXML private RadioButton radImage;
+	@FXML private Pane dndPane;
+	@FXML private ListView<String> lstInputs;
+	@FXML private TextField txtOutput;
+	@FXML private Label lblDirectionArrow;
 
 	private List<File> inputFiles = new ArrayList<>();
 	private File outputFile;
@@ -32,7 +38,7 @@ public class ConversionController extends Application
 
 	public static void main(String[] args)
 	{
-		if (args.length >= 3) //CLI mode
+		if (args.length >= 3)
 		{
 			DialogDisplay.isGraphical = false;
 
@@ -52,7 +58,7 @@ public class ConversionController extends Application
 			else
 				DialogDisplay.displayException(new Exception(), "Unrecognized conversion type!");
 		}
-		else if (args.length == 0) //GUI mode
+		else if (args.length == 0)
 			launch(args);
 		else
 			DialogDisplay.displayException(new Exception(), "Insufficient arguments!");
@@ -168,7 +174,8 @@ public class ConversionController extends Application
 		if (!validateConversion())
 			return;
 
-		String infoTitle = "Operation successful!", errorTitle = "Operation failed!";
+		String infoTitle = "Operation successful!";
+		String errorTitle = "Operation failed!";
 
 		if (radFiles.isSelected())
 		{
@@ -194,7 +201,7 @@ public class ConversionController extends Application
 	{
 		String title = "Incomplete field";
 
-		if (inputFiles.size() == 0)
+		if (inputFiles.isEmpty())
 		{
 			DialogDisplay.displayError(title, "Please add input files to continue.");
 			return false;

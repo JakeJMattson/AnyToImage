@@ -12,7 +12,7 @@ import java.util.stream.*;
  *
  * @author JakeJMattson
  */
-public class FileToImage
+final class FileToImage
 {
 	private FileToImage()
 	{
@@ -27,7 +27,7 @@ public class FileToImage
 	 * @param outputFile
 	 *            Image file to be output when conversion is complete
 	 */
-	public static boolean convert(List<File> inputFiles, File outputFile)
+	static boolean convert(List<File> inputFiles, File outputFile)
 	{
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
@@ -92,36 +92,22 @@ public class FileToImage
 	 */
 	private static void fileToBytes(ByteArrayOutputStream stream, File file, String fileName)
 	{
-		byte[] name, data, nameLength, dataLength;
-		name = data = nameLength = dataLength = null;
-
 		try
 		{
 			//Acquire file information
-			name = fileName.getBytes();
-			data = Files.readAllBytes(file.toPath());
-			nameLength = new byte[] {(byte) name.length};
-			dataLength = ByteUtils.intToBytes(data.length, 4);
+			byte[] name = fileName.getBytes();
+			byte[] data = Files.readAllBytes(file.toPath());
+			byte[] nameLength = new byte[] {(byte) name.length};
+			byte[] dataLength = ByteUtils.intToBytes(data.length, 4);
+
+			stream.write(nameLength);
+			stream.write(name);
+			stream.write(dataLength);
+			stream.write(data);
 		}
 		catch (IOException e)
 		{
 			DialogDisplay.displayException(e, "Unable to read file: " + file.toString());
-		}
-
-		try
-		{
-			if (data != null) //If file successfully read
-			{
-				//Write information into the stream
-				stream.write(nameLength);
-				stream.write(name);
-				stream.write(dataLength);
-				stream.write(data);
-			}
-		}
-		catch (IOException e)
-		{
-			DialogDisplay.displayException(e, "Error writing array to stream!");
 		}
 	}
 
@@ -134,8 +120,10 @@ public class FileToImage
 	 */
 	private static int[] bytesToPixels(byte[] bytes)
 	{
-		//Number of image channels (RGB)
-		int numOfChannels = 3;
+		final int RGB = 3, RGBA = 4;
+
+		//Number of image channels
+		int numOfChannels = RGB;
 
 		//Total number of characters to convert
 		int byteCount = bytes.length;

@@ -5,10 +5,15 @@ import javafx.scene.layout.*;
 
 import java.io.*;
 
-class DialogDisplay
+final class DialogDisplay
 {
 	static boolean isGraphical = true;
 	static boolean shouldPrint = true;
+
+	private DialogDisplay()
+	{
+		throw new IllegalStateException("Stateless class");
+	}
 
 	static void displayInfo(String title, String message)
 	{

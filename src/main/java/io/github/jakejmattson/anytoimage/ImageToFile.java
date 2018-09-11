@@ -11,7 +11,7 @@ import java.util.*;
  *
  * @author JakeJMattson
  */
-public class ImageToFile
+final class ImageToFile
 {
 	private ImageToFile()
 	{
@@ -26,7 +26,7 @@ public class ImageToFile
 	 * @param outputDir
 	 *            Directory to store all output files in
 	 */
-	public static boolean convert(List<File> inputFiles, File outputDir)
+	static boolean convert(List<File> inputFiles, File outputDir)
 	{
 		boolean wasSuccessful = false;
 
@@ -183,7 +183,11 @@ public class ImageToFile
 			filesExtracted = false;
 
 			for (File file : allNewFiles)
-				file.delete();
+				try
+				{
+					Files.delete(file.toPath());
+				}
+				catch (IOException ex) {}
 
 			DialogDisplay.displayException(e, "Bad input image lead to invalid output path.");
 		}

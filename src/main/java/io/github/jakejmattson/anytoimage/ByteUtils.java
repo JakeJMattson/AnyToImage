@@ -5,7 +5,7 @@ package io.github.jakejmattson.anytoimage;
  *
  * @author JakeJMattson
  */
-public class ByteUtils
+final class ByteUtils
 {
 	private ByteUtils()
 	{
@@ -21,7 +21,7 @@ public class ByteUtils
 	 *            Number of bytes desired
 	 * @return Array of bytes
 	 */
-	public static byte[] intToBytes(int pixel, int count)
+	static byte[] intToBytes(int pixel, int count)
 	{
 		byte[] bytes = new byte[count];
 
@@ -38,7 +38,7 @@ public class ByteUtils
 	 *            Values to be shifted
 	 * @return Resulting integer
 	 */
-	public static int bytesToInt(byte[] bytes)
+	static int bytesToInt(byte[] bytes)
 	{
 		//Un-sign bytes
 		int[] unsigned = new int[bytes.length];
