@@ -118,14 +118,8 @@ final class ImageToFile
 	 */
 	private static boolean createFiles(byte[] bytes, File outputDir)
 	{
-		//Create streams to store file info
-		ByteArrayOutputStream name = new ByteArrayOutputStream();
-		ByteArrayOutputStream data = new ByteArrayOutputStream();
-
 		boolean filesExtracted = false;
-		boolean isName = true;
 		int index = 0;
-
 		File newFile = null;
 		List<File> allNewFiles = new ArrayList<>();
 
@@ -133,14 +127,11 @@ final class ImageToFile
 		{
 			while (index != bytes.length)
 			{
+				ByteArrayOutputStream name = new ByteArrayOutputStream();
+				ByteArrayOutputStream data = new ByteArrayOutputStream();
+
 				//Calculate the number of bytes in each cluster (name/data)
-				byte[] sizeBytes;
-
-				if (isName)
-					sizeBytes = new byte[] {0, 0, bytes[index++]};
-				else
-					sizeBytes = new byte[] {bytes[index++], bytes[index++], bytes[index++], bytes[index++]};
-
+				byte[] sizeBytes = new byte[] {0, 0, bytes[index++]};
 				int clusterLength = ByteUtils.bytesToInt(sizeBytes);
 
 				//EOF
@@ -148,48 +139,37 @@ final class ImageToFile
 					break;
 
 				for (int i = 0; i < clusterLength; i++)
-					if (isName)
-						name.write(bytes[index++]);
-					else
-						data.write(bytes[index++]);
+					name.write(bytes[index++]);
 
-				if (!isName)
-				{
-					//Create file
-					newFile = new File(outputDir + File.separator + new String(name.toByteArray()));
-					File parentDir = newFile.getParentFile();
-					allNewFiles.add(newFile);
+				sizeBytes = new byte[] {bytes[index++], bytes[index++], bytes[index++], bytes[index++]};
+				clusterLength = ByteUtils.bytesToInt(sizeBytes);
 
-					if (!parentDir.exists())
-						parentDir.mkdirs();
+				for (int i = 0; i < clusterLength; i++)
+					data.write(bytes[index++]);
 
-					Files.write(newFile.toPath(), data.toByteArray());
-					filesExtracted = true;
+				//Create file
+				newFile = new File(outputDir + File.separator + new String(name.toByteArray()));
+				File parentDir = newFile.getParentFile();
+				allNewFiles.add(newFile);
 
-					//Clear streams
-					name.reset();
-					data.reset();
-				}
+				if (!parentDir.exists())
+					parentDir.mkdirs();
 
-				isName = !isName;
+				Files.write(newFile.toPath(), data.toByteArray());
+				filesExtracted = true;
+
+				name.reset();
+				data.reset();
 			}
 		}
-		catch (ArrayIndexOutOfBoundsException e)
-		{
-			DialogDisplay.displayException(e, "Bad input data!");
-		}
-		catch (InvalidPathException e)
+		catch (InvalidPathException | ArrayIndexOutOfBoundsException e)
 		{
 			filesExtracted = false;
 
 			for (File file : allNewFiles)
-				try
-				{
-					Files.delete(file.toPath());
-				}
-				catch (IOException ex) {}
+				file.delete();
 
-			DialogDisplay.displayException(e, "Bad input image lead to invalid output path.");
+			DialogDisplay.displayException(e, "Incorrectly encoded input image!");
 		}
 		catch (IOException e)
 		{
