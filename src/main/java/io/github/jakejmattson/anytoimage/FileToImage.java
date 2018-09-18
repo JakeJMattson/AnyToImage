@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License
  * Copyright © 2018 Jake Mattson
  *
@@ -43,22 +43,19 @@ final class FileToImage
 
 	private static final int CHANNEL_COUNT = 3;
 
-	private FileToImage()
-	{
-		throw new IllegalStateException("Stateless class");
-	}
+	private FileToImage(){}
 
 	/**
 	 * Static method to initiate the conversion.
 	 *
 	 * @param inputFiles
-	 *            List of files to be converted
+	 * 		List of files to be converted
 	 * @param outputFile
-	 *            Image file to be output when conversion is complete
+	 * 		Image file to be output when conversion is complete
 	 */
 	static boolean convert(List<File> inputFiles, File outputFile)
 	{
-		int bytes = calculatePixelCount(inputFiles);
+		int bytes = calculateBytesRequired(inputFiles);
 		int dims = (int) Math.ceil(Math.sqrt(bytes / CHANNEL_COUNT));
 
 		//No data to write
@@ -82,10 +79,18 @@ final class FileToImage
 		finalizeStream();
 
 		//Create image and return success status
-		return createImage(outputFile);
+		return saveImage(outputFile);
 	}
 
-	private static int calculatePixelCount(List<File> inputFiles)
+	/**
+	 * Calculate the number of bytes needed to store all files in the list.
+	 *
+	 * @param inputFiles
+	 * 		List of files to be converted
+	 *
+	 * @return Number of bytes required
+	 */
+	private static int calculateBytesRequired(List<File> inputFiles)
 	{
 		int byteCount = 0;
 
@@ -101,32 +106,44 @@ final class FileToImage
 						String fullPath = path.toString();
 						String fileName = fullPath.substring(fullPath.indexOf(parentDir));
 
-						byteCount += pixelSizeOfFile(path.toFile(), fileName);
+						byteCount += calculateFileSize(path.toFile(), fileName);
 					}
 				}
 				else
-					byteCount += pixelSizeOfFile(file, file.getName());
+					byteCount += calculateFileSize(file, file.getName());
 
 		return byteCount;
 	}
 
-	private static int pixelSizeOfFile(File file, String fileName)
+	/**
+	 * Calculate the number of bytes needed to store and recreate a file.
+	 *
+	 * @param file
+	 * 		File to be sized
+	 * @param fileName
+	 * 		Name of file to be sized
+	 *
+	 * @return Number of bytes
+	 */
+	private static int calculateFileSize(File file, String fileName)
 	{
+		final int nameLength = 1;
+		final int dataLength = 4;
 		int byteCount = 0;
 
-		byteCount += 1;
+		byteCount += nameLength;
 		byteCount += fileName.getBytes().length;
-		byteCount += 4;
+		byteCount += dataLength;
 		byteCount += file.length();
 
 		return byteCount;
 	}
 
 	/**
-	 * Turn directory into bytes and preserve directory structure.
+	 * Collect all files from a directory (and sub-directories) and convert each to bytes.
 	 *
 	 * @param dir
-	 *            Directory to extract bytes from
+	 * 		Directory to extract bytes from
 	 */
 	private static void directoryToBytes(File dir)
 	{
@@ -145,18 +162,17 @@ final class FileToImage
 	}
 
 	/**
-	 * Turn file into bytes.
+	 * Collect all necessary file information as bytes and write it into the stream.
 	 *
 	 * @param file
-	 *            File to extract bytes from
+	 * 		File to extract bytes from
 	 * @param fileName
-	 *            Name of file (with folder structure if file was in directory)
+	 * 		Name of file (with folder structure if file was in directory)
 	 */
 	private static void fileToBytes(File file, String fileName)
 	{
 		try
 		{
-			//Acquire file information
 			stream.write((byte) fileName.length());
 			stream.write(fileName.getBytes());
 			stream.write(ByteUtils.intToBytes((int) file.length(), 4));
@@ -170,6 +186,14 @@ final class FileToImage
 		}
 	}
 
+	/**
+	 * Collect a list of files from a directory and all sub-directories.
+	 *
+	 * @param dir
+	 * 		Directory to be walked
+	 *
+	 * @return List of files obtained from walk
+	 */
 	private static List<Path> walkDirectory(File dir)
 	{
 		try (Stream<Path> files = Files.walk(dir.toPath()))
@@ -183,6 +207,9 @@ final class FileToImage
 		}
 	}
 
+	/**
+	 * Create pixels from stream data and write them onto the image; remove data from stream.
+	 */
 	private static void writeDataToImage()
 	{
 		byte[] fileBytes = stream.toByteArray();
@@ -206,12 +233,15 @@ final class FileToImage
 
 		stream.reset();
 
-		for ( ; i < fileBytes.length; i++)
+		for (; i < fileBytes.length; i++)
 		{
 			stream.write(fileBytes[i]);
 		}
 	}
 
+	/**
+	 * Write remaining stream data onto the image and reset the stream.
+	 */
 	private static void finalizeStream()
 	{
 		byte[] finalPixelData = new byte[CHANNEL_COUNT];
@@ -224,13 +254,14 @@ final class FileToImage
 	}
 
 	/**
-	 * Create an image from pixels and save to disk.
+	 * Write image to disk.
 	 *
 	 * @param output
-	 *            The desired file location of the output image
+	 * 		The desired location of the output image
+	 *
 	 * @return Whether or not the image was written to disk
 	 */
-	private static boolean createImage(File output)
+	private static boolean saveImage(File output)
 	{
 		boolean status = false;
 

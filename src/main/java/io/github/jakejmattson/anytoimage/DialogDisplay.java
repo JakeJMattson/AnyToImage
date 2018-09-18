@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License
  * Copyright © 2018 Jake Mattson
  *
@@ -32,10 +32,7 @@ final class DialogDisplay
 	static boolean isGraphical = true;
 	static boolean shouldPrint = true;
 
-	private DialogDisplay()
-	{
-		throw new IllegalStateException("Stateless class");
-	}
+	private DialogDisplay(){}
 
 	static void displayInfo(String title, String message)
 	{

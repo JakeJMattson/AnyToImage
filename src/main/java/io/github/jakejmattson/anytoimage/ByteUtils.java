@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License
  * Copyright © 2018 Jake Mattson
  *
@@ -29,18 +29,16 @@ package io.github.jakejmattson.anytoimage;
  */
 final class ByteUtils
 {
-	private ByteUtils()
-	{
-		throw new IllegalStateException("Utility class");
-	}
+	private ByteUtils(){}
 
 	/**
 	 * Split integer into bytes.
 	 *
 	 * @param pixel
-	 *            Integer to be split
+	 * 		Integer to be split
 	 * @param count
-	 *            Number of bytes desired
+	 * 		Number of bytes desired
+	 *
 	 * @return Array of bytes
 	 */
 	static byte[] intToBytes(int pixel, int count)
@@ -57,7 +55,8 @@ final class ByteUtils
 	 * Combine values into an integer.
 	 *
 	 * @param bytes
-	 *            Values to be shifted
+	 * 		Values to be shifted
+	 *
 	 * @return Resulting integer
 	 */
 	static int bytesToInt(byte[] bytes)

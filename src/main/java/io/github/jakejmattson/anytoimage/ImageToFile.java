@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License
  * Copyright © 2018 Jake Mattson
  *
@@ -35,18 +35,15 @@ import java.util.*;
  */
 final class ImageToFile
 {
-	private ImageToFile()
-	{
-		throw new IllegalStateException("Stateless class");
-	}
+	private ImageToFile(){}
 
 	/**
 	 * Static method to initiate the conversion.
 	 *
 	 * @param inputFiles
-	 *            List of image files to be converted
+	 * 		List of image files to be converted
 	 * @param outputDir
-	 *            Directory to store all output files in
+	 * 		Directory to store all output files in
 	 */
 	static boolean convert(List<File> inputFiles, File outputDir)
 	{
@@ -75,7 +72,8 @@ final class ImageToFile
 	 * Read an image from a file and extract pixels.
 	 *
 	 * @param file
-	 *            File containing the image to be read
+	 * 		File containing the image to be read
+	 *
 	 * @return Pixels from image
 	 */
 	private static int[] extractPixels(File file)
@@ -109,7 +107,8 @@ final class ImageToFile
 	 * Extract bytes from each pixel.
 	 *
 	 * @param pixels
-	 *            Int array containing all pixels from the image
+	 * 		Int array containing all pixels from the image
+	 *
 	 * @return Bytes
 	 */
 	private static byte[] extractBytes(int[] pixels)
@@ -134,9 +133,9 @@ final class ImageToFile
 	 * Create all files contained within the image.
 	 *
 	 * @param bytes
-	 *            File names and data as a byte array
+	 * 		File names and data as a byte array
 	 * @param outputDir
-	 *            Directory to store all output files in
+	 * 		Directory to store all output files in
 	 */
 	private static boolean createFiles(byte[] bytes, File outputDir)
 	{

@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License
  * Copyright © 2018 Jake Mattson
  *
@@ -110,7 +110,7 @@ public class ConversionController extends Application
 		//IO buttons
 		btnAddFile.setOnAction(event -> addFile());
 		btnAddDirectory.setOnAction(event -> addDirectory());
-		btnOutput.setOnAction(event -> getOutput());
+		btnOutput.setOnAction(event -> setOutput());
 
 		//Action buttons
 		btnRemove.setOnAction(event -> removeSelection());
@@ -155,7 +155,7 @@ public class ConversionController extends Application
 		}
 	}
 
-	private void getOutput()
+	private void setOutput()
 	{
 		File selection;
 
