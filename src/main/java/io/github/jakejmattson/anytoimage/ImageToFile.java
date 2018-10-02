@@ -27,6 +27,7 @@ import java.awt.image.*;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Extract files from images created by the 'FileToImage' class.
@@ -47,6 +48,7 @@ final class ImageToFile
 	 */
 	static boolean convert(List<File> inputFiles, File outputDir)
 	{
+		inputFiles = inputFiles.stream().filter(File::exists).collect(Collectors.toList());
 		boolean wasSuccessful = false;
 
 		for (File file : inputFiles)
@@ -187,8 +189,7 @@ final class ImageToFile
 		{
 			filesExtracted = false;
 
-			for (File file : allNewFiles)
-				file.delete();
+			allNewFiles.forEach(File::delete);
 
 			DialogDisplay.displayException(e, "Incorrectly encoded input image!");
 		}

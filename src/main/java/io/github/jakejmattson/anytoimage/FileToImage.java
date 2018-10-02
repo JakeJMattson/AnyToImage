@@ -55,6 +55,8 @@ final class FileToImage
 	 */
 	static boolean convert(List<File> inputFiles, File outputFile)
 	{
+		inputFiles = inputFiles.stream().filter(File::exists).collect(Collectors.toList());
+
 		int bytes = calculateBytesRequired(inputFiles);
 		int dims = (int) Math.ceil(Math.sqrt(bytes / CHANNEL_COUNT));
 
@@ -69,11 +71,10 @@ final class FileToImage
 
 		//Get file bytes
 		for (File file : inputFiles)
-			if (file.exists())
-				if (file.isDirectory())
-					directoryToBytes(file);
-				else
-					fileToBytes(file, file.getName());
+			if (file.isDirectory())
+				directoryToBytes(file);
+			else
+				fileToBytes(file, file.getName());
 
 		//Write remaining data onto the image
 		finalizeStream();
@@ -95,22 +96,21 @@ final class FileToImage
 		int byteCount = 0;
 
 		for (File file : inputFiles)
-			if (file.exists())
-				if (file.isDirectory())
+			if (file.isDirectory())
+			{
+				String parentDir = file.getName();
+				List<Path> paths = walkDirectory(file);
+
+				for (Path path : paths)
 				{
-					String parentDir = file.getName();
-					List<Path> paths = walkDirectory(file);
+					String fullPath = path.toString();
+					String fileName = fullPath.substring(fullPath.indexOf(parentDir));
 
-					for (Path path : paths)
-					{
-						String fullPath = path.toString();
-						String fileName = fullPath.substring(fullPath.indexOf(parentDir));
-
-						byteCount += calculateFileSize(path.toFile(), fileName);
-					}
+					byteCount += calculateFileSize(path.toFile(), fileName);
 				}
-				else
-					byteCount += calculateFileSize(file, file.getName());
+			}
+			else
+				byteCount += calculateFileSize(file, file.getName());
 
 		return byteCount;
 	}
@@ -127,16 +127,8 @@ final class FileToImage
 	 */
 	private static int calculateFileSize(File file, String fileName)
 	{
-		final int nameLength = 1;
-		final int dataLength = 4;
-		int byteCount = 0;
-
-		byteCount += nameLength;
-		byteCount += fileName.getBytes().length;
-		byteCount += dataLength;
-		byteCount += file.length();
-
-		return byteCount;
+		final int SIZE_BYTES = 5;
+		return (int) (fileName.getBytes().length + file.length() + SIZE_BYTES);
 	}
 
 	/**
@@ -213,15 +205,14 @@ final class FileToImage
 	private static void writeDataToImage()
 	{
 		byte[] fileBytes = stream.toByteArray();
-		int i;
+		int index;
 
-		for (i = 0; i < fileBytes.length - CHANNEL_COUNT; i += CHANNEL_COUNT)
+		for (index = 0; index < fileBytes.length - CHANNEL_COUNT; index += CHANNEL_COUNT)
 		{
-			byte[] pixelData = {fileBytes[i], fileBytes[i + 1], fileBytes[i + 2]};
+			byte[] pixelData = {fileBytes[index], fileBytes[index + 1], fileBytes[index + 2]};
 			int pixel = ByteUtils.bytesToInt(pixelData);
 
 			image.setRGB(row, col, pixel);
-
 			row++;
 
 			if (row == image.getWidth())
@@ -233,10 +224,8 @@ final class FileToImage
 
 		stream.reset();
 
-		for (; i < fileBytes.length; i++)
-		{
-			stream.write(fileBytes[i]);
-		}
+		for (; index < fileBytes.length; index++)
+			stream.write(fileBytes[index]);
 	}
 
 	/**
