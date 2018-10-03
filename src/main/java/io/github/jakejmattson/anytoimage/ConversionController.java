@@ -55,9 +55,6 @@ public class ConversionController extends Application
 	private List<File> inputFiles = new ArrayList<>();
 	private File outputFile;
 
-	private static final FileChooser.ExtensionFilter pngFilter =
-			new FileChooser.ExtensionFilter("*.png", "*.png", "*.PNG");
-
 	public static void main(String[] args)
 	{
 		if (args.length >= 3)
@@ -131,7 +128,7 @@ public class ConversionController extends Application
 		chooser.setTitle("Add input file");
 
 		if (radImage.isSelected())
-			chooser.getExtensionFilters().add(pngFilter);
+			chooser.getExtensionFilters().add(FileManager.fileFilter);
 
 		File selection = chooser.showOpenDialog(null);
 
@@ -163,7 +160,7 @@ public class ConversionController extends Application
 		{
 			FileChooser chooser = new FileChooser();
 			chooser.setTitle("Create an output file");
-			chooser.getExtensionFilters().add(pngFilter);
+			chooser.getExtensionFilters().add(FileManager.fileFilter);
 			selection = chooser.showSaveDialog(null);
 		}
 		else

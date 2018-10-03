@@ -99,14 +99,14 @@ final class FileToImage
 			if (file.isDirectory())
 			{
 				String parentDir = file.getName();
-				List<Path> paths = walkDirectory(file);
+				List<File> directoryFiles = FileManager.walkDirectory(file);
 
-				for (Path path : paths)
+				for (File directoryFile : directoryFiles)
 				{
-					String fullPath = path.toString();
+					String fullPath = directoryFile.toPath().toString();
 					String fileName = fullPath.substring(fullPath.indexOf(parentDir));
 
-					byteCount += calculateFileSize(path.toFile(), fileName);
+					byteCount += calculateFileSize(directoryFile, fileName);
 				}
 			}
 			else
@@ -140,16 +140,16 @@ final class FileToImage
 	private static void directoryToBytes(File dir)
 	{
 		String parentDir = dir.getName();
-		List<Path> paths = walkDirectory(dir);
+		List<File> files = FileManager.walkDirectory(dir);
 
-		for (Path path : paths)
+		for (File file : files)
 		{
 			//Construct arguments
-			String fullPath = path.toString();
+			String fullPath = file.toPath().toString();
 			String fileName = fullPath.substring(fullPath.indexOf(parentDir));
 
 			//Retrieve bytes from each file
-			fileToBytes(path.toFile(), fileName);
+			fileToBytes(file, fileName);
 		}
 	}
 
@@ -175,27 +175,6 @@ final class FileToImage
 		catch (IOException e)
 		{
 			DialogDisplay.displayException(e, "Unable to read file: " + file.toString());
-		}
-	}
-
-	/**
-	 * Collect a list of files from a directory and all sub-directories.
-	 *
-	 * @param dir
-	 * 		Directory to be walked
-	 *
-	 * @return List of files obtained from walk
-	 */
-	private static List<Path> walkDirectory(File dir)
-	{
-		try (Stream<Path> files = Files.walk(dir.toPath()))
-		{
-			return files.filter(Files::isRegularFile).collect(Collectors.toList());
-		}
-		catch (IOException e)
-		{
-			DialogDisplay.displayException(e, "Unable to walk directory: " + dir.toString());
-			return Collections.emptyList();
 		}
 	}
 
