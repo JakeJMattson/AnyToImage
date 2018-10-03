@@ -37,7 +37,7 @@ final class FileManager
 
 	static boolean validateFile(File file)
 	{
-		String extension = fileFilter.getExtensions().get(0).toLowerCase();
+		String extension = fileFilter.getExtensions().get(0).toLowerCase().substring(1);
 		return file.getPath().endsWith(extension);
 	}
 }

@@ -48,7 +48,17 @@ final class ImageToFile
 	 */
 	static boolean convert(List<File> inputFiles, File outputDir)
 	{
+		final List<File> temp = new ArrayList<>();
+
 		inputFiles = inputFiles.stream().filter(File::exists).collect(Collectors.toList());
+		temp.addAll(inputFiles.stream().filter(File::isFile).collect(Collectors.toList()));
+
+		inputFiles.stream().filter(File::isDirectory).forEach( file ->
+				temp.addAll(FileManager.walkDirectory(file))
+		);
+
+		inputFiles = temp.stream().filter(FileManager::validateFile).collect(Collectors.toList());
+
 		boolean wasSuccessful = false;
 
 		for (File file : inputFiles)

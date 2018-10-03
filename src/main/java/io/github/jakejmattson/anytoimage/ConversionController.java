@@ -34,9 +34,6 @@ import javafx.stage.*;
 import java.io.*;
 import java.util.*;
 
-//TODO validate dropped file extensions
-//TODO fix "add directory" (image -> files)
-
 public class ConversionController extends Application
 {
 	@FXML private Button btnAddFile;
