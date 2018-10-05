@@ -1,6 +1,6 @@
 package io.github.jakejmattson.anytoimage;
 
-import javafx.stage.FileChooser;
+import javafx.stage.*;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.*;
@@ -41,5 +41,25 @@ final class FileManager
 	{
 		String extension = fileFilter.getExtensions().get(0).toLowerCase().substring(1);
 		return file.getPath().endsWith(extension);
+	}
+
+	static File selectFile(String title, boolean shouldFilter, boolean isSave)
+	{
+		FileChooser chooser = new FileChooser();
+		chooser.setTitle(title);
+		chooser.setInitialDirectory(FileManager.defaultDirectory);
+
+		if (shouldFilter)
+			chooser.getExtensionFilters().add(FileManager.fileFilter);
+
+		return isSave ? chooser.showSaveDialog(null) : chooser.showOpenDialog(null);
+	}
+
+	static File selectDirectory(String title)
+	{
+		DirectoryChooser chooser = new DirectoryChooser();
+		chooser.setTitle(title);
+		chooser.setInitialDirectory(FileManager.defaultDirectory);
+		return chooser.showDialog(null);
 	}
 }

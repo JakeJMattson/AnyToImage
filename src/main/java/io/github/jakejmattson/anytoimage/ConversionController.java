@@ -121,14 +121,7 @@ public class ConversionController extends Application
 
 	private void addFile()
 	{
-		FileChooser chooser = new FileChooser();
-		chooser.setTitle("Add input file");
-		chooser.setInitialDirectory(FileManager.defaultDirectory);
-
-		if (radImage.isSelected())
-			chooser.getExtensionFilters().add(FileManager.fileFilter);
-
-		File selection = chooser.showOpenDialog(null);
+		File selection = FileManager.selectFile("Add input file", radImage.isSelected(), false);
 
 		if (selection != null)
 		{
@@ -139,10 +132,7 @@ public class ConversionController extends Application
 
 	private void addDirectory()
 	{
-		DirectoryChooser chooser = new DirectoryChooser();
-		chooser.setTitle("Add input directory");
-		chooser.setInitialDirectory(FileManager.defaultDirectory);
-		File selection = chooser.showDialog(null);
+		File selection = FileManager.selectDirectory("Add input directory");
 
 		if (selection != null)
 		{
@@ -156,20 +146,9 @@ public class ConversionController extends Application
 		File selection;
 
 		if (radFiles.isSelected())
-		{
-			FileChooser chooser = new FileChooser();
-			chooser.setTitle("Create an output file");
-			chooser.getExtensionFilters().add(FileManager.fileFilter);
-			chooser.setInitialDirectory(FileManager.defaultDirectory);
-			selection = chooser.showSaveDialog(null);
-		}
+			selection = FileManager.selectFile("Create an output file", true, true);
 		else
-		{
-			DirectoryChooser chooser = new DirectoryChooser();
-			chooser.setTitle("Select an output directory");
-			chooser.setInitialDirectory(FileManager.defaultDirectory);
-			selection = chooser.showDialog(null);
-		}
+			selection = FileManager.selectDirectory("Select an output directory");
 
 		if (selection != null)
 		{
