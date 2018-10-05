@@ -2,6 +2,7 @@ package io.github.jakejmattson.anytoimage;
 
 import javafx.stage.FileChooser;
 
+import javax.swing.filechooser.FileSystemView;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
@@ -9,6 +10,7 @@ import java.util.stream.*;
 
 final class FileManager
 {
+	static final File defaultDirectory = FileSystemView.getFileSystemView().getDefaultDirectory();
 	static final FileChooser.ExtensionFilter fileFilter =
 			new FileChooser.ExtensionFilter("*.png", "*.png", "*.PNG");
 
