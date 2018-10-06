@@ -33,6 +33,7 @@ import javafx.stage.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ConversionController extends Application
 {
@@ -252,6 +253,10 @@ public class ConversionController extends Application
 			if (dragboard.hasFiles())
 			{
 				List<File> droppedFiles = dragboard.getFiles();
+
+				if (radImage.isSelected())
+					droppedFiles = droppedFiles.stream().filter(file -> file.isDirectory() || FileManager.validateFile(file))
+							.collect(Collectors.toList());
 
 				for (File file : droppedFiles)
 				{
