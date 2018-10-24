@@ -60,7 +60,6 @@ final class FileToImage
 		int bytes = calculateBytesRequired(inputFiles);
 		int dims = (int) Math.ceil(Math.sqrt(bytes / CHANNEL_COUNT));
 
-		//No data to write
 		if (dims == 0)
 			return false;
 
@@ -69,17 +68,13 @@ final class FileToImage
 		row = 0;
 		col = 0;
 
-		//Get file bytes
 		for (File file : inputFiles)
 			if (file.isDirectory())
 				directoryToBytes(file);
 			else
 				fileToBytes(file, file.getName());
 
-		//Write remaining data onto the image
 		finalizeStream();
-
-		//Create image and return success status
 		return saveImage(outputFile);
 	}
 
@@ -144,11 +139,9 @@ final class FileToImage
 
 		for (File file : files)
 		{
-			//Construct arguments
 			String fullPath = file.toPath().toString();
 			String fileName = fullPath.substring(fullPath.indexOf(parentDir));
 
-			//Retrieve bytes from each file
 			fileToBytes(file, fileName);
 		}
 	}
@@ -235,7 +228,6 @@ final class FileToImage
 
 		try
 		{
-			//Write image to file
 			ImageIO.write(image, "png", output);
 			status = true;
 		}

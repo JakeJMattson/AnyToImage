@@ -63,16 +63,13 @@ final class ImageToFile
 
 		for (File file : inputFiles)
 		{
-			//Extract individual pixels from an image
 			int[] pixels = extractPixels(file);
 
 			if (pixels == null)
 				continue;
 
-			//Separate pixels into bytes
 			byte[] allBytes = extractBytes(pixels);
 
-			//Create files from bytes
 			if (createFiles(allBytes, outputDir))
 				wasSuccessful = true;
 		}
@@ -94,17 +91,9 @@ final class ImageToFile
 
 		try
 		{
-			//Read image from file
 			BufferedImage fileImage = ImageIO.read(file);
-
-			//Create a buffered image with the desired type
-			BufferedImage image = new BufferedImage(fileImage.getWidth(), fileImage.getHeight(),
-					BufferedImage.TYPE_INT_RGB);
-
-			//Draw the image from the file into the buffer
+			BufferedImage image = new BufferedImage(fileImage.getWidth(), fileImage.getHeight(), BufferedImage.TYPE_INT_RGB);
 			image.getGraphics().drawImage(fileImage, 0, 0, null);
-
-			//Read all pixels from image
 			pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 		}
 		catch (IOException e)
@@ -127,7 +116,6 @@ final class ImageToFile
 	{
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-		//Read channels from pixel
 		for (int pixel : pixels)
 			try
 			{
@@ -198,14 +186,11 @@ final class ImageToFile
 		catch (InvalidPathException | ArrayIndexOutOfBoundsException e)
 		{
 			filesExtracted = false;
-
 			allNewFiles.forEach(File::delete);
-
 			DialogDisplay.displayException(e, "Incorrectly encoded input image!");
 		}
 		catch (IOException e)
 		{
-			//General case
 			DialogDisplay.displayException(e, "Failed to create file: " + newFile.toString());
 		}
 

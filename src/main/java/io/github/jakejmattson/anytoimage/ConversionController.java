@@ -67,7 +67,6 @@ public class ConversionController extends Application
 
 			File output = new File(args[args.length - 1]);
 
-			//Process input
 			if (conversionType == 0)
 				FileToImage.convert(input, output);
 			else if (conversionType == 1)
@@ -218,11 +217,8 @@ public class ConversionController extends Application
 
 	private void clearAll()
 	{
-		//Clear data
 		inputFiles.clear();
 		outputFile = null;
-
-		//Clear GUI
 		lstInputs.getItems().clear();
 		txtOutput.clear();
 	}

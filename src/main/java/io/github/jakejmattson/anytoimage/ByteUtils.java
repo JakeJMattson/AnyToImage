@@ -61,7 +61,6 @@ final class ByteUtils
 	 */
 	static int bytesToInt(byte[] bytes)
 	{
-		//Un-sign bytes
 		int[] unsigned = new int[bytes.length];
 
 		for (int i = 0; i < bytes.length; i++)

@@ -69,27 +69,22 @@ final class DialogDisplay
 		if (!isGraphical)
 			return;
 
-		//Create dialog
 		Alert alert = createDialog(Alert.AlertType.ERROR, "Something went wrong!", message);
 
-		//Get exception as string
 		StringWriter sw = new StringWriter();
 		e.printStackTrace(new PrintWriter(sw));
 		String exceptionText = sw.toString();
 
-		//Create a text area to display the exception
 		TextArea textArea = new TextArea(exceptionText);
 		textArea.setStyle("-fx-text-inner-color: red;");
 		textArea.setEditable(false);
 
-		//Format content
 		GridPane.setVgrow(textArea, Priority.ALWAYS);
 		GridPane.setHgrow(textArea, Priority.ALWAYS);
 		GridPane expContent = new GridPane();
 		expContent.add(new Label("Exception stacktrace:"), 0, 0);
 		expContent.add(textArea, 0, 1);
 
-		//Display exception
 		alert.getDialogPane().setExpandableContent(expContent);
 		alert.showAndWait();
 	}
