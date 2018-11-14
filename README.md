@@ -2,11 +2,11 @@
   <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">
     <img src="https://img.shields.io/badge/Java-8-blue.svg" alt="Java 8">
   </a>
-  <a href="LICENSE.md">
-    <img src="https://img.shields.io/github/license/JakeJMattson/AnyToImage.svg" alt="license">
-  </a>
   <a href="https://GitHub.com/JakeJMattson/AnyToImage/releases/">
     <img src="https://img.shields.io/github/release/JakeJMattson/AnyToImage.svg" alt="release">
+  </a>
+  <a href="LICENSE.md">
+    <img src="https://img.shields.io/github/license/JakeJMattson/AnyToImage.svg" alt="license">
   </a>
 </p>
 
