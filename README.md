@@ -35,10 +35,6 @@ which was inspired by <a href="https://helloworldcollection.github.io/">The Hell
 * No additional libraries
 
 ## Getting Started
-<p align="justify">
-The version numbers for each additional software used to build this project are listed in the badges at the top of the page. These dependencies are handled by Maven during build. If building manually, other versions may work, but this is not guaranteed.
-</p>
-
 ### Installing Java
 <p align="justify">
 Visit the <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java Downloads</a> 
