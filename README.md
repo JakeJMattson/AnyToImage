@@ -1,6 +1,9 @@
 <p align="center">
-  <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">
-    <img src="https://img.shields.io/badge/Java-8-blue.svg" alt="Java 8">
+  <a href="https://jdk.java.net/11/">
+    <img src="https://img.shields.io/badge/Java-11-blue.svg" alt="Java 11">
+  </a>
+  <a href="https://openjfx.io/">
+    <img src="https://img.shields.io/badge/JavaFX-11-blue.svg" alt="JavaFX 11">
   </a>
   <a href="https://GitHub.com/JakeJMattson/AnyToImage/releases/">
     <img src="https://img.shields.io/github/release/JakeJMattson/AnyToImage.svg" alt="release">
@@ -32,7 +35,7 @@ which was inspired by <a href="https://helloworldcollection.github.io/">The Hell
 * [Java](https://go.java/index.html?intcmp=gojava-banner-java-com)
 
 ### Libraries
-* No additional libraries
+* [JavaFX](https://openjfx.io/)
 
 ## Getting Started
 ### Installing Java
@@ -42,8 +45,11 @@ page and select the version of your choice.
 Run the installer and follow the instructions provided.
 </p>
 
+### Building
+This project is built with Maven. To build the `pom.xml`, please follow the import instructions for your IDE.
+* [IntelliJ](https://www.tutorialspoint.com/maven/maven_intellij_idea.htm)
+* [Eclipse](https://www.tutorialspoint.com/maven/maven_eclispe_ide.htm)
+* [NetBeans](https://www.tutorialspoint.com/maven/maven_netbeans.htm)
+
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Adaptations
-~~[Web interface](https://img.kyle.tools/) written by [Kyle  Sferrazza](https://github.com/kylesferrazza)~~ Deprecated
