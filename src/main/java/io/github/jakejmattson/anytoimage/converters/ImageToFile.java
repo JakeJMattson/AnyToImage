@@ -20,7 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.jakejmattson.anytoimage;
+package io.github.jakejmattson.anytoimage.converters;
+
+import io.github.jakejmattson.anytoimage.utils.*;
 
 import javax.imageio.ImageIO;
 import java.awt.image.*;
@@ -34,7 +36,7 @@ import java.util.stream.Collectors;
  *
  * @author JakeJMattson
  */
-final class ImageToFile
+public final class ImageToFile
 {
 	private ImageToFile(){}
 
@@ -46,7 +48,7 @@ final class ImageToFile
 	 * @param outputDir
 	 * 		Directory to store all output files in
 	 */
-	static boolean convert(List<File> inputFiles, File outputDir)
+	public static boolean convert(List<File> inputFiles, File outputDir)
 	{
 		final List<File> temp = new ArrayList<>();
 
@@ -54,10 +56,10 @@ final class ImageToFile
 		temp.addAll(inputFiles.stream().filter(File::isFile).collect(Collectors.toList()));
 
 		inputFiles.stream().filter(File::isDirectory).forEach( file ->
-				temp.addAll(FileManager.walkDirectory(file))
+				temp.addAll(FileUtils.walkDirectory(file))
 		);
 
-		inputFiles = temp.stream().filter(FileManager::validateFile).collect(Collectors.toList());
+		inputFiles = temp.stream().filter(FileUtils::validateFile).collect(Collectors.toList());
 
 		boolean wasSuccessful = false;
 

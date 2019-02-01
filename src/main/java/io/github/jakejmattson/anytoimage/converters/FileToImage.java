@@ -20,7 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.jakejmattson.anytoimage;
+package io.github.jakejmattson.anytoimage.converters;
+
+import io.github.jakejmattson.anytoimage.utils.*;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -34,7 +36,7 @@ import java.util.stream.*;
  *
  * @author JakeJMattson
  */
-final class FileToImage
+public final class FileToImage
 {
 	private static ByteArrayOutputStream stream = new ByteArrayOutputStream();
 	private static BufferedImage image;
@@ -53,7 +55,7 @@ final class FileToImage
 	 * @param outputFile
 	 * 		Image file to be output when conversion is complete
 	 */
-	static boolean convert(List<File> inputFiles, File outputFile)
+	public static boolean convert(List<File> inputFiles, File outputFile)
 	{
 		inputFiles = inputFiles.stream().filter(File::exists).collect(Collectors.toList());
 
@@ -94,7 +96,7 @@ final class FileToImage
 			if (file.isDirectory())
 			{
 				String parentDir = file.getName();
-				List<File> directoryFiles = FileManager.walkDirectory(file);
+				List<File> directoryFiles = FileUtils.walkDirectory(file);
 
 				for (File directoryFile : directoryFiles)
 				{
@@ -135,7 +137,7 @@ final class FileToImage
 	private static void directoryToBytes(File dir)
 	{
 		String parentDir = dir.getName();
-		List<File> files = FileManager.walkDirectory(dir);
+		List<File> files = FileUtils.walkDirectory(dir);
 
 		for (File file : files)
 		{

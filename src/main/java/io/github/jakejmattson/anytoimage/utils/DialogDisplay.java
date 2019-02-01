@@ -20,21 +20,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.jakejmattson.anytoimage;
+package io.github.jakejmattson.anytoimage.utils;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 import java.io.*;
 
-final class DialogDisplay
+public final class DialogDisplay
 {
-	static boolean isGraphical = true;
-	static boolean shouldPrint = true;
+	public static boolean isGraphical = true;
+	public static boolean shouldPrint = true;
 
 	private DialogDisplay(){}
 
-	static void displayInfo(String title, String message)
+	public static void displayInfo(String title, String message)
 	{
 		if (shouldPrint)
 			System.out.println(message);
@@ -46,7 +46,7 @@ final class DialogDisplay
 		dialog.showAndWait();
 	}
 
-	static void displayError(String title, String message)
+	public static void displayError(String title, String message)
 	{
 		if (shouldPrint)
 			System.out.println(message);
@@ -58,7 +58,7 @@ final class DialogDisplay
 		dialog.showAndWait();
 	}
 
-	static void displayException(Exception e, String message)
+	public static void displayException(Exception e, String message)
 	{
 		if (shouldPrint)
 		{

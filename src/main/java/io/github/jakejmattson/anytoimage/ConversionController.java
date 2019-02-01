@@ -22,6 +22,8 @@
  */
 package io.github.jakejmattson.anytoimage;
 
+import io.github.jakejmattson.anytoimage.converters.*;
+import io.github.jakejmattson.anytoimage.utils.*;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.fxml.*;
@@ -121,7 +123,7 @@ public class ConversionController extends Application
 
 	private void addFile()
 	{
-		File selection = FileManager.selectFile("Add input file", radImage.isSelected(), false);
+		File selection = FileUtils.selectFile("Add input file", radImage.isSelected(), false);
 
 		if (selection != null)
 		{
@@ -132,7 +134,7 @@ public class ConversionController extends Application
 
 	private void addDirectory()
 	{
-		File selection = FileManager.selectDirectory("Add input directory");
+		File selection = FileUtils.selectDirectory("Add input directory");
 
 		if (selection != null)
 		{
@@ -146,9 +148,9 @@ public class ConversionController extends Application
 		File selection;
 
 		if (radFiles.isSelected())
-			selection = FileManager.selectFile("Create an output file", true, true);
+			selection = FileUtils.selectFile("Create an output file", true, true);
 		else
-			selection = FileManager.selectDirectory("Select an output directory");
+			selection = FileUtils.selectDirectory("Select an output directory");
 
 		if (selection != null)
 		{
@@ -237,8 +239,6 @@ public class ConversionController extends Application
 		{
 			if (event.getDragboard().hasFiles())
 				event.acceptTransferModes(TransferMode.COPY);
-
-			event.consume();
 		});
 
 		dndPane.setOnDragDropped(event ->
@@ -251,7 +251,7 @@ public class ConversionController extends Application
 				List<File> droppedFiles = dragboard.getFiles();
 
 				if (radImage.isSelected())
-					droppedFiles = droppedFiles.stream().filter(file -> file.isDirectory() || FileManager.validateFile(file))
+					droppedFiles = droppedFiles.stream().filter(file -> file.isDirectory() || FileUtils.validateFile(file))
 							.collect(Collectors.toList());
 
 				for (File file : droppedFiles)
@@ -264,23 +264,14 @@ public class ConversionController extends Application
 			}
 
 			event.setDropCompleted(success);
-			event.consume();
 		});
 
 		dndPane.setOnDragEntered(event ->
 		{
-			String style = "-fx-border-style: dashed; -fx-border-color: ";
-			style += event.getDragboard().hasFiles() ? "lime" : "red";
+			String style = "-fx-border-style: dashed; -fx-border-color: " + (event.getDragboard().hasFiles() ? "lime" : "red");
 			dndPane.setStyle(style);
-
-			event.consume();
 		});
 
-		dndPane.setOnDragExited(event ->
-		{
-			dndPane.setStyle("-fx-border-style: dashed; -fx-border-color: black");
-
-			event.consume();
-		});
+		dndPane.setOnDragExited(event -> dndPane.setStyle("-fx-border-style: dashed; -fx-border-color: black"));
 	}
 }

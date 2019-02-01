@@ -20,14 +20,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.jakejmattson.anytoimage;
+package io.github.jakejmattson.anytoimage.utils;
 
 /**
  * Limited utility class for handling bytes and conversions.
  *
  * @author JakeJMattson
  */
-final class ByteUtils
+public final class ByteUtils
 {
 	private ByteUtils(){}
 
@@ -41,7 +41,7 @@ final class ByteUtils
 	 *
 	 * @return Array of bytes
 	 */
-	static byte[] intToBytes(int pixel, int count)
+	public static byte[] intToBytes(int pixel, int count)
 	{
 		byte[] bytes = new byte[count];
 
@@ -59,7 +59,7 @@ final class ByteUtils
 	 *
 	 * @return Resulting integer
 	 */
-	static int bytesToInt(byte[] bytes)
+	public static int bytesToInt(byte[] bytes)
 	{
 		int[] unsigned = new int[bytes.length];
 

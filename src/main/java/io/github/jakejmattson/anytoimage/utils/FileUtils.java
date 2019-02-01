@@ -1,4 +1,4 @@
-package io.github.jakejmattson.anytoimage;
+package io.github.jakejmattson.anytoimage.utils;
 
 import javafx.stage.*;
 
@@ -8,13 +8,13 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.stream.*;
 
-final class FileManager
+public final class FileUtils
 {
 	static final File defaultDirectory = FileSystemView.getFileSystemView().getDefaultDirectory();
 	static final FileChooser.ExtensionFilter fileFilter =
 			new FileChooser.ExtensionFilter("*.png", "*.png", "*.PNG");
 
-	private FileManager(){}
+	private FileUtils(){}
 
 	/**
 	 * Collect a list of files from a directory and all sub-directories.
@@ -24,7 +24,7 @@ final class FileManager
 	 *
 	 * @return List of files obtained from walk
 	 */
-	static List<File> walkDirectory(File dir)
+	public static List<File> walkDirectory(File dir)
 	{
 		try (Stream<Path> paths = Files.walk(dir.toPath()))
 		{
@@ -37,29 +37,29 @@ final class FileManager
 		}
 	}
 
-	static boolean validateFile(File file)
+	public static boolean validateFile(File file)
 	{
 		String extension = fileFilter.getExtensions().get(0).toLowerCase().substring(1);
 		return file.getPath().endsWith(extension);
 	}
 
-	static File selectFile(String title, boolean shouldFilter, boolean isSave)
+	public static File selectFile(String title, boolean shouldFilter, boolean isSave)
 	{
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle(title);
-		chooser.setInitialDirectory(FileManager.defaultDirectory);
+		chooser.setInitialDirectory(FileUtils.defaultDirectory);
 
 		if (shouldFilter)
-			chooser.getExtensionFilters().add(FileManager.fileFilter);
+			chooser.getExtensionFilters().add(FileUtils.fileFilter);
 
 		return isSave ? chooser.showSaveDialog(null) : chooser.showOpenDialog(null);
 	}
 
-	static File selectDirectory(String title)
+	public static File selectDirectory(String title)
 	{
 		DirectoryChooser chooser = new DirectoryChooser();
 		chooser.setTitle(title);
-		chooser.setInitialDirectory(FileManager.defaultDirectory);
+		chooser.setInitialDirectory(FileUtils.defaultDirectory);
 		return chooser.showDialog(null);
 	}
 }
