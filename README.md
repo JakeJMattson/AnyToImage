@@ -32,7 +32,7 @@ which was inspired by <a href="https://helloworldcollection.github.io/">The Hell
 ## Prerequisites
 
 ### Languages
-* [Java](https://go.java/index.html?intcmp=gojava-banner-java-com)
+* [Java](https://jdk.java.net/11/)
 
 ### Libraries
 * [JavaFX](https://openjfx.io/)
