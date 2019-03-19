@@ -2,6 +2,9 @@
   <a href="https://jdk.java.net/11/">
     <img src="https://img.shields.io/badge/Java-11-blue.svg" alt="Java 11">
   </a>
+  <a href="https://kotlinlang.org/">
+    <img src="https://img.shields.io/badge/Kotlin-1.3.21-blue.svg" alt="Kotlin 1.3.21">
+  </a>
   <a href="https://openjfx.io/">
     <img src="https://img.shields.io/badge/JavaFX-11-blue.svg" alt="JavaFX 11">
   </a>
@@ -33,6 +36,7 @@ which was inspired by <a href="https://helloworldcollection.github.io/">The Hell
 
 ### Languages
 * [Java](https://jdk.java.net/11/)
+* [Kotlin](https://kotlinlang.org/)
 
 ### Libraries
 * [JavaFX](https://openjfx.io/)
