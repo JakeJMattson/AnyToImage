@@ -9,8 +9,8 @@ import javax.imageio.ImageIO
 
 fun convertImageToFile(inputFiles: List<File>, outputDir: File): Boolean {
     val validInput = inputFiles.filter { it.exists() }
-    val validFiles = validInput.filter { FileUtils.validateFile(it) }.toMutableList()
-    validInput.filter { it.isDirectory }.forEach { validFiles.addAll(FileUtils.walkDirectory(it).filter { FileUtils.validateFile(it) }) }
+    val validFiles = validInput.filter { validateFile(it) }.toMutableList()
+    validInput.filter { it.isDirectory }.forEach { validFiles.addAll(walkDirectory(it).filter { validateFile(it) }) }
 
     var wasSuccessful = false
 

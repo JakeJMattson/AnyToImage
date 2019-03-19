@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import static io.github.jakejmattson.anytoimage.converters.FileToImageKt.*;
 import static io.github.jakejmattson.anytoimage.converters.ImageToFileKt.*;
+import static io.github.jakejmattson.anytoimage.utils.FileUtilsKt.*;
 
 public class ConversionController extends Application
 {
@@ -103,7 +104,7 @@ public class ConversionController extends Application
 
 	private void addFile()
 	{
-		File selection = FileUtils.selectFile("Add input file", radImage.isSelected(), false);
+		File selection = selectFile("Add input file", radImage.isSelected(), false);
 
 		if (selection != null)
 		{
@@ -114,7 +115,7 @@ public class ConversionController extends Application
 
 	private void addDirectory()
 	{
-		File selection = FileUtils.selectDirectory("Add input directory");
+		File selection = selectDirectory("Add input directory");
 
 		if (selection != null)
 		{
@@ -128,9 +129,9 @@ public class ConversionController extends Application
 		File selection;
 
 		if (radFiles.isSelected())
-			selection = FileUtils.selectFile("Create an output file", true, true);
+			selection = selectFile("Create an output file", true, true);
 		else
-			selection = FileUtils.selectDirectory("Select an output directory");
+			selection = selectDirectory("Select an output directory");
 
 		if (selection != null)
 		{
@@ -231,7 +232,7 @@ public class ConversionController extends Application
 				List<File> droppedFiles = dragboard.getFiles();
 
 				if (radImage.isSelected())
-					droppedFiles = droppedFiles.stream().filter(file -> file.isDirectory() || FileUtils.validateFile(file))
+					droppedFiles = droppedFiles.stream().filter(file -> file.isDirectory() || validateFile(file))
 							.collect(Collectors.toList());
 
 				for (File file : droppedFiles)
