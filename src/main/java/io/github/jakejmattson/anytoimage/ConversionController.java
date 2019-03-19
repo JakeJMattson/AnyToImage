@@ -1,6 +1,5 @@
 package io.github.jakejmattson.anytoimage;
 
-import io.github.jakejmattson.anytoimage.converters.*;
 import io.github.jakejmattson.anytoimage.utils.*;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -14,6 +13,9 @@ import javafx.stage.*;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static io.github.jakejmattson.anytoimage.converters.FileToImageKt.*;
+import static io.github.jakejmattson.anytoimage.converters.ImageToFileKt.*;
 
 public class ConversionController extends Application
 {
@@ -48,9 +50,9 @@ public class ConversionController extends Application
 			File output = new File(args[args.length - 1]);
 
 			if (conversionType == 0)
-				FileToImage.INSTANCE.convert(input, output);
+				convertFileToImage(input, output);
 			else if (conversionType == 1)
-				ImageToFile.INSTANCE.convert(input, output);
+				convertImageToFile(input, output);
 			else
 				DialogDisplay.displayException(new Exception(), "Unrecognized conversion type!");
 		}
@@ -158,7 +160,7 @@ public class ConversionController extends Application
 
 		if (radFiles.isSelected())
 		{
-			boolean wasSuccessful = FileToImage.INSTANCE.convert(inputFiles, outputFile);
+			boolean wasSuccessful = convertFileToImage(inputFiles, outputFile);
 
 			if (wasSuccessful)
 				DialogDisplay.displayInfo(infoTitle, "Image created from files.");
@@ -167,7 +169,7 @@ public class ConversionController extends Application
 		}
 		else
 		{
-			boolean wasSuccessful = ImageToFile.INSTANCE.convert(inputFiles, outputFile);
+			boolean wasSuccessful = convertImageToFile(inputFiles, outputFile);
 
 			if (wasSuccessful)
 				DialogDisplay.displayInfo(infoTitle, "Files extracted from image.");
