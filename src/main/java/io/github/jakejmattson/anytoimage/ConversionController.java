@@ -48,9 +48,9 @@ public class ConversionController extends Application
 			File output = new File(args[args.length - 1]);
 
 			if (conversionType == 0)
-				FileToImage.convert(input, output);
+				FileToImage.INSTANCE.convert(input, output);
 			else if (conversionType == 1)
-				ImageToFile.convert(input, output);
+				ImageToFile.INSTANCE.convert(input, output);
 			else
 				DialogDisplay.displayException(new Exception(), "Unrecognized conversion type!");
 		}
@@ -158,7 +158,7 @@ public class ConversionController extends Application
 
 		if (radFiles.isSelected())
 		{
-			boolean wasSuccessful = FileToImage.convert(inputFiles, outputFile);
+			boolean wasSuccessful = FileToImage.INSTANCE.convert(inputFiles, outputFile);
 
 			if (wasSuccessful)
 				DialogDisplay.displayInfo(infoTitle, "Image created from files.");
@@ -167,7 +167,7 @@ public class ConversionController extends Application
 		}
 		else
 		{
-			boolean wasSuccessful = ImageToFile.convert(inputFiles, outputFile);
+			boolean wasSuccessful = ImageToFile.INSTANCE.convert(inputFiles, outputFile);
 
 			if (wasSuccessful)
 				DialogDisplay.displayInfo(infoTitle, "Files extracted from image.");
