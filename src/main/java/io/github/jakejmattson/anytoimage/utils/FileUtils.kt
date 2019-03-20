@@ -13,33 +13,24 @@ internal val fileFilter = FileChooser.ExtensionFilter("*.png", "*.png", "*.PNG")
 /**
  * Collect a list of files from a directory and all sub-directories.
  */
-fun walkDirectory(dir: File)=
-    try {
-        Files.walk(dir.toPath()).collect(Collectors.toList()).filter { Files.isRegularFile(it) }.map { it.toFile() }
-    } catch (e: IOException) {
-        DialogDisplay.displayException(e, "Unable to walk directory: $dir")
-        emptyList<File>()
+fun File.collectFiles() = this.walkTopDown().filterIsInstance(File::class.java).filter { it.isFile }
+
+fun File.hasValidExtension(): Boolean {
+    val validExtension = fileFilter.extensions[0].takeLast(3).toLowerCase()
+    return this.extension == validExtension
+}
+
+fun createFileChooser(title: String, shouldFilter: Boolean) =
+    FileChooser().apply {
+        this.title = title
+        this.initialDirectory = defaultDirectory
+
+        if (shouldFilter)
+            this.extensionFilters.add(fileFilter)
     }
 
-fun validateFile(file: File): Boolean {
-    val extension = fileFilter.extensions[0].toLowerCase().substring(1)
-    return file.extension == extension
-}
-
-fun selectFile(title: String, shouldFilter: Boolean, isSave: Boolean): File {
-    val chooser = FileChooser()
-    chooser.title = title
-    chooser.initialDirectory = defaultDirectory
-
-    if (shouldFilter)
-        chooser.extensionFilters.add(fileFilter)
-
-    return if (isSave) chooser.showSaveDialog(null) else chooser.showOpenDialog(null)
-}
-
-fun selectDirectory(title: String): File {
-    val chooser = DirectoryChooser()
-    chooser.title = title
-    chooser.initialDirectory = defaultDirectory
-    return chooser.showDialog(null)
-}
+fun createDirectoryChooser(title: String) =
+    DirectoryChooser().apply {
+        this.title = title
+        this.initialDirectory = defaultDirectory
+    }

@@ -53,7 +53,7 @@ private fun calculateBytesRequired(files: List<File>): Int {
         if (inputFile.isDirectory) {
             val parentDir = inputFile.name
 
-            walkDirectory(inputFile).forEach { file ->
+            inputFile.collectFiles().forEach { file ->
                 val fullPath = file.path
                 val fileName = fullPath.substring(fullPath.indexOf(parentDir))
 
@@ -88,7 +88,7 @@ private fun calculateFileSize(file: File, fileName: String): Int {
  * Directory to extract bytes from
  */
 private fun directoryToBytes(dir: File) =
-    walkDirectory(dir).forEach {
+    dir.collectFiles().forEach {
         val fullPath = it.path
         val fileName = fullPath.substring(fullPath.indexOf(dir.name))
 

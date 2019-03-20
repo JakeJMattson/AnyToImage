@@ -104,7 +104,7 @@ public class ConversionController extends Application
 
 	private void addFile()
 	{
-		File selection = selectFile("Add input file", radImage.isSelected(), false);
+		File selection = createFileChooser("Add input file", radImage.isSelected()).showOpenDialog(null);
 
 		if (selection != null)
 		{
@@ -115,7 +115,7 @@ public class ConversionController extends Application
 
 	private void addDirectory()
 	{
-		File selection = selectDirectory("Add input directory");
+		File selection = createDirectoryChooser("Add input directory").showDialog(null);
 
 		if (selection != null)
 		{
@@ -129,9 +129,9 @@ public class ConversionController extends Application
 		File selection;
 
 		if (radFiles.isSelected())
-			selection = selectFile("Create an output file", true, true);
+			selection = createFileChooser("Create an output file", true).showSaveDialog(null);
 		else
-			selection = selectDirectory("Select an output directory");
+			selection = createDirectoryChooser("Select an output directory").showDialog(null);
 
 		if (selection != null)
 		{
@@ -232,7 +232,7 @@ public class ConversionController extends Application
 				List<File> droppedFiles = dragboard.getFiles();
 
 				if (radImage.isSelected())
-					droppedFiles = droppedFiles.stream().filter(file -> file.isDirectory() || validateFile(file))
+					droppedFiles = droppedFiles.stream().filter(file -> file.isDirectory() || hasValidExtension(file))
 							.collect(Collectors.toList());
 
 				for (File file : droppedFiles)
