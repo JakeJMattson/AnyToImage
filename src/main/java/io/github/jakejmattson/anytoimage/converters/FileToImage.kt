@@ -108,7 +108,7 @@ private fun fileToBytes(file: File, fileName: String) {
         with(stream) {
             write(fileName.length)
             write(fileName.toByteArray())
-            write(ByteUtils.intToBytes(file.length().toInt(), 4))
+            write(file.length().toInt().extractBytes(4))
             write(Files.readAllBytes(file.toPath()))
         }
 
@@ -127,7 +127,7 @@ private fun writeDataToImage() {
 
     while (index < fileBytes.size - CHANNEL_COUNT) {
         val pixelData = byteArrayOf(fileBytes[index], fileBytes[index + 1], fileBytes[index + 2])
-        val pixel = ByteUtils.bytesToInt(pixelData)
+        val pixel = pixelData.bytesToInt()
 
         image!!.setRGB(row, col, pixel)
         row++
@@ -154,7 +154,7 @@ private fun finalizeStream() {
     val finalPixelData = ByteArray(CHANNEL_COUNT)
     val partialPixel = stream.toByteArray()
     System.arraycopy(partialPixel, 0, finalPixelData, 0, partialPixel.size)
-    val pixel = ByteUtils.bytesToInt(finalPixelData)
+    val pixel = finalPixelData.bytesToInt()
     image!!.setRGB(row, col, pixel)
 
     stream.reset()
