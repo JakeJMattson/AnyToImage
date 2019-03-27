@@ -40,7 +40,7 @@ public class ConversionController extends Application
 	{
 		if (args.length >= 3)
 		{
-			DialogDisplay.isGraphical = false;
+			DialogDisplayKt.setGraphical(false);
 
 			int conversionType = Integer.parseInt(args[0]);
 			List<File> input = new ArrayList<>();
@@ -55,12 +55,12 @@ public class ConversionController extends Application
 			else if (conversionType == 1)
 				convertImageToFile(input, output);
 			else
-				DialogDisplay.displayException(new Exception(), "Unrecognized conversion type!");
+				DialogDisplayKt.displayException(new Exception(), "Unrecognized conversion type!");
 		}
 		else if (args.length == 0)
 			launch(args);
 		else
-			DialogDisplay.displayException(new Exception(), "Insufficient arguments!");
+			DialogDisplayKt.displayException(new Exception(), "Insufficient arguments!");
 	}
 
 	@Override
@@ -164,18 +164,18 @@ public class ConversionController extends Application
 			boolean wasSuccessful = convertFileToImage(inputFiles, outputFile);
 
 			if (wasSuccessful)
-				DialogDisplay.displayInfo(infoTitle, "Image created from files.");
+				DialogDisplayKt.displayInfo(infoTitle, "Image created from files.");
 			else
-				DialogDisplay.displayError(errorTitle, "Image not created due to errors.");
+				DialogDisplayKt.displayError(errorTitle, "Image not created due to errors.");
 		}
 		else
 		{
 			boolean wasSuccessful = convertImageToFile(inputFiles, outputFile);
 
 			if (wasSuccessful)
-				DialogDisplay.displayInfo(infoTitle, "Files extracted from image.");
+				DialogDisplayKt.displayInfo(infoTitle, "Files extracted from image.");
 			else
-				DialogDisplay.displayError(errorTitle, "Unable to extract any files.");
+				DialogDisplayKt.displayError(errorTitle, "Unable to extract any files.");
 		}
 	}
 
@@ -185,13 +185,13 @@ public class ConversionController extends Application
 
 		if (inputFiles.isEmpty())
 		{
-			DialogDisplay.displayError(title, "Please add input files to continue.");
+			DialogDisplayKt.displayError(title, "Please add input files to continue.");
 			return false;
 		}
 
 		if (outputFile == null)
 		{
-			DialogDisplay.displayError(title, "Please specify the output to continue.");
+			DialogDisplayKt.displayError(title, "Please specify the output to continue.");
 			return false;
 		}
 

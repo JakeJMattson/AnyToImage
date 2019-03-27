@@ -114,7 +114,7 @@ private fun fileToBytes(file: File, fileName: String) {
 
         writeDataToImage()
     } catch (e: IOException) {
-        DialogDisplay.displayException(e, "Unable to read file: $file")
+        displayException(e, "Unable to read file: $file")
     }
 }
 
@@ -165,7 +165,7 @@ private fun saveImage(output: File) =
         ImageIO.write(image!!, "png", output)
         true
     } catch (e: IOException) {
-        DialogDisplay.displayException(e, "Error creating image!")
+        displayException(e, "Error creating image!")
         false
     } finally {
         image = null

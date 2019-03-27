@@ -35,7 +35,7 @@ private fun extractPixels(file: File) =
         image.graphics.drawImage(fileImage, 0, 0, null)
         (image.raster.dataBuffer as DataBufferInt).data
     } catch (e: IOException) {
-        DialogDisplay.displayException(e, "Failed to read image: $file")
+        displayException(e, "Failed to read image: $file")
         null
     }
 
@@ -102,13 +102,13 @@ private fun createFiles(bytes: ByteArray, outputDir: File): Boolean {
     } catch (e: InvalidPathException) {
         filesExtracted = false
         allNewFiles.forEach { it.delete() }
-        DialogDisplay.displayException(e, "Incorrectly encoded input image!")
+        displayException(e, "Incorrectly encoded input image!")
     } catch (e: ArrayIndexOutOfBoundsException) {
         filesExtracted = false
         allNewFiles.forEach { it.delete() }
-        DialogDisplay.displayException(e, "Incorrectly encoded input image!")
+        displayException(e, "Incorrectly encoded input image!")
     } catch (e: IOException) {
-        DialogDisplay.displayException(e, "Failed to create file: " + newFile!!.toString())
+        displayException(e, "Failed to create file: " + newFile!!.toString())
     }
 
     return filesExtracted
