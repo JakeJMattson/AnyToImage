@@ -40,11 +40,6 @@ fun convertFileToImage(inputFiles: List<File>, outputFile: File): Boolean {
 
 /**
  * Calculate the number of bytes needed to store all files in the list.
- *
- * @param files
- * List of files to be converted
- *
- * @return Number of bytes required
  */
 private fun calculateBytesRequired(files: List<File>): Int {
     var byteCount = 0
@@ -68,13 +63,6 @@ private fun calculateBytesRequired(files: List<File>): Int {
 
 /**
  * Calculate the number of bytes needed to store and recreate a file.
- *
- * @param file
- * File to be sized
- * @param fileName
- * Name of file to be sized
- *
- * @return Number of bytes
  */
 private fun calculateFileSize(file: File, fileName: String): Int {
     val SIZE_BYTES = 5
@@ -82,10 +70,7 @@ private fun calculateFileSize(file: File, fileName: String): Int {
 }
 
 /**
- * Collect all files from a directory (and sub-directories) and convertImageToFile each to bytes.
- *
- * @param dir
- * Directory to extract bytes from
+ * Collect all files from a directory (and sub-directories) and convert each to bytes.
  */
 private fun directoryToBytes(dir: File) =
     dir.collectFiles().forEach {
@@ -97,11 +82,6 @@ private fun directoryToBytes(dir: File) =
 
 /**
  * Collect all necessary file information as bytes and write it into the stream.
- *
- * @param file
- * File to extract bytes from
- * @param fileName
- * Name of file (with folder structure if file was in directory)
  */
 private fun fileToBytes(file: File, fileName: String) {
     try {

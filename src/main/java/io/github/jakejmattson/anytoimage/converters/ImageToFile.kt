@@ -51,11 +51,6 @@ private fun extractBytes(pixels: IntArray) =
 
 /**
  * Create all files contained within the image.
- *
- * @param bytes
- * File names and data as a byte array
- * @param outputDir
- * Directory to store all output files in
  */
 private fun createFiles(bytes: ByteArray, outputDir: File): Boolean {
     var filesExtracted = false
