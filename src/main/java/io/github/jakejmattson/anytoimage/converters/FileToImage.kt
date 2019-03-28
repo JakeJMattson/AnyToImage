@@ -88,6 +88,7 @@ private fun fileToBytes(file: File, fileName: String) {
         with(stream) {
             write(fileName.length)
             write(fileName.toByteArray())
+            println(file.toPath())
             write(file.length().toInt().extractBytes(4))
             write(Files.readAllBytes(file.toPath()))
         }

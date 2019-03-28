@@ -89,6 +89,7 @@ private fun createFiles(bytes: ByteArray, outputDir: File): Boolean {
                 parentDir.mkdirs()
 
             Files.write(newFile.toPath(), data.toByteArray())
+            println(newFile.toPath())
             filesExtracted = true
 
             name.reset()
