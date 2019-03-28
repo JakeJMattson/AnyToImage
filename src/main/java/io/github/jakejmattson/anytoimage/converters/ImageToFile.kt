@@ -53,59 +53,35 @@ private fun extractBytes(pixels: IntArray) =
  * Create all files contained within the image.
  */
 private fun createFiles(bytes: ByteArray, outputDir: File): Boolean {
-    var filesExtracted = false
+    var filesCreated = 0
     var index = 0
-    var newFile: File? = null
-    val allNewFiles = ArrayList<File>()
+
+    val fileData = ArrayList<Pair<ByteArray, ByteArray>>()
 
     try {
         while (index != bytes.size) {
-            val name = ByteArrayOutputStream()
-            val data = ByteArrayOutputStream()
+            val nameLength = byteArrayOf(0, 0, bytes[index++]).bytesToInt().takeUnless { it == 0 } ?: break
+            val name = bytes.sliceArray(index until index + nameLength).also { index += nameLength }
+            val dataLength = byteArrayOf(bytes[index++], bytes[index++], bytes[index++], bytes[index++]).bytesToInt()
+            val data = bytes.sliceArray(index until index + dataLength).also { index += dataLength }
 
-            //Calculate the number of bytes in each cluster (name/data)
-            var sizeBytes = byteArrayOf(0, 0, bytes[index++])
-            var clusterLength = sizeBytes.bytesToInt()
-
-            //EOF
-            if (clusterLength == 0)
-                break
-
-            for (i in 0 until clusterLength)
-                name.write(bytes[index++].toInt())
-
-            sizeBytes = byteArrayOf(bytes[index++], bytes[index++], bytes[index++], bytes[index++])
-            clusterLength = sizeBytes.bytesToInt()
-
-            for (i in 0 until clusterLength)
-                data.write(bytes[index++].toInt())
-
-            //Create file
-            newFile = File(outputDir.toString() + File.separator + String(name.toByteArray()))
-            val parentDir = newFile.parentFile
-            allNewFiles.add(newFile)
-
-            if (!parentDir.exists())
-                parentDir.mkdirs()
-
-            Files.write(newFile.toPath(), data.toByteArray())
-            println(newFile.toPath())
-            filesExtracted = true
-
-            name.reset()
-            data.reset()
+            fileData.add(name to data)
         }
-    } catch (e: InvalidPathException) {
-        filesExtracted = false
-        allNewFiles.forEach { it.delete() }
+    } catch (e: RuntimeException) {
         displayException(e, "Incorrectly encoded input image!")
-    } catch (e: ArrayIndexOutOfBoundsException) {
-        filesExtracted = false
-        allNewFiles.forEach { it.delete() }
-        displayException(e, "Incorrectly encoded input image!")
-    } catch (e: IOException) {
-        displayException(e, "Failed to create file: " + newFile!!.toString())
+        return false
     }
 
-    return filesExtracted
+    if (fileData.isEmpty()) return false
+
+    fileData.forEach {
+        val newFile = File(outputDir.toString() + File.separator + String(it.first))
+        newFile.parentFile.mkdirs()
+
+        Files.write(newFile.toPath(), it.second)
+        println(newFile.toPath())
+        filesCreated++
+    }
+
+    return filesCreated != 0
 }
