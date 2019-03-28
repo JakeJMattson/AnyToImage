@@ -17,7 +17,7 @@ fun File.collectFiles() = this.walkTopDown().filterIsInstance(File::class.java).
 
 fun File.hasValidExtension(): Boolean {
     val validExtension = fileFilter.extensions[0].takeLast(3).toLowerCase()
-    return this.extension == validExtension
+    return this.extension.toLowerCase() == validExtension
 }
 
 fun createFileChooser(title: String, shouldFilter: Boolean) =

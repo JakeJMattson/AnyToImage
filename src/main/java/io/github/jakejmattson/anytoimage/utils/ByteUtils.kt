@@ -4,7 +4,6 @@ package io.github.jakejmattson.anytoimage.utils
  * Extract bytes from an integer.
  */
 fun Int.extractBytes(count: Int): ByteArray {
-
     val bytes = ByteArray(count)
 
     for (i in 0 until count)

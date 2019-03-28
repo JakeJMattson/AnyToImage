@@ -55,7 +55,6 @@ private fun extractBytes(pixels: IntArray) =
 private fun createFiles(bytes: ByteArray, outputDir: File): Boolean {
     var filesCreated = 0
     var index = 0
-
     val fileData = ArrayList<Pair<ByteArray, ByteArray>>()
 
     try {

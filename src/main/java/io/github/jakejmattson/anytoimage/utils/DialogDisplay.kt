@@ -6,8 +6,8 @@ import javafx.scene.layout.*
 
 import java.io.*
 
-var isGraphical = true
-var shouldPrint = true
+var isGraphical = false
+var shouldPrint = false
 
 fun displayInfo(title: String, message: String) {
     if (shouldPrint) println(message)

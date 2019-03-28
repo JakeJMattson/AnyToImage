@@ -64,10 +64,7 @@ private fun calculateBytesRequired(files: List<File>): Int {
 /**
  * Calculate the number of bytes needed to store and recreate a file.
  */
-private fun calculateFileSize(file: File, fileName: String): Int {
-    val SIZE_BYTES = 5
-    return (fileName.toByteArray().size.toLong() + file.length() + SIZE_BYTES.toLong()).toInt()
-}
+private fun calculateFileSize(file: File, fileName: String) = (fileName.toByteArray().size.toLong() + file.length() + 5).toInt()
 
 /**
  * Collect all files from a directory (and sub-directories) and convert each to bytes.

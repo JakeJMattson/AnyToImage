@@ -40,7 +40,7 @@ public class ConversionController extends Application
 	{
 		if (args.length >= 3)
 		{
-			DialogDisplayKt.setGraphical(false);
+			DialogDisplayKt.setShouldPrint(true);
 
 			int conversionType = Integer.parseInt(args[0]);
 			List<File> input = new ArrayList<>();
@@ -57,8 +57,10 @@ public class ConversionController extends Application
 			else
 				DialogDisplayKt.displayException(new Exception(), "Unrecognized conversion type!");
 		}
-		else if (args.length == 0)
+		else if (args.length == 0) {
+			DialogDisplayKt.setGraphical(true);
 			launch(args);
+		}
 		else
 			DialogDisplayKt.displayException(new Exception(), "Insufficient arguments!");
 	}
