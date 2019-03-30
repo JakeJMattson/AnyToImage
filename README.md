@@ -32,6 +32,16 @@ The files can be obtained from the <a href="https://github.com/leachim6/hello-wo
 which was inspired by <a href="https://helloworldcollection.github.io/">The Hello World Collection</a>.
 </p>
 
+## Limitations
+
+<p align="justify">
+Due to the way certain aspects of this code is implemented, there are some known limitations.
+</p>
+
+## Size
+* File name length is represented by 1 byte. Equivalent to 256 characters - includes extensions).
+* File size is represented by to 4 bytes. Equivalent to 4,294,967,295 bytes or 4.29 gigabytes.
+
 ## Prerequisites
 
 ### Languages
