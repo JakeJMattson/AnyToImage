@@ -38,9 +38,10 @@ which was inspired by <a href="https://helloworldcollection.github.io/">The Hell
 Due to the way certain aspects of this code is implemented, there are some known limitations.
 </p>
 
-## Size
+### Input
 * File name length is represented by 1 byte. Equivalent to 256 characters - includes extensions).
 * File size is represented by to 4 bytes. Equivalent to 4,294,967,295 bytes or 4.29 gigabytes.
+* If the amount of input is too large, you may exceed the Java heap space, resulting in a crash.
 
 ## Prerequisites
 
