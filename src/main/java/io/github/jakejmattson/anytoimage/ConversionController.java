@@ -20,241 +20,241 @@ import static io.github.jakejmattson.anytoimage.utils.FileUtilsKt.*;
 
 public class ConversionController extends Application
 {
-	@FXML private Button btnAddFile;
-	@FXML private Button btnAddDirectory;
-	@FXML private Button btnOutput;
-	@FXML private Button btnRemove;
-	@FXML private Button btnSubmit;
-	@FXML private Button btnClear;
-	@FXML private RadioButton radFiles;
-	@FXML private RadioButton radImage;
-	@FXML private Pane dndPane;
-	@FXML private ListView<String> lstInputs;
-	@FXML private TextField txtOutput;
-	@FXML private Label lblDirectionArrow;
+    @FXML private Button btnAddFile;
+    @FXML private Button btnAddDirectory;
+    @FXML private Button btnOutput;
+    @FXML private Button btnRemove;
+    @FXML private Button btnSubmit;
+    @FXML private Button btnClear;
+    @FXML private RadioButton radFiles;
+    @FXML private RadioButton radImage;
+    @FXML private Pane dndPane;
+    @FXML private ListView<String> lstInputs;
+    @FXML private TextField txtOutput;
+    @FXML private Label lblDirectionArrow;
 
-	private List<File> inputFiles = new ArrayList<>();
-	private File outputFile;
+    private List<File> inputFiles = new ArrayList<>();
+    private File outputFile;
 
-	public static void main(String[] args)
-	{
-		if (args.length >= 3)
-		{
-			DialogDisplayKt.setShouldPrint(true);
+    public static void main(String[] args)
+    {
+        if (args.length >= 3)
+        {
+            DialogDisplayKt.setShouldPrint(true);
 
-			int conversionType = Integer.parseInt(args[0]);
-			List<File> input = new ArrayList<>();
+            int conversionType = Integer.parseInt(args[0]);
+            List<File> input = new ArrayList<>();
 
-			for (int i = 1; i < args.length - 1; i++)
-				input.add(new File(args[i]));
+            for (int i = 1; i < args.length - 1; i++)
+                input.add(new File(args[i]));
 
-			File output = new File(args[args.length - 1]);
+            File output = new File(args[args.length - 1]);
 
-			if (conversionType == 0)
-				convertFileToImage(input, output);
-			else if (conversionType == 1)
-				convertImageToFile(input, output);
-			else
-				DialogDisplayKt.displayException(new Exception(), "Unrecognized conversion type!");
-		}
-		else if (args.length == 0) {
-			DialogDisplayKt.setGraphical(true);
-			launch(args);
-		}
-		else
-			DialogDisplayKt.displayException(new Exception(), "Insufficient arguments!");
-	}
+            if (conversionType == 0)
+                convertFileToImage(input, output);
+            else if (conversionType == 1)
+                convertImageToFile(input, output);
+            else
+                DialogDisplayKt.displayException(new Exception(), "Unrecognized conversion type!");
+        }
+        else if (args.length == 0) {
+            DialogDisplayKt.setGraphical(true);
+            launch(args);
+        }
+        else
+            DialogDisplayKt.displayException(new Exception(), "Insufficient arguments!");
+    }
 
-	@Override
-	public void start(Stage primaryStage) throws IOException
-	{
-		Parent root = FXMLLoader.load(getClass().getResource("/ConversionView.fxml"));
-		primaryStage.setTitle("AnyToImage");
-		primaryStage.setScene(new Scene(root));
-		primaryStage.setResizable(false);
-		primaryStage.show();
-	}
+    @Override
+    public void start(Stage primaryStage) throws IOException
+    {
+        Parent root = FXMLLoader.load(getClass().getResource("/ConversionView.fxml"));
+        primaryStage.setTitle("AnyToImage");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(false);
+        primaryStage.show();
+    }
 
-	@FXML
-	public void initialize()
-	{
-		lstInputs.setItems(FXCollections.observableArrayList());
+    @FXML
+    public void initialize()
+    {
+        lstInputs.setItems(FXCollections.observableArrayList());
 
-		addEvents();
-		updateState(true);
-	}
+        addEvents();
+        updateState(true);
+    }
 
-	private void addEvents()
-	{
-		//IO buttons
-		btnAddFile.setOnAction(event -> addFile());
-		btnAddDirectory.setOnAction(event -> addDirectory());
-		btnOutput.setOnAction(event -> setOutput());
+    private void addEvents()
+    {
+        //IO buttons
+        btnAddFile.setOnAction(event -> addFile());
+        btnAddDirectory.setOnAction(event -> addDirectory());
+        btnOutput.setOnAction(event -> setOutput());
 
-		//Action buttons
-		btnRemove.setOnAction(event -> removeSelection());
-		btnSubmit.setOnAction(event -> convertInput());
-		btnClear.setOnAction(event -> clearAll());
+        //Action buttons
+        btnRemove.setOnAction(event -> removeSelection());
+        btnSubmit.setOnAction(event -> convertInput());
+        btnClear.setOnAction(event -> clearAll());
 
-		//Conversion direction
-		radFiles.setOnAction(event -> updateState(true));
-		radImage.setOnAction(event -> updateState(false));
+        //Conversion direction
+        radFiles.setOnAction(event -> updateState(true));
+        radImage.setOnAction(event -> updateState(false));
 
-		//Prepare drag and drop pane to receive files
-		createDragHandler();
-	}
+        //Prepare drag and drop pane to receive files
+        createDragHandler();
+    }
 
-	private void addFile()
-	{
-		File selection = createFileChooser("Add input file", radImage.isSelected()).showOpenDialog(null);
+    private void addFile()
+    {
+        File selection = createFileChooser("Add input file", radImage.isSelected()).showOpenDialog(null);
 
-		if (selection != null)
-		{
-			inputFiles.add(selection);
-			lstInputs.getItems().add(selection.getName());
-		}
-	}
+        if (selection != null)
+        {
+            inputFiles.add(selection);
+            lstInputs.getItems().add(selection.getName());
+        }
+    }
 
-	private void addDirectory()
-	{
-		File selection = createDirectoryChooser("Add input directory").showDialog(null);
+    private void addDirectory()
+    {
+        File selection = createDirectoryChooser("Add input directory").showDialog(null);
 
-		if (selection != null)
-		{
-			inputFiles.add(selection);
-			lstInputs.getItems().add(selection.getName());
-		}
-	}
+        if (selection != null)
+        {
+            inputFiles.add(selection);
+            lstInputs.getItems().add(selection.getName());
+        }
+    }
 
-	private void setOutput()
-	{
-		File selection;
+    private void setOutput()
+    {
+        File selection;
 
-		if (radFiles.isSelected())
-			selection = createFileChooser("Create an output file", true).showSaveDialog(null);
-		else
-			selection = createDirectoryChooser("Select an output directory").showDialog(null);
+        if (radFiles.isSelected())
+            selection = createFileChooser("Create an output file", true).showSaveDialog(null);
+        else
+            selection = createDirectoryChooser("Select an output directory").showDialog(null);
 
-		if (selection != null)
-		{
-			outputFile = selection;
-			txtOutput.setText(outputFile.getAbsolutePath());
-		}
-	}
+        if (selection != null)
+        {
+            outputFile = selection;
+            txtOutput.setText(outputFile.getAbsolutePath());
+        }
+    }
 
-	private void removeSelection()
-	{
-		int index = lstInputs.getSelectionModel().getSelectedIndex();
+    private void removeSelection()
+    {
+        int index = lstInputs.getSelectionModel().getSelectedIndex();
 
-		if (index == -1)
-			return;
+        if (index == -1)
+            return;
 
-		inputFiles.remove(index);
-		lstInputs.getItems().remove(index);
-	}
+        inputFiles.remove(index);
+        lstInputs.getItems().remove(index);
+    }
 
-	private void convertInput()
-	{
-		if (!validateConversion())
-			return;
+    private void convertInput()
+    {
+        if (!validateConversion())
+            return;
 
-		String infoTitle = "Operation successful!";
-		String errorTitle = "Operation failed!";
+        String infoTitle = "Operation successful!";
+        String errorTitle = "Operation failed!";
 
-		if (radFiles.isSelected())
-		{
-			boolean wasSuccessful = convertFileToImage(inputFiles, outputFile);
+        if (radFiles.isSelected())
+        {
+            boolean wasSuccessful = convertFileToImage(inputFiles, outputFile);
 
-			if (wasSuccessful)
-				DialogDisplayKt.displayInfo(infoTitle, "Image created from files.");
-			else
-				DialogDisplayKt.displayError(errorTitle, "Image not created due to errors.");
-		}
-		else
-		{
-			boolean wasSuccessful = convertImageToFile(inputFiles, outputFile);
+            if (wasSuccessful)
+                DialogDisplayKt.displayInfo(infoTitle, "Image created from files.");
+            else
+                DialogDisplayKt.displayError(errorTitle, "Image not created due to errors.");
+        }
+        else
+        {
+            boolean wasSuccessful = convertImageToFile(inputFiles, outputFile);
 
-			if (wasSuccessful)
-				DialogDisplayKt.displayInfo(infoTitle, "Files extracted from image.");
-			else
-				DialogDisplayKt.displayError(errorTitle, "Unable to extract any files.");
-		}
-	}
+            if (wasSuccessful)
+                DialogDisplayKt.displayInfo(infoTitle, "Files extracted from image.");
+            else
+                DialogDisplayKt.displayError(errorTitle, "Unable to extract any files.");
+        }
+    }
 
-	private boolean validateConversion()
-	{
-		String title = "Incomplete field";
+    private boolean validateConversion()
+    {
+        String title = "Incomplete field";
 
-		if (inputFiles.isEmpty())
-		{
-			DialogDisplayKt.displayError(title, "Please add input files to continue.");
-			return false;
-		}
+        if (inputFiles.isEmpty())
+        {
+            DialogDisplayKt.displayError(title, "Please add input files to continue.");
+            return false;
+        }
 
-		if (outputFile == null)
-		{
-			DialogDisplayKt.displayError(title, "Please specify the output to continue.");
-			return false;
-		}
+        if (outputFile == null)
+        {
+            DialogDisplayKt.displayError(title, "Please specify the output to continue.");
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	private void clearAll()
-	{
-		inputFiles.clear();
-		outputFile = null;
-		lstInputs.getItems().clear();
-		txtOutput.clear();
-	}
+    private void clearAll()
+    {
+        inputFiles.clear();
+        outputFile = null;
+        lstInputs.getItems().clear();
+        txtOutput.clear();
+    }
 
-	private void updateState(boolean isFileConversion)
-	{
-		clearAll();
+    private void updateState(boolean isFileConversion)
+    {
+        clearAll();
 
-		btnSubmit.setText(isFileConversion ? "Create Image" : "Extract Files");
-		lblDirectionArrow.setText(isFileConversion ? "  ->   " : "  <-   ");
-	}
+        btnSubmit.setText(isFileConversion ? "Create Image" : "Extract Files");
+        lblDirectionArrow.setText(isFileConversion ? "  ->   " : "  <-   ");
+    }
 
-	private void createDragHandler()
-	{
-		dndPane.setOnDragOver(event ->
-		{
-			if (event.getDragboard().hasFiles())
-				event.acceptTransferModes(TransferMode.COPY);
-		});
+    private void createDragHandler()
+    {
+        dndPane.setOnDragOver(event ->
+        {
+            if (event.getDragboard().hasFiles())
+                event.acceptTransferModes(TransferMode.COPY);
+        });
 
-		dndPane.setOnDragDropped(event ->
-		{
-			Dragboard dragboard = event.getDragboard();
-			boolean success = false;
+        dndPane.setOnDragDropped(event ->
+        {
+            Dragboard dragboard = event.getDragboard();
+            boolean success = false;
 
-			if (dragboard.hasFiles())
-			{
-				List<File> droppedFiles = dragboard.getFiles();
+            if (dragboard.hasFiles())
+            {
+                List<File> droppedFiles = dragboard.getFiles();
 
-				if (radImage.isSelected())
-					droppedFiles = droppedFiles.stream().filter(file -> file.isDirectory() || hasValidExtension(file))
-							.collect(Collectors.toList());
+                if (radImage.isSelected())
+                    droppedFiles = droppedFiles.stream().filter(file -> file.isDirectory() || hasValidExtension(file))
+                            .collect(Collectors.toList());
 
-				for (File file : droppedFiles)
-				{
-					inputFiles.add(file);
-					lstInputs.getItems().add(file.getName());
-				}
+                for (File file : droppedFiles)
+                {
+                    inputFiles.add(file);
+                    lstInputs.getItems().add(file.getName());
+                }
 
-				success = true;
-			}
+                success = true;
+            }
 
-			event.setDropCompleted(success);
-		});
+            event.setDropCompleted(success);
+        });
 
-		dndPane.setOnDragEntered(event ->
-		{
-			String style = "-fx-border-style: dashed; -fx-border-color: " + (event.getDragboard().hasFiles() ? "lime" : "red");
-			dndPane.setStyle(style);
-		});
+        dndPane.setOnDragEntered(event ->
+        {
+            String style = "-fx-border-style: dashed; -fx-border-color: " + (event.getDragboard().hasFiles() ? "lime" : "red");
+            dndPane.setStyle(style);
+        });
 
-		dndPane.setOnDragExited(event -> dndPane.setStyle("-fx-border-style: dashed; -fx-border-color: black"));
-	}
+        dndPane.setOnDragExited(event -> dndPane.setStyle("-fx-border-style: dashed; -fx-border-color: black"));
+    }
 }
