@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage
 import java.io.*
 import java.nio.file.Files
 import javax.imageio.ImageIO
+import kotlin.math.*
 
 private val stream = ByteArrayOutputStream()
 private var image: BufferedImage? = null
@@ -17,7 +18,7 @@ fun convertFileToImage(inputFiles: List<File>, outputFile: File): Boolean {
     val validInput = inputFiles.filter { it.exists() }
 
     val bytes = calculateBytesRequired(validInput)
-    val dims = Math.ceil(Math.sqrt((bytes / CHANNEL_COUNT).toDouble())).toInt()
+    val dims = ceil(sqrt((bytes / CHANNEL_COUNT).toDouble())).toInt()
 
     if (dims == 0)
         return false
