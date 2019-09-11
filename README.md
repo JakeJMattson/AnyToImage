@@ -1,12 +1,12 @@
 <p align="center">
-  <a href="https://jdk.java.net/11/">
-    <img src="https://img.shields.io/badge/Java-11-blue.svg" alt="Java 11">
+  <a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">
+    <img src="https://img.shields.io/badge/Java-8-blue.svg" alt="Java 8">
   </a>
   <a href="https://kotlinlang.org/">
     <img src="https://img.shields.io/badge/Kotlin-1.3.50-blue.svg" alt="Kotlin 1.3.50">
   </a>
-  <a href="https://openjfx.io/">
-    <img src="https://img.shields.io/badge/JavaFX-12-blue.svg" alt="JavaFX 12">
+  <a href="https://github.com/edvin/tornadofx">
+    <img src="https://img.shields.io/badge/TornadoFX-1.7.17-blue.svg" alt="TornadoFX 1.7.17">
   </a>
   <a href="https://GitHub.com/JakeJMattson/AnyToImage/releases/">
     <img src="https://img.shields.io/github/release/JakeJMattson/AnyToImage.svg" alt="release">
