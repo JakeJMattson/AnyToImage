@@ -25,13 +25,12 @@ fun main(args: Array<String>) {
 
         val output = File(args[args.size - 1])
 
-        if (conversionType == 0)
-            convertFileToImage(input, output)
-        else if (conversionType == 1)
-            convertImageToFile(input, output)
-        else
-            displayException(Exception(), "Unrecognized conversion type!")
-    } else if (args.size == 0) {
+        when (conversionType) {
+            0 -> convertFileToImage(input, output)
+            1 -> convertImageToFile(input, output)
+            else -> displayException(Exception(), "Unrecognized conversion type!")
+        }
+    } else if (args.isEmpty()) {
         isGraphical = true
         launch<AnyToImage>()
     } else
@@ -66,7 +65,7 @@ class ConversionController : View("AnyToImage") {
     private var outputFile: File? = null
 
     init {
-        lstInputs!!.setItems(FXCollections.observableArrayList<String>())
+        lstInputs!!.items = FXCollections.observableArrayList<String>()
 
         addEvents()
         updateState(true)
@@ -74,39 +73,35 @@ class ConversionController : View("AnyToImage") {
 
     private fun addEvents() {
         //IO buttons
-        btnAddFile!!.setOnAction { event -> addFile() }
-        btnAddDirectory!!.setOnAction { event -> addDirectory() }
-        btnOutput!!.setOnAction { event -> setOutput() }
+        btnAddFile!!.setOnAction {
+            val selection = createFileChooser("Add input file", radImage!!.isSelected).showOpenDialog(null)
+            addInput(selection)
+        }
+        btnAddDirectory!!.setOnAction {
+            val selection = createDirectoryChooser("Add input directory").showDialog(null)
+            addInput(selection)
+        }
+
+        btnOutput!!.setOnAction { setOutput() }
 
         //Action buttons
-        btnRemove!!.setOnAction { event -> removeSelection() }
-        btnSubmit!!.setOnAction { event -> convertInput() }
-        btnClear!!.setOnAction { event -> clearAll() }
+        btnRemove!!.setOnAction { removeSelection() }
+        btnSubmit!!.setOnAction { convertInput() }
+        btnClear!!.setOnAction { clearAll() }
 
         //Conversion direction
-        radFiles!!.setOnAction { event -> updateState(true) }
-        radImage!!.setOnAction { event -> updateState(false) }
+        radFiles!!.setOnAction { updateState(true) }
+        radImage!!.setOnAction { updateState(false) }
 
         //Prepare drag and drop pane to receive files
         createDragHandler()
     }
 
-    private fun addFile() {
-        val selection = createFileChooser("Add input file", radImage!!.isSelected).showOpenDialog(null)
+    private fun addInput(file: File?) {
+        file ?: return
 
-        if (selection != null) {
-            inputFiles.add(selection)
-            lstInputs!!.items.add(selection.name)
-        }
-    }
-
-    private fun addDirectory() {
-        val selection = createDirectoryChooser("Add input directory").showDialog(null)
-
-        if (selection != null) {
-            inputFiles.add(selection)
-            lstInputs!!.items.add(selection.name)
-        }
+        inputFiles.add(file)
+        lstInputs!!.items.add(file.name)
     }
 
     private fun setOutput() {
@@ -124,10 +119,7 @@ class ConversionController : View("AnyToImage") {
     }
 
     private fun removeSelection() {
-        val index = lstInputs!!.selectionModel.selectedIndex
-
-        if (index == -1)
-            return
+        val index = lstInputs!!.selectionModel.selectedIndex.takeUnless { it == -1 } ?: return
 
         inputFiles.removeAt(index)
         lstInputs!!.items.removeAt(index)
@@ -194,31 +186,25 @@ class ConversionController : View("AnyToImage") {
         }
 
         dndPane!!.setOnDragDropped { event ->
-            val dragboard = event.dragboard
-            var success = false
-
-            if (dragboard.hasFiles()) {
-                var droppedFiles = dragboard.files
-
+            val droppedFiles = with(event.dragboard) {
                 if (radImage!!.isSelected)
-                    droppedFiles = droppedFiles.filter { file -> file.isDirectory || file.hasValidExtension() }
-
-                for (file in droppedFiles) {
-                    inputFiles.add(file)
-                    lstInputs!!.items.add(file.name)
-                }
-
-                success = true
+                    files.filter { it.isDirectory || it.hasValidExtension() }
+                else
+                    files
             }
 
-            event.isDropCompleted = success
+            droppedFiles.forEach {
+                inputFiles.add(it)
+                lstInputs!!.items.add(it.name)
+            }
         }
 
         dndPane!!.setOnDragEntered { event ->
-            val style = "-fx-border-style: dashed; -fx-border-color: " + if (event.dragboard.hasFiles()) "lime" else "red"
-            dndPane!!.style = style
+            dndPane!!.style = "-fx-border-style: dashed; -fx-border-color: " + if (event.dragboard.hasFiles()) "lime" else "red"
         }
 
-        dndPane!!.setOnDragExited { event -> dndPane!!.style = "-fx-border-style: dashed; -fx-border-color: black" }
+        dndPane!!.setOnDragExited {
+            dndPane!!.style = "-fx-border-style: dashed; -fx-border-color: black"
+        }
     }
 }
