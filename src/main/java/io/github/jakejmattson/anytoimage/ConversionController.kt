@@ -7,15 +7,25 @@ import tornadofx.*
 import java.io.File
 
 fun main(args: Array<String>) {
-    when {
-        args.isEmpty() -> {
+    when (args.size) {
+        0 -> {
             isGraphical = true
             launch<AnyToImage>()
         }
-        args.size >= 3 -> {
+        1 -> {
+            if (args.first().toLowerCase() != "help")
+                println("Unknown Argument. Expected: help")
+
+            displayHelp()
+        }
+        2 -> {
+            println("Invalid Argument Size. Expected 3 or more.")
+            displayHelp()
+        }
+        else -> {
             shouldPrint = true
 
-            val conversionType = Integer.parseInt(args.first())
+            val conversionType = args.first().toIntOrNull()
             val input = args.toList().subList(1, args.lastIndex).map { File(it) }
             val output = File(args.last())
 
@@ -25,6 +35,5 @@ fun main(args: Array<String>) {
                 else -> displayException(Exception(), "Unrecognized conversion type!")
             }
         }
-        else -> displayException(Exception(), "Insufficient arguments!")
     }
 }
