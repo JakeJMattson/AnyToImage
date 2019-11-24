@@ -54,44 +54,29 @@ fun displayException(e: Exception, message: String) {
     }.showAndWait()
 }
 
-fun displayHelp() {
+fun displayHelp() = println(
+    """
+        Supported command line arguments:
 
-    val helpString = """
-        Below is a help menu for using command line arguments.
+        0 Arguments - GUI mode
+        -------------------------
+            Running with no arguments will start the application in graphical mode.
+            Messages to the user will appear as dialog boxes rather than printing to console.
 
-         0 Arguments
-        --------------------
-            Running with no arguments will start the application in GUI mode.
-            This includes producing all messages as dialogs boxes rather than printing to console.
-            
-         1 Argument
-        --------------------
-            Running with a single argument is exclusively for producing a common "help" syntax.
-            Passing "help" as an argument will produce this message.
-            Passing any other argument will produce an error as well as this message.
-            
-         2 Arguments
-        --------------------
-            This has no defined behavior, and will produce an error as well as this message.
-            
-         3+ Arguments
-        --------------------
-            This is the core CLI interface. It accepts arguments in this format: 
-            <Conversion Type> <Input Files...> <Output File>
-                Conversion Types
+        3+ Arguments - CLI mode
+        -------------------------
+            Arguments are accepted in this format: <Conversion Type> <Input Files...> <Output File>
+                Conversion Type
                     0 - Convert input file(s) to an image
                     1 - Convert input image(s) to files
-                    
+
                 Input Files
                     This can be any number of file or directory paths to convert.
 
                 Output File
                     This is the path where the output will be stored when the conversion is complete.
-        
     """.trimIndent()
-
-    println(helpString)
-}
+)
 
 private fun createDialog(type: Alert.AlertType, title: String, message: String)=
     Alert(type, message).apply {
