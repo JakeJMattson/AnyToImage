@@ -260,7 +260,7 @@ class PrimaryView : View("AnyToImage") {
         setOnDragDropped { event ->
             val droppedFiles = with(event.dragboard) {
                 if (radImage.isSelected)
-                    files.filter { it.isDirectory || it.hasValidExtension() }
+                    files.filter { it.isDirectory || it.hasValidImageExtension() }
                 else
                     files
             }
