@@ -9,7 +9,7 @@ import java.io.File
 fun main(args: Array<String>) {
     when (args.size) {
         0 -> {
-            isGraphical = true
+            displayMode = DisplayMode.GRAPHICAL
             launch<AnyToImage>()
         }
         1 -> {
@@ -23,11 +23,11 @@ fun main(args: Array<String>) {
             displayHelp()
         }
         else -> {
-            shouldPrint = true
-
             val conversionType = args.first().toIntOrNull()
             val input = args.toList().subList(1, args.lastIndex).map { File(it) }
             val output = File(args.last())
+
+            displayMode = DisplayMode.CONSOLE
 
             when (conversionType) {
                 0 -> convertFileToImage(input, output)
