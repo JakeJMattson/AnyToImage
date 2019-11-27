@@ -14,12 +14,12 @@ fun main(args: Array<String>) {
         }
         1 -> {
             if (args.first().toLowerCase() != "help")
-                println("Unknown Argument. Expected: help")
+                println("Invalid Argument Size.")
 
             displayHelp()
         }
         2 -> {
-            println("Invalid Argument Size. Expected 3 or more.")
+            println("Invalid Argument Size.")
             displayHelp()
         }
         else -> {
@@ -27,12 +27,13 @@ fun main(args: Array<String>) {
             val input = args.toList().subList(1, args.lastIndex).map { File(it) }
             val output = File(args.last())
 
-            displayMode = DisplayMode.CONSOLE
-
             when (conversionType) {
                 0 -> convertFileToImage(input, output)
                 1 -> convertImageToFile(input, output)
-                else -> displayException(Exception(), "Unrecognized conversion type!")
+                else -> {
+                    println("Unrecognized conversion type!")
+                    displayHelp()
+                }
             }
         }
     }
