@@ -220,16 +220,16 @@ class PrimaryView : View("AnyToImage") {
             val wasSuccessful = convertFileToImage(inputFiles, outputFile!!)
 
             if (wasSuccessful)
-                displayInfo(infoTitle, "Image created from files.")
+                Logger.displayInfo(infoTitle, "Image created from files.")
             else
-                displayError(errorTitle, "Image not created due to errors.")
+                Logger.displayError(errorTitle, "Image not created due to errors.")
         } else {
             val wasSuccessful = convertImageToFile(inputFiles, outputFile!!)
 
             if (wasSuccessful)
-                displayInfo(infoTitle, "Files extracted from image.")
+                Logger.displayInfo(infoTitle, "Files extracted from image.")
             else
-                displayError(errorTitle, "Unable to extract any files.")
+                Logger.displayError(errorTitle, "Unable to extract any files.")
         }
     }
 
@@ -237,12 +237,12 @@ class PrimaryView : View("AnyToImage") {
         val title = "Incomplete field"
 
         if (inputFiles.isEmpty()) {
-            displayError(title, "Please input files to continue.")
+            Logger.displayError(title, "Please input files to continue.")
             return false
         }
 
         if (outputFile == null) {
-            displayError(title, "Please specify the output to continue.")
+            Logger.displayError(title, "Please specify the output to continue.")
             return false
         }
 

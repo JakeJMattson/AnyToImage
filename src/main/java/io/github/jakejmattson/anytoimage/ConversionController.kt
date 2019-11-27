@@ -9,18 +9,18 @@ import java.io.File
 fun main(args: Array<String>) {
     when (args.size) {
         0 -> {
-            displayMode = DisplayMode.GRAPHICAL
+            Logger.displayMode = DisplayMode.GRAPHICAL
             launch<AnyToImage>()
         }
         1 -> {
             if (args.first().toLowerCase() != "help")
                 println("Invalid Argument Size.")
 
-            displayHelp()
+            Logger.displayHelp()
         }
         2 -> {
             println("Invalid Argument Size.")
-            displayHelp()
+            Logger.displayHelp()
         }
         else -> {
             val conversionType = args.first().toIntOrNull()
@@ -32,7 +32,7 @@ fun main(args: Array<String>) {
                 1 -> convertImageToFile(input, output)
                 else -> {
                     println("Unrecognized conversion type!")
-                    displayHelp()
+                    Logger.displayHelp()
                 }
             }
         }

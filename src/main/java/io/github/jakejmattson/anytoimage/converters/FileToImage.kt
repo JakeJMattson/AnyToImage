@@ -23,7 +23,7 @@ fun convertFileToImage(inputFiles: List<File>, outputFile: File): Boolean {
     if (dims == 0)
         return false
 
-    beginInfoStream("Encoding Files")
+    Logger.beginInfoStream("Encoding Files")
 
     //(Re)initialize fields
     image = BufferedImage(dims, dims, BufferedImage.TYPE_INT_RGB)
@@ -88,14 +88,14 @@ private fun fileToBytes(file: File, fileName: String) {
         with(stream) {
             write(fileName.length)
             write(fileName.toByteArray())
-            displayInfoStream(file.toPath().toString())
+            Logger.displayInfoStream(file.toPath().toString())
             write(file.length().toInt().extractBytes(4))
             write(Files.readAllBytes(file.toPath()))
         }
 
         writeDataToImage()
     } catch (e: IOException) {
-        displayException(e, "Unable to read file: $file")
+        Logger.displayException(e, "Unable to read file: $file")
     }
 }
 
@@ -146,7 +146,7 @@ private fun saveImage(output: File) =
         ImageIO.write(image!!, "png", output)
         true
     } catch (e: IOException) {
-        displayException(e, "Error creating image!")
+        Logger.displayException(e, "Error creating image!")
         false
     } finally {
         image = null

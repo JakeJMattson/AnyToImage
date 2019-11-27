@@ -14,7 +14,7 @@ fun convertImageToFile(inputFiles: List<File>, outputDir: File): Boolean {
 
     var wasSuccessful = false
 
-    beginInfoStream("Decoding Files")
+    Logger.beginInfoStream("Decoding Files")
 
     validFiles.forEach { file ->
         val pixels = extractPixels(file) ?: return@forEach
@@ -37,7 +37,7 @@ private fun extractPixels(file: File) =
         image.graphics.drawImage(fileImage, 0, 0, null)
         (image.raster.dataBuffer as DataBufferInt).data
     } catch (e: IOException) {
-        displayException(e, "Failed to read image: $file")
+        Logger.displayException(e, "Failed to read image: $file")
         null
     }
 
@@ -69,7 +69,7 @@ private fun createFiles(bytes: ByteArray, outputDir: File): Boolean {
             fileData.add(name to data)
         }
     } catch (e: RuntimeException) {
-        displayException(e, "Incorrectly encoded input image!")
+        Logger.displayException(e, "Incorrectly encoded input image!")
         return false
     }
 
@@ -80,7 +80,7 @@ private fun createFiles(bytes: ByteArray, outputDir: File): Boolean {
         newFile.parentFile.mkdirs()
 
         Files.write(newFile.toPath(), it.second)
-        displayInfoStream(newFile.toPath().toString())
+        Logger.displayInfoStream(newFile.toPath().toString())
         filesCreated++
     }
 
