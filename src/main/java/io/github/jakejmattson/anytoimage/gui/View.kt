@@ -185,7 +185,12 @@ class PrimaryView : View("AnyToImage") {
     }
 
     private fun addInput(file: File?) {
+        cleanInput()
+
         file ?: return
+
+        if (!file.exists())
+            return
 
         inputFiles.add(file)
         lstInputs.items.add(file.name)
@@ -265,9 +270,8 @@ class PrimaryView : View("AnyToImage") {
                     files
             }
 
-            droppedFiles.forEach {
-                inputFiles.add(it)
-                lstInputs.items.add(it.name)
+            droppedFiles.forEach { file ->
+                addInput(file)
             }
         }
 
@@ -278,6 +282,17 @@ class PrimaryView : View("AnyToImage") {
 
         setOnDragExited {
             style = "-fx-border-style: dashed; -fx-border-color: black"
+        }
+    }
+
+    private fun cleanInput() {
+        val zipped = inputFiles.zip(lstInputs.items)
+
+        zipped.forEach { (file, name) ->
+            if (!file.exists()) {
+                inputFiles.remove(file)
+                lstInputs.items.remove(name)
+            }
         }
     }
 }
