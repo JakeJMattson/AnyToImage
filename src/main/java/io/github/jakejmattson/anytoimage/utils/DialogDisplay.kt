@@ -12,10 +12,38 @@ enum class DisplayMode {
 
 var displayMode: DisplayMode = DisplayMode.CONSOLE
 
+private lateinit var infoStream: TextArea
+
 fun displayInfo(title: String, message: String) {
     when (displayMode) {
         DisplayMode.CONSOLE -> println(message)
         DisplayMode.GRAPHICAL -> createDialog(INFORMATION, title, message).showAndWait()
+    }
+}
+
+fun beginInfoStream(windowTitle: String) {
+    val textArea = TextArea().apply {
+        isEditable = false
+    }
+
+    GridPane.setVgrow(textArea, Priority.ALWAYS)
+    GridPane.setHgrow(textArea, Priority.ALWAYS)
+
+    val display = GridPane().apply {
+        add(textArea, 0, 1)
+    }
+
+    infoStream = textArea
+
+    createDialog(INFORMATION, windowTitle, "").apply {
+        dialogPane.content = display
+    }.show()
+}
+
+fun displayInfoStream(text: String) {
+    when (displayMode) {
+        DisplayMode.CONSOLE -> println(text)
+        DisplayMode.GRAPHICAL -> infoStream.text += "$text\n"
     }
 }
 

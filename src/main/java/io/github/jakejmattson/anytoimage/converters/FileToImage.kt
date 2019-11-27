@@ -23,6 +23,8 @@ fun convertFileToImage(inputFiles: List<File>, outputFile: File): Boolean {
     if (dims == 0)
         return false
 
+    beginInfoStream("Encoding Files")
+
     //(Re)initialize fields
     image = BufferedImage(dims, dims, BufferedImage.TYPE_INT_RGB)
     row = 0
@@ -86,7 +88,7 @@ private fun fileToBytes(file: File, fileName: String) {
         with(stream) {
             write(fileName.length)
             write(fileName.toByteArray())
-            println(file.toPath())
+            displayInfoStream(file.toPath().toString())
             write(file.length().toInt().extractBytes(4))
             write(Files.readAllBytes(file.toPath()))
         }

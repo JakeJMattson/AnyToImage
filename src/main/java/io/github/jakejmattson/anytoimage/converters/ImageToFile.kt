@@ -14,6 +14,8 @@ fun convertImageToFile(inputFiles: List<File>, outputDir: File): Boolean {
 
     var wasSuccessful = false
 
+    beginInfoStream("Decoding Files")
+
     validFiles.forEach { file ->
         val pixels = extractPixels(file) ?: return@forEach
         val allBytes = extractBytes(pixels)
@@ -78,7 +80,7 @@ private fun createFiles(bytes: ByteArray, outputDir: File): Boolean {
         newFile.parentFile.mkdirs()
 
         Files.write(newFile.toPath(), it.second)
-        println(newFile.toPath())
+        displayInfoStream(newFile.toPath().toString())
         filesCreated++
     }
 
