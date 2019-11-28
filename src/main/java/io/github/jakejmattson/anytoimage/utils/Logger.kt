@@ -16,13 +16,6 @@ class Logger {
 
         var displayMode: DisplayMode = DisplayMode.CONSOLE
 
-        fun displayInfo(title: String, message: String) {
-            when (displayMode) {
-                DisplayMode.CONSOLE -> println(message)
-                DisplayMode.GRAPHICAL -> createDialog(INFORMATION, title, message).showAndWait()
-            }
-        }
-
         fun beginInfoStream(windowTitle: String) {
             val textArea = TextArea().apply {
                 isEditable = false

@@ -1,30 +1,28 @@
 package io.github.jakejmattson.anytoimage.converters
 
 import io.github.jakejmattson.anytoimage.utils.*
+import kotlinx.coroutines.*
 import java.awt.image.*
 import java.io.*
-import java.nio.file.*
+import java.nio.file.Files
 import java.util.ArrayList
 import javax.imageio.ImageIO
 
-fun convertImageToFile(inputFiles: List<File>, outputDir: File): Boolean {
+fun convertImageToFile(inputFiles: List<File>, outputDir: File) {
     val validInput = inputFiles.filter { it.exists() }
     val validFiles = validInput.filter { it.hasValidImageExtension() }.toMutableList()
     validInput.filter { it.isDirectory }.forEach { validFiles.addAll(it.collectFiles().filter { it.hasValidImageExtension() }) }
 
-    var wasSuccessful = false
+    GlobalScope.launch {
+        validFiles.forEach { file ->
+            val pixels = extractPixels(file) ?: return@forEach
+            val allBytes = extractBytes(pixels)
 
-    Logger.beginInfoStream("Decoding Files")
+            createFiles(allBytes, outputDir)
+        }
 
-    validFiles.forEach { file ->
-        val pixels = extractPixels(file) ?: return@forEach
-        val allBytes = extractBytes(pixels)
-
-        if (createFiles(allBytes, outputDir))
-            wasSuccessful = true
+        Logger.displayInfoStream("Process complete.")
     }
-
-    return wasSuccessful
 }
 
 /**

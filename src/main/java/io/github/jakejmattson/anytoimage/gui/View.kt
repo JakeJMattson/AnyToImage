@@ -213,23 +213,12 @@ class PrimaryView : View("AnyToImage") {
         if (!validateConversion())
             return
 
-        val infoTitle = "Operation successful!"
-        val errorTitle = "Operation failed!"
-
         if (radFiles.isSelected) {
-            val wasSuccessful = convertFileToImage(inputFiles, outputFile!!)
-
-            if (wasSuccessful)
-                Logger.displayInfo(infoTitle, "Image created from files.")
-            else
-                Logger.displayError(errorTitle, "Image not created due to errors.")
+            Logger.beginInfoStream("Encoding Files")
+            convertFileToImage(inputFiles, outputFile!!)
         } else {
-            val wasSuccessful = convertImageToFile(inputFiles, outputFile!!)
-
-            if (wasSuccessful)
-                Logger.displayInfo(infoTitle, "Files extracted from image.")
-            else
-                Logger.displayError(errorTitle, "Unable to extract any files.")
+            Logger.beginInfoStream("Decoding Files")
+            convertImageToFile(inputFiles, outputFile!!)
         }
     }
 

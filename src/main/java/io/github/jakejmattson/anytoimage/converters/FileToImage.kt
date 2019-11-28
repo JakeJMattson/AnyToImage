@@ -1,6 +1,7 @@
 package io.github.jakejmattson.anytoimage.converters
 
 import io.github.jakejmattson.anytoimage.utils.*
+import kotlinx.coroutines.*
 import java.awt.image.BufferedImage
 import java.io.*
 import java.nio.file.Files
@@ -14,31 +15,34 @@ private var col: Int = 0
 
 private const val CHANNEL_COUNT = 3
 
-fun convertFileToImage(inputFiles: List<File>, outputFile: File): Boolean {
+fun convertFileToImage(inputFiles: List<File>, outputFile: File) {
     val validInput = inputFiles.filter { it.exists() }
 
     val bytes = calculateBytesRequired(validInput)
     val dims = ceil(sqrt((bytes / CHANNEL_COUNT).toDouble())).toInt()
 
-    if (dims == 0)
-        return false
-
-    Logger.beginInfoStream("Encoding Files")
+    if (dims == 0) {
+        Logger.displayError("Fatal Error", "No valid input files.")
+        return
+    }
 
     //(Re)initialize fields
     image = BufferedImage(dims, dims, BufferedImage.TYPE_INT_RGB)
     row = 0
     col = 0
 
-    validInput.forEach { file ->
-        if (file.isDirectory)
-            directoryToBytes(file)
-        else
-            fileToBytes(file, file.name)
-    }
+    GlobalScope.launch {
+        validInput.forEach { file ->
+            if (file.isDirectory)
+                directoryToBytes(file)
+            else
+                fileToBytes(file, file.name)
+        }
 
-    finalizeStream()
-    return saveImage(outputFile)
+        finalizeStream()
+        saveImage(outputFile)
+        Logger.displayInfoStream("Process complete.")
+    }
 }
 
 /**
@@ -88,12 +92,12 @@ private fun fileToBytes(file: File, fileName: String) {
         with(stream) {
             write(fileName.length)
             write(fileName.toByteArray())
-            Logger.displayInfoStream(file.toPath().toString())
             write(file.length().toInt().extractBytes(4))
             write(Files.readAllBytes(file.toPath()))
         }
 
         writeDataToImage()
+        Logger.displayInfoStream(fileName)
     } catch (e: IOException) {
         Logger.displayException(e, "Unable to read file: $file")
     }

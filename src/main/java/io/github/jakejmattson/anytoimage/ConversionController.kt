@@ -1,8 +1,8 @@
 package io.github.jakejmattson.anytoimage
 
-import io.github.jakejmattson.anytoimage.utils.*
 import io.github.jakejmattson.anytoimage.converters.*
 import io.github.jakejmattson.anytoimage.gui.AnyToImage
+import io.github.jakejmattson.anytoimage.utils.*
 import tornadofx.*
 import java.io.File
 
@@ -28,8 +28,14 @@ fun main(args: Array<String>) {
             val output = File(args.last())
 
             when (conversionType) {
-                0 -> convertFileToImage(input, output)
-                1 -> convertImageToFile(input, output)
+                0 -> {
+                    Logger.beginInfoStream("Encoding Files")
+                    convertFileToImage(input, output)
+                }
+                1 -> {
+                    Logger.beginInfoStream("Decoding Files")
+                    convertImageToFile(input, output)
+                }
                 else -> {
                     println("Unrecognized conversion type!")
                     Logger.displayHelp()
