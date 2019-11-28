@@ -1,5 +1,6 @@
 package io.github.jakejmattson.anytoimage.utils
 
+import javafx.application.Platform
 import javafx.scene.control.*
 import javafx.scene.control.Alert.AlertType.*
 import javafx.scene.layout.*
@@ -38,7 +39,9 @@ class Logger {
         fun displayInfoStream(text: String) {
             when (displayMode) {
                 DisplayMode.CONSOLE -> println(text)
-                DisplayMode.GRAPHICAL -> infoStream.text += "$text\n"
+                DisplayMode.GRAPHICAL -> Platform.runLater {
+                    infoStream.appendText("$text\n")
+                }
             }
         }
 
