@@ -192,6 +192,9 @@ class PrimaryView : View("AnyToImage") {
         if (!file.exists())
             return
 
+        if (file in inputFiles)
+            return
+
         inputFiles.add(file)
         lstInputs.items.add(file.name)
     }
