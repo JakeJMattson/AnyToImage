@@ -17,7 +17,6 @@ private const val CHANNEL_COUNT = 3
 
 fun convertFileToImage(inputFiles: List<File>, outputFile: File) {
     val validInput = inputFiles.filter { it.exists() }
-
     val bytes = calculateBytesRequired(validInput)
     val dims = ceil(sqrt((bytes / CHANNEL_COUNT).toDouble())).toInt()
 
@@ -41,7 +40,7 @@ fun convertFileToImage(inputFiles: List<File>, outputFile: File) {
 
         finalizeStream()
         saveImage(outputFile)
-        Logger.displayInfoStream("Process complete.")
+        Logger.streamInfo("Process complete.")
     }
 }
 
@@ -71,7 +70,7 @@ private fun calculateBytesRequired(files: List<File>): Int {
 /**
  * Calculate the number of bytes needed to store and recreate a file.
  */
-private fun calculateFileSize(file: File, fileName: String) = (fileName.toByteArray().size.toLong() + file.length() + 5).toInt()
+private fun calculateFileSize(file: File, fileName: String) = fileName.toByteArray().size + file.length().toInt() + 5
 
 /**
  * Collect all files from a directory (and sub-directories) and convert each to bytes.
@@ -97,7 +96,7 @@ private fun fileToBytes(file: File, fileName: String) {
         }
 
         writeDataToImage()
-        Logger.displayInfoStream(fileName)
+        Logger.streamInfo(fileName)
     } catch (e: IOException) {
         Logger.displayException(e, "Unable to read file: $file")
     }
@@ -145,13 +144,12 @@ private fun finalizeStream() {
     stream.reset()
 }
 
-private fun saveImage(output: File) =
+private fun saveImage(output: File) {
     try {
         ImageIO.write(image!!, "png", output)
-        true
     } catch (e: IOException) {
         Logger.displayException(e, "Error creating image!")
-        false
     } finally {
         image = null
     }
+}

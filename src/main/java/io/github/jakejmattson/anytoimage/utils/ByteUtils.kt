@@ -18,9 +18,9 @@ fun Int.extractBytes(count: Int): ByteArray {
 fun ByteArray.bytesToInt(): Int {
     val unsigned = this.map { it.toInt() and 0xFF }
 
-    return when {
-        unsigned.size == 3 -> unsigned[0] shl 16 or (unsigned[1] shl 8) or unsigned[2]
-        unsigned.size == 4 -> unsigned[0] shl 24 or (unsigned[1] shl 16) or (unsigned[2] shl 8) or unsigned[3]
+    return when (unsigned.size) {
+        3 -> unsigned[0] shl 16 or (unsigned[1] shl 8) or unsigned[2]
+        4 -> unsigned[0] shl 24 or (unsigned[1] shl 16) or (unsigned[2] shl 8) or unsigned[3]
         else -> -1
     }
 }

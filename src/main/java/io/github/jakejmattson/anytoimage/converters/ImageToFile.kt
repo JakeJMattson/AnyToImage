@@ -21,7 +21,7 @@ fun convertImageToFile(inputFiles: List<File>, outputDir: File) {
             createFiles(allBytes, outputDir)
         }
 
-        Logger.displayInfoStream("Process complete.")
+        Logger.streamInfo("Process complete.")
     }
 }
 
@@ -52,8 +52,7 @@ private fun extractBytes(pixels: IntArray) =
 /**
  * Create all files contained within the image.
  */
-private fun createFiles(bytes: ByteArray, outputDir: File): Boolean {
-    var filesCreated = 0
+private fun createFiles(bytes: ByteArray, outputDir: File) {
     var index = 0
     val fileData = ArrayList<Pair<ByteArray, ByteArray>>()
 
@@ -68,19 +67,16 @@ private fun createFiles(bytes: ByteArray, outputDir: File): Boolean {
         }
     } catch (e: RuntimeException) {
         Logger.displayException(e, "Incorrectly encoded input image!")
-        return false
+        return
     }
 
-    if (fileData.isEmpty()) return false
+    if (fileData.isEmpty()) return
 
     fileData.forEach {
         val newFile = File(outputDir.toString() + File.separator + String(it.first))
         newFile.parentFile.mkdirs()
 
         Files.write(newFile.toPath(), it.second)
-        Logger.displayInfoStream(newFile.toPath().toString())
-        filesCreated++
+        Logger.streamInfo(newFile.toPath().toString())
     }
-
-    return filesCreated != 0
 }

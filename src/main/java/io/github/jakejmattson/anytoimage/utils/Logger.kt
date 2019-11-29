@@ -17,7 +17,7 @@ class Logger {
 
         var displayMode: DisplayMode = DisplayMode.CONSOLE
 
-        fun beginInfoStream(windowTitle: String) {
+        fun initializeInfoStream(windowTitle: String) {
             val textArea = TextArea().apply {
                 isEditable = false
             }
@@ -36,7 +36,7 @@ class Logger {
             }.show()
         }
 
-        fun displayInfoStream(text: String) {
+        fun streamInfo(text: String) {
             when (displayMode) {
                 DisplayMode.CONSOLE -> println(text)
                 DisplayMode.GRAPHICAL -> Platform.runLater {
@@ -85,29 +85,29 @@ class Logger {
 
         fun displayHelp() = println(
             """
-        Supported command line arguments:
+            Supported command line arguments:
 
-        0 Arguments - GUI mode
-        -------------------------
-            Running with no arguments will start the application in graphical mode.
-            Messages to the user will appear as dialog boxes rather than printing to console.
+            0 Arguments - GUI mode
+            -------------------------
+                Running with no arguments will start the application in graphical mode.
+                Messages to the user will appear as dialog boxes rather than printing to console.
 
-        3+ Arguments - CLI mode
-        -------------------------
-            Arguments are accepted in this format: <Conversion Type> <Input Files...> <Output File>
-                Conversion Type
-                    0 - Convert input file(s) to an image
-                    1 - Convert input image(s) to files
+            3+ Arguments - CLI mode
+            -------------------------
+                Arguments are accepted in this format: <Conversion Type> <Input Files...> <Output File>
+                    Conversion Type
+                        0 - Convert input file(s) to an image
+                        1 - Convert input image(s) to files
 
-                Input Files
-                    This can be any number of file or directory paths to convert.
+                    Input Files
+                        This can be any number of file or directory paths to convert.
 
-                Output File
-                    This is the path where the output will be stored when the conversion is complete.
-    """.trimIndent()
+                    Output File
+                        This is the path where the output will be stored when the conversion is complete.
+            """.trimIndent()
         )
 
-        private fun createDialog(type: Alert.AlertType, title: String, message: String)=
+        private fun createDialog(type: Alert.AlertType, title: String, message: String) =
             Alert(type, message).apply {
                 this.title = title
                 this.headerText = null

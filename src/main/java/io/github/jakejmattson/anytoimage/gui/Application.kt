@@ -1,7 +1,7 @@
 package io.github.jakejmattson.anytoimage.gui
 
 import javafx.stage.Stage
-import tornadofx.App
+import tornadofx.*
 
 class AnyToImage : App() {
     override val primaryView = PrimaryView::class

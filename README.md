@@ -3,7 +3,7 @@
     <img src="https://img.shields.io/badge/Java-8-blue.svg" alt="Java 8">
   </a>
   <a href="https://kotlinlang.org/">
-    <img src="https://img.shields.io/badge/Kotlin-1.3.60-blue.svg" alt="Kotlin 1.3.60">
+    <img src="https://img.shields.io/badge/Kotlin-1.3.61-blue.svg" alt="Kotlin 1.3.61">
   </a>
   <a href="https://github.com/edvin/tornadofx">
     <img src="https://img.shields.io/badge/TornadoFX-1.7.17-blue.svg" alt="TornadoFX 1.7.17">

@@ -29,11 +29,11 @@ fun main(args: Array<String>) {
 
             when (conversionType) {
                 0 -> {
-                    Logger.beginInfoStream("Encoding Files")
+                    Logger.initializeInfoStream("Encoding Files")
                     convertFileToImage(input, output)
                 }
                 1 -> {
-                    Logger.beginInfoStream("Decoding Files")
+                    Logger.initializeInfoStream("Decoding Files")
                     convertImageToFile(input, output)
                 }
                 else -> {
