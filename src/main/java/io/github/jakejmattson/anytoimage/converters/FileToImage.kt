@@ -2,16 +2,12 @@ package io.github.jakejmattson.anytoimage.converters
 
 import io.github.jakejmattson.anytoimage.utils.*
 import kotlinx.coroutines.*
-import java.awt.image.BufferedImage
 import java.io.*
 import java.nio.file.Files
-import javax.imageio.ImageIO
 import kotlin.math.*
 
 private val stream = ByteArrayOutputStream()
-private var image: BufferedImage? = null
-private var row: Int = 0
-private var col: Int = 0
+private lateinit var writer: ImageWriter
 
 private const val CHANNEL_COUNT = 3
 
@@ -25,10 +21,7 @@ fun convertFileToImage(inputFiles: List<File>, outputFile: File) {
         return
     }
 
-    //(Re)initialize fields
-    image = BufferedImage(dims, dims, BufferedImage.TYPE_INT_RGB)
-    row = 0
-    col = 0
+    writer = ImageWriter(dims)
 
     GlobalScope.launch {
         validInput.forEach { file ->
@@ -39,7 +32,7 @@ fun convertFileToImage(inputFiles: List<File>, outputFile: File) {
         }
 
         finalizeStream()
-        saveImage(outputFile)
+        writer.saveImage(outputFile)
         Logger.streamInfo("Process complete.")
     }
 }
@@ -106,13 +99,7 @@ private fun writeDataToImage() {
         val pixelData = byteArrayOf(fileBytes[index], fileBytes[index + 1], fileBytes[index + 2])
         val pixel = pixelData.bytesToInt()
 
-        image!!.setRGB(row, col, pixel)
-        row++
-
-        if (row == image!!.width) {
-            row = 0
-            col++
-        }
+        writer.writePixel(pixel)
         index += CHANNEL_COUNT
     }
 
@@ -132,17 +119,7 @@ private fun finalizeStream() {
     val partialPixel = stream.toByteArray()
     System.arraycopy(partialPixel, 0, finalPixelData, 0, partialPixel.size)
     val pixel = finalPixelData.bytesToInt()
-    image!!.setRGB(row, col, pixel)
 
+    writer.writePixel(pixel)
     stream.reset()
-}
-
-private fun saveImage(output: File) {
-    try {
-        ImageIO.write(image!!, "png", output)
-    } catch (e: IOException) {
-        Logger.displayException(e, "Error creating image!")
-    } finally {
-        image = null
-    }
 }
