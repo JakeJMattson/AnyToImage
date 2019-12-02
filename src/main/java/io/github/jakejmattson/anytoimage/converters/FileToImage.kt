@@ -47,25 +47,18 @@ fun convertFileToImage(inputFiles: List<File>, outputFile: File) {
 /**
  * Calculate the number of bytes needed to store all files in the list.
  */
-private fun calculateBytesRequired(files: List<File>): Int {
-    var byteCount = 0
-
-    files.forEach { inputFile ->
-        if (inputFile.isDirectory) {
-            val parentDir = inputFile.name
-
-            inputFile.collectFiles().forEach { file ->
+private fun calculateBytesRequired(files: List<File>) =
+    files.sumBy { inputFile ->
+        if (inputFile.isDirectory)
+            inputFile.collectFiles().sumBy { file ->
                 val fullPath = file.path
-                val fileName = fullPath.substring(fullPath.indexOf(parentDir))
+                val fileName = fullPath.substring(fullPath.indexOf(inputFile.name))
 
-                byteCount += calculateFileSize(file, fileName)
+                calculateFileSize(file, fileName)
             }
-        } else
-            byteCount += calculateFileSize(inputFile, inputFile.name)
+        else
+            calculateFileSize(inputFile, inputFile.name)
     }
-
-    return byteCount
-}
 
 /**
  * Calculate the number of bytes needed to store and recreate a file.

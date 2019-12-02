@@ -8,14 +8,13 @@ import javafx.scene.input.TransferMode
 import javafx.scene.layout.Pane
 import tornadofx.*
 import java.io.File
-import java.util.ArrayList
 
 class PrimaryView : View("AnyToImage") {
     private lateinit var lstInputs: ListView<String>
     private lateinit var txtOutput: TextField
     private lateinit var radFiles: RadioButton
     private lateinit var radImage: RadioButton
-    private val inputFiles = ArrayList<File>()
+    private val inputFiles = mutableListOf<File>()
     private var outputFile: File? = null
 
     override val root = pane {
@@ -184,10 +183,8 @@ class PrimaryView : View("AnyToImage") {
         }
     }
 
-    private fun addInput(file: File?) {
+    private fun addInput(file: File) {
         cleanInput()
-
-        file ?: return
 
         if (!file.exists())
             return
