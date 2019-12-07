@@ -13,23 +13,27 @@ enum class DisplayMode {
 
 class Logger {
     companion object {
-        private lateinit var infoStream: TextArea
+        private lateinit var progressBar: ProgressBar
+        private lateinit var txtInfoStream: TextArea
 
         var displayMode: DisplayMode = DisplayMode.CONSOLE
 
-        fun initializeInfoStream(windowTitle: String) {
-            val textArea = TextArea().apply {
+        fun initializeInfoStream(windowTitle: String, shouldShowProgress: Boolean) {
+            txtInfoStream = TextArea().apply {
                 isEditable = false
             }
 
-            GridPane.setVgrow(textArea, Priority.ALWAYS)
-            GridPane.setHgrow(textArea, Priority.ALWAYS)
+            GridPane.setVgrow(txtInfoStream, Priority.ALWAYS)
+            GridPane.setHgrow(txtInfoStream, Priority.ALWAYS)
 
             val display = GridPane().apply {
-                add(textArea, 0, 1)
-            }
+                add(txtInfoStream, 0, 1)
 
-            infoStream = textArea
+                if (shouldShowProgress) {
+                    progressBar = ProgressBar(0.0)
+                    add(progressBar, 0, 2)
+                }
+            }
 
             createDialog(INFORMATION, windowTitle, "").apply {
                 dialogPane.content = display
@@ -40,7 +44,7 @@ class Logger {
             when (displayMode) {
                 DisplayMode.CONSOLE -> println(text)
                 DisplayMode.GRAPHICAL -> Platform.runLater {
-                    infoStream.appendText("$text\n")
+                    txtInfoStream.appendText("$text\n")
                 }
             }
         }
