@@ -8,13 +8,14 @@ import kotlin.math.*
 
 private val stream = ByteArrayOutputStream()
 private lateinit var writer: ImageWriter
+private var totalBytes: Int = 0
 
 private const val CHANNEL_COUNT = 3
 
 fun convertFileToImage(inputFiles: List<File>, outputFile: File) {
     val validInput = inputFiles.filter { it.exists() }
-    val bytes = calculateBytesRequired(validInput)
-    val dims = ceil(sqrt((bytes / CHANNEL_COUNT).toDouble())).toInt()
+    totalBytes = calculateBytesRequired(validInput)
+    val dims = ceil(sqrt((totalBytes / CHANNEL_COUNT).toDouble())).toInt()
 
     if (dims == 0) {
         Logger.displayError("Fatal Error", "No valid input files.")
@@ -33,7 +34,7 @@ fun convertFileToImage(inputFiles: List<File>, outputFile: File) {
 
         finalizeStream()
         writer.saveImage(outputFile)
-        Logger.streamInfo("Process complete.")
+        Logger.streamInfo("Process complete.", 100.0)
     }
 }
 
@@ -82,7 +83,7 @@ private fun fileToBytes(file: File, fileName: String) {
         }
 
         writeDataToImage()
-        Logger.streamInfo(fileName)
+        Logger.streamInfo(fileName, stream.size() / totalBytes.toDouble())
     } catch (e: IOException) {
         Logger.displayException(e, "Unable to read file: $file")
     }

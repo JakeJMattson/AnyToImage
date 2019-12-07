@@ -18,21 +18,16 @@ class Logger {
 
         var displayMode: DisplayMode = DisplayMode.CONSOLE
 
-        fun initializeInfoStream(windowTitle: String, shouldShowProgress: Boolean) {
-            txtInfoStream = TextArea().apply {
-                isEditable = false
-            }
+        fun initializeInfoStream(windowTitle: String) {
+            txtInfoStream = TextArea().apply { isEditable = false }
+            progressBar = ProgressBar(0.0)
 
             GridPane.setVgrow(txtInfoStream, Priority.ALWAYS)
             GridPane.setHgrow(txtInfoStream, Priority.ALWAYS)
 
             val display = GridPane().apply {
                 add(txtInfoStream, 0, 1)
-
-                if (shouldShowProgress) {
-                    progressBar = ProgressBar(0.0)
-                    add(progressBar, 0, 2)
-                }
+                add(progressBar, 0, 2)
             }
 
             createDialog(INFORMATION, windowTitle, "").apply {
@@ -40,11 +35,12 @@ class Logger {
             }.show()
         }
 
-        fun streamInfo(text: String) {
+        fun streamInfo(text: String, progress: Double) {
             when (displayMode) {
                 DisplayMode.CONSOLE -> println(text)
                 DisplayMode.GRAPHICAL -> Platform.runLater {
                     txtInfoStream.appendText("$text\n")
+                    progressBar.progress = progress
                 }
             }
         }

@@ -21,7 +21,7 @@ fun convertImageToFile(inputFiles: List<File>, outputDir: File) {
             createFiles(allBytes, outputDir)
         }
 
-        Logger.streamInfo("Process complete.")
+        Logger.streamInfo("Process complete.", 100.0)
     }
 }
 
@@ -77,6 +77,6 @@ private fun createFiles(bytes: ByteArray, outputDir: File) {
         newFile.parentFile.mkdirs()
 
         Files.write(newFile.toPath(), it.second)
-        Logger.streamInfo(newFile.toPath().toString())
+        Logger.streamInfo(newFile.toPath().toString(), 0.0)
     }
 }

@@ -214,10 +214,10 @@ class PrimaryView : View("AnyToImage") {
             return
 
         if (radFiles.isSelected) {
-            Logger.initializeInfoStream("Encoding Files", true)
+            Logger.initializeInfoStream("Encoding Files")
             convertFileToImage(inputFiles, outputFile!!)
         } else {
-            Logger.initializeInfoStream("Decoding Files", false)
+            Logger.initializeInfoStream("Decoding Files")
             convertImageToFile(inputFiles, outputFile!!)
         }
     }
