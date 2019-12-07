@@ -38,9 +38,11 @@ class Logger {
         fun streamInfo(text: String, progress: Double) {
             when (displayMode) {
                 DisplayMode.CONSOLE -> println(text)
-                DisplayMode.GRAPHICAL -> Platform.runLater {
-                    txtInfoStream.appendText("$text\n")
-                    progressBar.progress = progress
+                DisplayMode.GRAPHICAL -> {
+                    Platform.runLater {
+                        txtInfoStream.appendText("$text\n")
+                        progressBar.progress = progress
+                    }
                 }
             }
         }

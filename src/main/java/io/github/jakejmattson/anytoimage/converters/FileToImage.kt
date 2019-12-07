@@ -8,6 +8,7 @@ import kotlin.math.*
 
 private val stream = ByteArrayOutputStream()
 private lateinit var writer: ImageWriter
+private var bytesWritten: Int = 0
 private var totalBytes: Int = 0
 
 private const val CHANNEL_COUNT = 3
@@ -75,15 +76,22 @@ private fun directoryToBytes(dir: File) =
  */
 private fun fileToBytes(file: File, fileName: String) {
     try {
-        with(stream) {
-            write(fileName.length)
-            write(fileName.toByteArray())
-            write(file.length().toInt().extractBytes(4))
-            write(Files.readAllBytes(file.toPath()))
+        bytesWritten += with(stream) {
+            val nameLength = fileName.length
+            val nameData = fileName.toByteArray()
+            val fileLength = file.length().toInt().extractBytes(4)
+            val fileData = Files.readAllBytes(file.toPath())
+
+            write(nameLength)
+            write(nameData)
+            write(fileLength)
+            write(fileData)
+
+            nameLength + nameData.size + fileLength.size + fileData.size
         }
 
         writeDataToImage()
-        Logger.streamInfo(fileName, stream.size() / totalBytes.toDouble())
+        Logger.streamInfo(fileName, bytesWritten / totalBytes.toDouble())
     } catch (e: IOException) {
         Logger.displayException(e, "Unable to read file: $file")
     }
