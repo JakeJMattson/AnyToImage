@@ -35,7 +35,7 @@ fun convertFileToImage(inputFiles: List<File>, outputFile: File) {
 
         finalizeStream()
         writer.saveImage(outputFile)
-        Logger.streamInfo("Process complete.", 100.0)
+        Logger.streamInfo("Process complete.", 1.0)
     }
 }
 

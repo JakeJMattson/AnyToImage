@@ -21,7 +21,7 @@ fun convertImageToFile(inputFiles: List<File>, outputDir: File) {
             createFiles(allBytes, outputDir)
         }
 
-        Logger.streamInfo("Process complete.", 100.0)
+        Logger.streamInfo("Process complete.", 1.0)
     }
 }
 
