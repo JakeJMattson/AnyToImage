@@ -51,6 +51,10 @@ class Logger {
             }
         }
 
+        fun closeInfoStream() {
+            progressBar.progress = 1.0
+        }
+
         fun displayError(title: String, message: String) {
             when (displayMode) {
                 DisplayMode.CONSOLE -> println(message)
