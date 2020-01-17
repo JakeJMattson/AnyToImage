@@ -1,11 +1,11 @@
-package io.github.jakejmattson.anytoimage.gui
+package me.jakejmattson.anytoimage.gui
 
-import io.github.jakejmattson.anytoimage.converters.*
-import io.github.jakejmattson.anytoimage.utils.*
 import javafx.collections.FXCollections.observableArrayList
 import javafx.scene.control.*
 import javafx.scene.input.TransferMode
 import javafx.scene.layout.Pane
+import me.jakejmattson.anytoimage.converters.*
+import me.jakejmattson.anytoimage.utils.*
 import tornadofx.*
 import java.io.File
 

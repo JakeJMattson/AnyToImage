@@ -1,4 +1,4 @@
-package io.github.jakejmattson.anytoimage.utils
+package me.jakejmattson.anytoimage.utils
 
 import javafx.stage.*
 import java.io.File

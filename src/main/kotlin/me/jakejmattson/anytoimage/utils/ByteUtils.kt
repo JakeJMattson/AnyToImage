@@ -1,4 +1,4 @@
-package io.github.jakejmattson.anytoimage.utils
+package me.jakejmattson.anytoimage.utils
 
 /**
  * Extract bytes from an integer.

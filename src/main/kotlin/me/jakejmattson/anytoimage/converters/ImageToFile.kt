@@ -1,7 +1,7 @@
-package io.github.jakejmattson.anytoimage.converters
+package me.jakejmattson.anytoimage.converters
 
-import io.github.jakejmattson.anytoimage.utils.*
 import kotlinx.coroutines.*
+import me.jakejmattson.anytoimage.utils.*
 import java.awt.image.*
 import java.io.*
 import java.nio.file.Files

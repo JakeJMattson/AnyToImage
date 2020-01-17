@@ -1,8 +1,8 @@
-package io.github.jakejmattson.anytoimage
+package me.jakejmattson.anytoimage
 
-import io.github.jakejmattson.anytoimage.converters.*
-import io.github.jakejmattson.anytoimage.gui.AnyToImage
-import io.github.jakejmattson.anytoimage.utils.*
+import me.jakejmattson.anytoimage.gui.AnyToImage
+import me.jakejmattson.anytoimage.converters.*
+import me.jakejmattson.anytoimage.utils.*
 import tornadofx.*
 import java.io.File
 

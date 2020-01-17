@@ -1,4 +1,4 @@
-package io.github.jakejmattson.anytoimage.gui
+package me.jakejmattson.anytoimage.gui
 
 import javafx.stage.Stage
 import tornadofx.*
