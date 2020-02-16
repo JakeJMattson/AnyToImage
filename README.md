@@ -6,7 +6,7 @@
     <img src="https://img.shields.io/badge/Kotlin-1.3.61-blue.svg" alt="Kotlin 1.3.61">
   </a>
   <a href="https://github.com/edvin/tornadofx">
-    <img src="https://img.shields.io/badge/TornadoFX-1.7.17-blue.svg" alt="TornadoFX 1.7.17">
+    <img src="https://img.shields.io/badge/TornadoFX-1.7.20-blue.svg" alt="TornadoFX 1.7.20">
   </a>
   <a href="https://GitHub.com/JakeJMattson/AnyToImage/releases/">
     <img src="https://img.shields.io/github/release/JakeJMattson/AnyToImage.svg" alt="release">
