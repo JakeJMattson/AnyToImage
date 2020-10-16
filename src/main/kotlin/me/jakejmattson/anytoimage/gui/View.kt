@@ -54,6 +54,7 @@ class PrimaryView : View("AnyToImage") {
 
                     setOnAction {
                         val selection = createFileChooser("Add input file", radImage.isSelected).showOpenDialog(null)
+                            ?: return@setOnAction
                         addInput(selection)
                     }
                 }
@@ -67,6 +68,7 @@ class PrimaryView : View("AnyToImage") {
 
                     setOnAction {
                         val selection = createDirectoryChooser("Add input directory").showDialog(null)
+                            ?: return@setOnAction
                         addInput(selection)
                     }
                 }
@@ -96,7 +98,7 @@ class PrimaryView : View("AnyToImage") {
                     layoutY = 7.0
                     prefHeight = 160.0
                     prefWidth = 260.0
-                    items = observableArrayList<String>()
+                    items = observableArrayList()
 
                     isEditable = false
                 }

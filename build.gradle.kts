@@ -1,9 +1,10 @@
 group = "me.jakejmattson"
-version = "2.0.0"
+version = "3.0.0"
 
 plugins {
     kotlin("jvm") version "1.4.10"
     id("org.openjfx.javafxplugin") version "0.0.9"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
 repositories {
@@ -15,8 +16,19 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
 }
 
-tasks.compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+tasks {
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+
+    shadowJar {
+        archiveFileName.set("AnyToImage-${version}.jar")
+        manifest {
+            attributes(
+                "Main-Class" to "me.jakejmattson.anytoimage.ConversionControllerKt"
+            )
+        }
+    }
 }
 
 javafx {

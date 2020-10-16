@@ -17,7 +17,7 @@ class Logger {
         private lateinit var progressText: Label
         private lateinit var txtInfoStream: TextArea
 
-        var displayMode: DisplayMode = DisplayMode.CONSOLE
+        var displayMode = DisplayMode.CONSOLE
 
         fun initializeInfoStream(windowTitle: String) {
             txtInfoStream = TextArea().apply { isEditable = false }

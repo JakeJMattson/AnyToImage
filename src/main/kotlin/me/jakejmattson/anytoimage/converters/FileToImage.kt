@@ -8,8 +8,8 @@ import kotlin.math.*
 
 private val stream = ByteArrayOutputStream()
 private lateinit var writer: ImageWriter
-private var bytesWritten: Int = 0
-private var totalBytes: Int = 0
+private var bytesWritten = 0
+private var totalBytes = 0
 
 private const val CHANNEL_COUNT = 3
 

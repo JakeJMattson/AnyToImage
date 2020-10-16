@@ -5,7 +5,7 @@ import me.jakejmattson.anytoimage.utils.*
 import java.awt.image.*
 import java.io.*
 import java.nio.file.Files
-import java.util.ArrayList
+import java.util.*
 import javax.imageio.ImageIO
 
 fun convertImageToFile(inputFiles: List<File>, outputDir: File) {

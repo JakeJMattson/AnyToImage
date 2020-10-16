@@ -1,7 +1,7 @@
 package me.jakejmattson.anytoimage
 
-import me.jakejmattson.anytoimage.gui.AnyToImage
 import me.jakejmattson.anytoimage.converters.*
+import me.jakejmattson.anytoimage.gui.AnyToImage
 import me.jakejmattson.anytoimage.utils.*
 import tornadofx.*
 import java.io.File
