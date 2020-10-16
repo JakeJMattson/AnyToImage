@@ -1,9 +1,6 @@
 <p align="center">
-  <a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">
-    <img src="https://img.shields.io/badge/Java-8-blue.svg" alt="Java 8">
-  </a>
   <a href="https://kotlinlang.org/">
-    <img src="https://img.shields.io/badge/Kotlin-1.3.70-blue.svg" alt="Kotlin 1.3.70">
+    <img src="https://img.shields.io/badge/Kotlin-1.4.10-blue.svg" alt="Kotlin 1.4.10">
   </a>
   <a href="https://github.com/edvin/tornadofx">
     <img src="https://img.shields.io/badge/TornadoFX-1.7.20-blue.svg" alt="TornadoFX 1.7.20">
@@ -39,31 +36,9 @@ Due to the way certain aspects of this code is implemented, there are some known
 </p>
 
 ### Input
-* File name length is represented by 1 byte. Equivalent to 256 characters - includes extensions).
-* File size is represented by to 4 bytes. Equivalent to 4,294,967,295 bytes or 4.29 gigabytes.
-* If the amount of input is too large, you may exceed the Java heap space, resulting in a crash.
-
-## Prerequisites
-
-### Languages
-* [Java](https://jdk.java.net/11/)
-* [Kotlin](https://kotlinlang.org/)
-
-### Libraries
-* [JavaFX](https://openjfx.io/)
-
-## Getting Started
-### Installing Java
-<p align="justify">
-Visit the <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java Downloads</a> 
-page and select the version of your choice.
-Run the installer and follow the instructions provided.
-</p>
-
-### Building
-This project is built with Maven. To build the `pom.xml`, please follow the import instructions for your IDE.
-* [IntelliJ](https://www.tutorialspoint.com/maven/maven_intellij_idea.htm)
-* [Eclipse](https://www.tutorialspoint.com/maven/maven_eclispe_ide.htm)
+* File name is 1 byte. Equivalent to 256 characters/bytes (including extensions).
+* File size is 4 bytes. Equivalent to 4,294,967,295 bytes or 4.29 gigabytes of data.
+* If the input is too large, you may exceed the Java heap space, resulting in a crash.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
