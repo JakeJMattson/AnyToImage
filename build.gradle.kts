@@ -3,6 +3,7 @@ version = "2.0.0"
 
 plugins {
     kotlin("jvm") version "1.4.10"
+    id("org.openjfx.javafxplugin") version "0.0.9"
 }
 
 repositories {
@@ -16,4 +17,9 @@ dependencies {
 
 tasks.compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+javafx {
+    version = "15"
+    modules("javafx.controls")
 }
