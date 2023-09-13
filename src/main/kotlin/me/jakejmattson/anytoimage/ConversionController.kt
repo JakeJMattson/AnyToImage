@@ -1,9 +1,11 @@
 package me.jakejmattson.anytoimage
 
-import me.jakejmattson.anytoimage.converters.*
+import me.jakejmattson.anytoimage.converters.convertFileToImage
+import me.jakejmattson.anytoimage.converters.convertImageToFile
 import me.jakejmattson.anytoimage.gui.AnyToImage
-import me.jakejmattson.anytoimage.utils.*
-import tornadofx.*
+import me.jakejmattson.anytoimage.utils.DisplayMode
+import me.jakejmattson.anytoimage.utils.Logger
+import tornadofx.launch
 import java.io.File
 
 fun main(args: Array<String>) {
@@ -13,7 +15,7 @@ fun main(args: Array<String>) {
             launch<AnyToImage>()
         }
         1 -> {
-            if (args.first().toLowerCase() != "help")
+            if (args.first().lowercase() != "help")
                 println("Invalid Argument Size.")
 
             Logger.displayHelp()

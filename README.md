@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://kotlinlang.org/">
-    <img src="https://img.shields.io/badge/Kotlin-1.4.10-blue.svg" alt="Kotlin 1.4.10">
+    <img src="https://img.shields.io/badge/Kotlin-1.9.10-blue.svg" alt="Kotlin 1.4.10">
   </a>
   <a href="https://github.com/edvin/tornadofx">
     <img src="https://img.shields.io/badge/TornadoFX-1.7.20-blue.svg" alt="TornadoFX 1.7.20">

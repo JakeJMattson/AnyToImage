@@ -1,6 +1,7 @@
 package me.jakejmattson.anytoimage.utils
 
-import javafx.stage.*
+import javafx.stage.DirectoryChooser
+import javafx.stage.FileChooser
 import java.io.File
 import javax.swing.filechooser.FileSystemView
 
@@ -12,7 +13,7 @@ private const val imageExtension = "png"
  */
 fun File.collectFiles() = walkTopDown().filterIsInstance(File::class.java).filter { it.isFile }
 
-fun File.hasValidImageExtension() = extension.toLowerCase() == imageExtension
+fun File.hasValidImageExtension() = extension.lowercase() == imageExtension
 
 fun createFileChooser(title: String, shouldFilter: Boolean) =
     FileChooser().apply {
